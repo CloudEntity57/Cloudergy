@@ -9,6 +9,7 @@
     "auth0": "^2.6.0",
     "auth0-lock": "^10.13.0",
     "babel": "^6.23.0",
+    "babel-polyfill": "^6.23.0",
     "body-parser": "~1.16.0",
     "cookie-parser": "~1.4.3",
     "cors": "^2.8.1",
