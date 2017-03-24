@@ -8,6 +8,7 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+
 router.get('/test', function(req, res, next) {
   Test.find({},'', function(err,testItem){
     if (testItem) {console.log('hey baby an error');}
