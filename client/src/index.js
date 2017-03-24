@@ -1,7 +1,7 @@
 import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Provider from 'react-redux';
+import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import App from './App';
 import './index.css';
@@ -16,6 +16,7 @@ const store = createStore(
   applyMiddleware(thunk, promise, logger)
 );
 console.log('provider: ',Provider);
+console.log('react: ',React);
 console.log('app: ',App);
 ReactDOM.render(
   <Provider store={store}>
