@@ -1,26 +1,37 @@
-import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
 import App from './App';
-import './index.css';
-import thunk from 'redux-thunk';
-import promise from 'redux-promise';
-import createLogger from 'redux-logger';
-import allReducers from './reducers';
+import { Router, hashHistory, Route, IndexRoute } from 'react-router';
+import dotenv from 'dotenv';
+import Newsfeed from './components/Newsfeed';
+import LandingPage from './components/LandingPage';
+dotenv.config({ silent:true });
 
-const logger = createLogger();
-const store = createStore(
-  allReducers,
-  applyMiddleware(thunk, promise, logger)
-);
-console.log('provider: ',Provider);
-console.log('react: ',React);
-console.log('app: ',App);
 ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  document.getElementById('root')
-);
+
+    <Router history={ hashHistory }>
+      <Route path="/" component={ App }>
+        <IndexRoute component={ LandingPage } />
+        <Route path="/newsfeed" component={ Newsfeed } />
+      </Route>
+    </Router>,
+    document.getElementById('root')
+
+  );
+
+
+  //
+  // ReactDOM.render(
+  //   <Router history={ hashHistory }>
+  //     <Route path="/" component={ App }>
+  //       <IndexRoute component={ LandingPage } />
+  //       <Route path="/dashboard" component={ Dashboard } />
+  //       <Route path="/addsong" component={ SongForm } />
+  //       <Route path="/addgig" component={ GigForm } />
+  //       <Route path="/gigs" component={ Gigs } />
+  //       <Route path="/songs" component={ Songs } />
+  //       <Route path="/community" component={ Community } />
+  //     </Route>
+  //   </Router>,
+  //   document.getElementById('root')
+  // );

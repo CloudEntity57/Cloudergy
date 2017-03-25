@@ -1,32 +1,26 @@
-import React from 'react';
-import logo from './logo.svg';
-require ('./App.css');
+import React, { Component } from 'react';
 import jquery from 'jquery';
-
-
-  jquery.get('http://localhost:3001/test',(val)=>{
-      console.log('val: ',val);
-  });
+import LandingPage from './components/LandingPage';
 
 // authorize(e){
 //   e.preventDefault();
 // }
 
-const App = () => (
+class App extends Component{
 
-
-      <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
-        </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-          {/* <div onClick={this.authorize.bind(this)} className="btn btn-primary">Log In</div> */}
-          <div className="btn btn-primary">Log In</div>
+  componentWillMount(){
+    jquery.get('http://localhost:3001/test',(val)=>{
+        console.log('val: ',val);
+    });
+  }
+  render(){
+    let children = this.props.children;
+    return(
+      <div>
+      {children || <LandingPage />}
       </div>
-
-);
+    );
+  }
+};
 
 export default App;
