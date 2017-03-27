@@ -1,12 +1,14 @@
-import React, { Component } from 'react';
+import React, { PropTypes as T } from 'react'
+import { Jumbotron } from 'react-bootstrap'
 import jquery from 'jquery';
 import LandingPage from './components/LandingPage';
+
 
 // authorize(e){
 //   e.preventDefault();
 // }
 
-class App extends Component{
+export class App extends React.Component{
 
   componentWillMount(){
     jquery.get('http://localhost:3001/test',(val)=>{
@@ -14,13 +16,19 @@ class App extends Component{
     });
   }
   render(){
-    let children = this.props.children;
-    return(
-      <div>
+   let children = null;
+   if (this.props.children) {
+     children = React.cloneElement(this.props.children, {
+       auth: this.props.route.auth //sends auth instance from route to children
+     })
+   }
+
+   return (
+    <Jumbotron>
       {children || <LandingPage />}
-      </div>
-    );
-  }
-};
+    </Jumbotron>
+  )
+}
+}
 
 export default App;

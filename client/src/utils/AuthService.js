@@ -1,3 +1,5 @@
+// src/utils/AuthService.js
+
 import Auth0Lock from 'auth0-lock'
 import { browserHistory } from 'react-router'
 
@@ -15,13 +17,13 @@ export default class AuthService {
     // binds login functions to keep this context
     this.login = this.login.bind(this)
   }
+
   _doAuthentication(authResult) {
     // Saves the user token
     this.setToken(authResult.idToken)
     // navigate to the home route
-    browserHistory.replace('/home')
+    browserHistory.replace('/newsfeed')
   }
-
   login() {
     // Call the show method to display the widget.
     this.lock.show()
@@ -44,6 +46,7 @@ export default class AuthService {
 
   logout() {
     // Clear user token and profile data from local storage
+    console.log('logging out');
     localStorage.removeItem('id_token');
   }
 }

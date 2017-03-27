@@ -1,20 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import { Router, hashHistory, Route, IndexRoute } from 'react-router';
+import { Router, hashHistory, Route, IndexRedirect} from 'react-router';
 import dotenv from 'dotenv';
+import AuthService from './utils/AuthService';
 import Newsfeed from './components/Newsfeed';
 import LandingPage from './components/LandingPage';
+import Login from './components/Login';
+import { makeMainRoutes } from './routes.js';
 dotenv.config({ silent:true });
 
-ReactDOM.render(
 
-    <Router history={ hashHistory }>
-      <Route path="/" component={ App }>
-        <IndexRoute component={ LandingPage } />
-        <Route path="/newsfeed" component={ Newsfeed } />
-      </Route>
-    </Router>,
+const routes = makeMainRoutes();
+
+ReactDOM.render(
+    <div>
+      {routes}
+    </div>
+  ,
     document.getElementById('root')
 
   );
