@@ -25,7 +25,7 @@ class LandingPage extends Component{
   //   e.preventDefault();
   //   auth.logout();
   // }
-
+ 
   handleClick(e){
     hashHistory.push('/login');
   }
