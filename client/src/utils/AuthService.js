@@ -19,10 +19,31 @@ export default class AuthService {
   }
 
   _doAuthentication(authResult) {
-    // Saves the user token
-    this.setToken(authResult.idToken)
-    // navigate to the home route
-    browserHistory.replace('/newsfeed')
+      // Saves the user token
+      this.setToken(authResult.idToken)
+      // navigate to the home route
+      browserHistory.replace('/home')
+      // Async loads the user profile data
+      this.lock.getProfile(authResult.idToken, (error, profile) => {
+        if (error) {
+          console.log('Error loading the Profile', error)
+        } else {
+          this.setProfile(profile)
+        }
+      })
+    }
+
+  setProfile(profile) {
+    // Saves profile data to local storage
+    localStorage.setItem('profile', JSON.stringify(profile))
+    // Triggers profile_updated event to update the UI
+    this.emit('profile_updated', profile)
+  }
+
+  getProfile() {
+    // Retrieves the profile data from local storage
+    const profile = localStorage.getItem('profile')
+    return profile ? JSON.parse(localStorage.profile) : 'nada'
   }
   login() {
     // Call the show method to display the widget.
@@ -48,5 +69,6 @@ export default class AuthService {
     // Clear user token and profile data from local storage
     console.log('logging out');
     localStorage.removeItem('id_token');
+    localStorage.removeItem('profile');
   }
 }

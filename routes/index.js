@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var Test = require('../models/test');
+var User = require('../models/user');
 
 
 /* GET home page. */
@@ -16,5 +17,15 @@ router.get('/test', function(req, res, next) {
     res.json(testItem);
   });
 
+});
+
+router.get('/user',function(req,res,next){
+  // let profile=req;
+  User.find({},'', function(err,profile){
+    console.log('profile: ',profile);
+    res.json(profile);
+  });
+
+  // User.find({req.},''
 });
 module.exports = router;

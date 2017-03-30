@@ -5,7 +5,6 @@ import App from './App'
 import Login from './components/Login';
 import Newsfeed from './components/Newsfeed';
 import LandingPage from './components/LandingPage';
-
 const authid = process.env.REACT_APP_AUTH0_CLIENT_ID;
 const authdomain = process.env.REACT_APP_AUTH0_DOMAIN;
 const auth = new AuthService(authid, authdomain);
