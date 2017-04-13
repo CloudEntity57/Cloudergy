@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>New User</title>
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" media="screen" title="Bootstrap" charset="utf-8" />
+    <link rel="stylesheet" href="./test.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" media="screen" title="Font Awesome" charset="utf-8" />
+  </head>
+  <body>
+    <header>
+      <div class="outer-nav-wrapper">
+        <div class="nav">
+          NMA
+          <input type="text" name="search" placeholder="Search No Moderates Allowed" />
+          <div class="navbar-nav nav-right">
+            <div><a class="log-out" onClick={this.props.logOut} href="#">Logout</a></div>
+            <div>icon&nbsp;</div>
+            <div>icon&nbsp;</div>
+            <div>icon&nbsp;</div>
+            <div>Home&nbsp;</div>
+            <div>{profile.given_name}&nbsp;</div>
+            <img class="user-pic img-responsive" src={userpic} alt="user pic" />
+          </div>
+        </div>
+
+      </div>
+
+      <div class="nav-buffer">
+
+      </div>
+    </header>
+    <div class="outer-wrapper">
+
+    </div>
+    <div class="wrapper">
+      <div class="user-panel">
+        <div class="user-header">
+          <div class="user-background-photo">
+            <div>
+              <span id="title-username">Joe Lefty</span>
+              <span id="view-activity">View: <select name="" id="">
+                <option value="">Us</option>
+                <option value="">Them</option>
+              </select>
+            </div>
+          </div>
+          <ul class="user-nav">
+          <a href="#"><li>Posts</li></a>
+          <a href="#"><li>About</li></a>
+          <a href="#"><li>Allies</li></a>
+          </ul>
+          <div class="profile-pic">
+          </div>
+        </div>
+        <div class="user-details">
+          <div class="user-details-header">
+            <span class="fa fa-user-circle-o" aria-hidden="true"></span>
+            Details
+          </div>
+          <form class="user-details-form form form-default" action="index.html" method="post">
+            <label for="user-affiliation">Political ideology</label>
+            <select class="form form-control" name="user-affiliation" id="">
+              <optgroup label="Choose">
+                <option value="Extreme Right">Extreme Conservative</option>
+                <option value="Extreme Left">Extreme Liberal</option>
+              </optgroup>
+            </select>
+            <label for="user-education">Education</label>
+            <select class="form form-control" name="user-education" id="">
+              <optgroup label="Choose">
+                <option value="na">None of your damn business</option>
+                <option value="High School">High School/GED</option>
+                <option value="Bachelor's">Bachelor's</option>
+                <option value="Master's">Master's</option>
+                <option value="PhD">Ph.D/Doctorate</option>
+              </optgroup>
+            </select>
+            <label for="user-work">Work</label>
+            <input class="form form-control" name="user-work"type="text" placeholder="What you do">
+            <label for="user-location">Location</label>
+            <input class="form form-control" name="user-location"type="text" placeholder="Where you live">
+            <label for="user-bio">Why you dare enter No Moderates Allowed</label>
+            <textarea class="form form-control" placeholder="(displayed at the top of your page)" name="user-bio" id="user-bio" cols="30" rows="10"></textarea>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="users">
+      users
+    </div>
+    <script src="https://use.fontawesome.com/dea345ce44.js"></script>
+  </body>
+</html>
