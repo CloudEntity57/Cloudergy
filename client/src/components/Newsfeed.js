@@ -39,10 +39,7 @@ class Newsfeed extends Component{
                       </ul>
                     </div>
                     <div id="ads">
-                      <div className="panel panel-default"><img className="img-responsive" src="../src/images/pexels-photo-24301.jpg" alt="pic1"/>Nisi veniam deleniti, maxime consequuntur at nesciunt nobis, dolorum voluptas ex dolore non sunt. Eos eum earum porro, adipisci magni quae numquam.<img className="img-responsive" src="../images/pexels-photo.jpg" alt="pic2"/>Nisi veniam deleniti, maxime consequuntur at nesciunt nobis, dolorum voluptas ex dolore non sunt. Eos eum earum porro, adipisci magni quae numquam.
-                      </div>
-                      <div className="panel panel-default">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+                      <div className="panel panel-default"><img class="img-responsive" src="https://static1.squarespace.com/static/5756391520c647f04c981c96/t/575c84ede32140042bb42d15/1465681148937/?format=1500w" alt="pic1"/>Nisi veniam deleniti, maxime consequuntur at nesciunt nobis, dolorum voluptas ex dolore non sunt. Eos eum earum porro, adipisci magni quae numquam.<img className="img-responsive" src="https://media.licdn.com/mpr/mpr/AAEAAQAAAAAAAAcsAAAAJGI5N2RjNWFkLWQ4N2YtNDBhNi05MTQ0LTg4MmI0YTVkNjQ3Yg.jpg" alt="pic1"/>Nisi veniam deleniti, maxime consequuntur at nesciunt nobis, dolorum voluptas ex dolore non sunt. Eos eum earum porro, adipisci magni quae numquam.
                       </div>
                     </div>
 
