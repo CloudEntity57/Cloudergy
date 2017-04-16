@@ -1,17 +1,90 @@
 import React, { Component } from 'react';
 import Header from './Header';
+import StoryLinks from './StoryLinks';
 import Post from './Post';
+import { filterUser } from './FilterUser';
+import jquery from 'jquery';
+import { hashHistory } from 'react-router';
+import { nyt_feed } from './NYT_API';
+const nytkey=process.env.REACT_APP_NYTAPI;
+const wpkey=process.env.REACT_APP_WP_API;
 
 class Newsfeed extends Component{
+  constructor(props){
+    super(props);
+    this.state={
+      test:''
+    }
+  }
+  componentWillMount(){
+    console.log('api key: ',nytkey);
+    let result;
+    let callback = (stories)=>{
+      console.log('stories in callback: ',stories);
+      this.setState({
+        stories:stories
+      });
+    }
+    nyt_feed(nytkey,callback);
+  }
+  setStories(stories){
+    console.log('stories in callback: ',stories);
+    this.setState({
+      stories:stories
+    });
+  }
+  componentDidMount(){
 
+
+
+    let auth = this.props.auth;
+    let targetURL = "http://localhost:3001/user/"
+    console.log('app js auth: ',auth);
+
+    setTimeout(()=>{
+      const profile = auth.getProfile();
+      console.log('cwm profile: ', profile);
+      console.log('app js profile: ',profile);
+        this.setState({
+          profile:profile
+        });
+        let query = jquery.ajax({
+          url:targetURL+profile.clientID,
+          type:'GET',
+          success:(val)=>{
+            console.log('success: ',val);
+          }
+        });
+        query.done((val)=>{
+          console.log('user in database: ',val);
+          if(!val || val.length===0){
+            console.log('val empty! Not on file.');
+            let post = jquery.ajax({
+              url:targetURL,
+              data:{
+                first_name:profile.given_name,
+                last_name:profile.family_name,
+                photo:profile.picture,
+                userid:profile.clientID
+              },
+              type:'POST'
+            });
+            hashHistory.push('/account');
+          }
+        });
+  },1000);
+    // setTimeout(()=>{
+    //
+    // },300);
+  }
   render(){
     const profile = this.props.auth.getProfile();
     if(profile !== {}){
       console.log('render profile: ', profile);
     }
+    let stories = this.state.stories;
     return(
       <div>
-
         <div className="outer-wrapper">
             <div className="wrapper">
                 <div className="navigation-panel">
@@ -35,27 +108,7 @@ class Newsfeed extends Component{
                   </div>
 
                 </div>
-                <div className="ads-panel">
-                  ADS
-                  <div className="panel panel-default">
-                    <ul>
-                    <li>Nisi veniam deleniti, maxime consequuntur at nesciunt nobis.</li>
-                    <li>Nisi veniam deleniti, maxime consequuntur at nesciunt nobis.</li>
-                    <li>Nisi veniam deleniti, maxime consequuntur at nesciunt nobis.</li>
-                    </ul>
-                  </div>
-                  <div id="ads">
-                    <div className="panel panel-default"><img className="img-responsive" src="https://static1.squarespace.com/static/5756391520c647f04c981c96/t/575c84ede32140042bb42d15/1465681148937/?format=1500w" alt="pic1"/>Nisi veniam deleniti, maxime consequuntur at nesciunt nobis, dolorum voluptas ex dolore non sunt. Eos eum earum porro, adipisci magni quae numquam.<img className="img-responsive" src="https://media.licdn.com/mpr/mpr/AAEAAQAAAAAAAAcsAAAAJGI5N2RjNWFkLWQ4N2YtNDBhNi05MTQ0LTg4MmI0YTVkNjQ3Yg.jpg" alt="pic1"/>Nisi veniam deleniti, maxime consequuntur at nesciunt nobis, dolorum voluptas ex dolore non sunt. Eos eum earum porro, adipisci magni quae numquam.
-                    </div>
-                    <div className="panel panel-default">
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-                    </div>
-                  </div>
-
-
-
-                  <!-- <div className="panel panel-default"><img className="img-responsive" src="./images/pexels-photo-92628.jpeg" alt="pic1"/>Unde necessitatibus reiciendis omnis fugiat at corporis nihil mollitia ex temporibus earum labore maiores officiis inventore eos, repellat est modi, odio impedit?</div> -->
-                </div>
+              <StoryLinks stories={stories}/>
             </div>
         </div>
 

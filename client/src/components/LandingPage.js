@@ -1,6 +1,7 @@
 import React, { Component, PropTypes as T  } from 'react';
 import AuthService from '../utils/AuthService'
 import { hashHistory } from 'react-router';
+import { filterUser } from './FilterUser';
 
 class LandingPage extends Component{
   constructor(props){
@@ -14,6 +15,7 @@ class LandingPage extends Component{
     const token = auth.getToken();
     console.log('user id token: ',token);
     if(token){
+      // filterUser();
       hashHistory.push('/newsfeed');
     }
   }
@@ -35,10 +37,11 @@ class LandingPage extends Component{
     hashHistory.push('/landing');
   }
   render(){
+    const {auth} = this.props;
     return(
       <div>
         Welcome - new users sign up and existing users sign in here!
-        <button type="submit" onClick={this.handleClick.bind(this)}>Sign In</button>
+        <button type="submit" onClick={auth.login}>Sign In</button>
 
       </div>
     );

@@ -21,20 +21,6 @@ export class App extends React.Component{
       profile:{}
     }
   }
-  componentWillMount(){
-    console.log('app js auth: ',auth);
-    const profile = auth.getProfile();
-    setTimeout(()=>{
-      console.log('app js profile: ',profile);
-      this.setState({
-        profile:profile
-      });
-    },500);
-    jquery.get('http://localhost:3001/user',(val)=>{
-        console.log('user in database: ',val);
-    });
-
-  }
   logOut(){
     hashHistory.push('/landing');
     console.log('logging out');

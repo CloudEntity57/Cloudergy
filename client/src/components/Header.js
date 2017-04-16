@@ -1,13 +1,23 @@
 import React, {Component} from 'react';
+import NavLink from './NavLink';
 import { hashHistory } from 'react-router';
 
 class Header extends Component{
   constructor(props){
     super(props);
   }
+  componentDidMount(){
+    // setTimeout(()=>{
+    //   let profile = this.props.auth.getProfile();
+    //   let userpic = profile.picture;
+    //   this.setState({
+    //     userpic:userpic
+    //   });
+    // },2000);
+  }
   render(){
-    const profile = this.props.auth.getProfile();
-    const userpic = profile.picture;
+    let profile = this.props.auth.getProfile();
+    let userpic = profile.picture;
     console.log('user pic: ',userpic);
     return(
       <header>
@@ -20,9 +30,9 @@ class Header extends Component{
               <div>icon&nbsp;</div>
               <div>icon&nbsp;</div>
               <div>icon&nbsp;</div>
-              <div>Home&nbsp;</div>
+              <div><NavLink to="/newsfeed"><a href="#">Home</a></NavLink>&nbsp;</div>
               <div>{profile.given_name}&nbsp;</div>
-              <img className="user-pic img-responsive" src={userpic} alt="user pic" />
+              <img className="user-pic" src={userpic} alt="user pic" />
             </div>
           </div>
 

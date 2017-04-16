@@ -6,7 +6,7 @@
     "react-scripts": "0.9.5"
   },
   "dependencies": {
-    "auth0-lock": "^10.13.0",
+    "auth0-lock": "^10.14.0",
     "babel-polyfill": "^6.23.0",
     "dotenv": "^4.0.0",
     "font-awesome": "^4.7.0",
