@@ -28,4 +28,23 @@ router.get('/user',function(req,res,next){
 
   // User.find({req.},''
 });
+router.get('/user/:userid',function(req,res,next){
+  let userid=req.params.userid;
+  console.log('userid: ',userid);
+  User.find({userid:userid},'', function(err,profile){
+    if(err)console.log('error: ',err);
+    console.log('current user profile: ',profile);
+    res.json(profile);
+  });
+  // User.find({req.},''
+});
+router.post('/user',function(req,res,next){
+  let user = req.body;
+  let newPost = new User(user);
+  newPost.save(function(err,success){
+    if(err) console.log('error: ',err);
+  });
+  console.log('data you sent DB: ',user);
+});
+
 module.exports = router;

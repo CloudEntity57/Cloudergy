@@ -9,8 +9,13 @@ var schema = new mongoose.Schema({
     type:'string',
     required:true
   },
+  userid:String,
   photo:String,
-  affiliation:String
+  affiliation:String,
+  education:String,
+  work:String,
+  location:String,
+  user_story:String
 });
 
 var model = mongoose.model('User',schema);
