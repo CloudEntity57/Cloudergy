@@ -22,7 +22,7 @@ router.get('/test', function(req, res, next) {
 router.get('/user',function(req,res,next){
   // let profile=req;
   User.find({},'', function(err,profile){
-    console.log('profile: ',profile);
+    // console.log('profile: ',profile);
     res.json(profile);
   });
 
@@ -30,10 +30,10 @@ router.get('/user',function(req,res,next){
 });
 router.get('/user/:userid',function(req,res,next){
   let userid=req.params.userid;
-  console.log('userid: ',userid);
+  // console.log('userid: ',userid);
   User.find({userid:userid},'', function(err,profile){
     if(err)console.log('error: ',err);
-    console.log('current user profile: ',profile);
+    // console.log('current user profile: ',profile);
     res.json(profile);
   });
   // User.find({req.},''
@@ -45,6 +45,31 @@ router.post('/user',function(req,res,next){
     if(err) console.log('error: ',err);
   });
   console.log('data you sent DB: ',user);
+});
+router.post('/user/:userid',function(req,res,next){
+  let user = req.body;
+  console.log('information: ',user);
+  User.findOneAndUpdate(
+    {
+      userid:req.params.userid
+    },
+    {
+      username:user.username,
+      affiliation:user.affiliation,
+      education:user.education,
+      location:user.location,
+      work:user.work,
+      user_story:user.user_story
+    },
+    function(err,user){
+      if(err){
+        console.log('error: ',err);
+      }
+      console.log('success!',user);
+      res.json(user);
+    }
+  );
+
 });
 
 module.exports = router;

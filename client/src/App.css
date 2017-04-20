@@ -5,11 +5,53 @@ header {
   background-color: #777659;
   z-index: 2;
   width: 100%;
+  color: white;
+  font-size: .85em;
+}
+
+header .fa {
+  font-size: 1.7em;
+  margin-right: 5px;
+  color: black;
+  margin-top: -1px;
+}
+
+header a {
+  color: inherit;
+  text-decoration: none;
+}
+
+header a:hover, header a:focus {
+  text-decoration: none;
+  color: inherit;
 }
 
 header input {
   width: 50%;
-  margin-top: .4em;
+  margin-top: .5em;
+  color: black;
+}
+
+header select {
+  color: grey;
+}
+
+.liberal {
+  background-color: #6e6ea2;
+}
+
+.conservative {
+  background-color: #bb5a49;
+}
+
+.none {
+  background-color: i #777659;
+}
+
+.header-toggle {
+  width: 105px;
+  height: 1.5em;
+  margin-right: 5px;
 }
 
 body {
@@ -23,6 +65,17 @@ body {
   padding: 0px 10px;
 }
 
+.story {
+  padding-bottom: 10px;
+  border-bottom: 1px solid lightgrey;
+  margin-bottom: 25px;
+}
+
+.story-source {
+  font-size: .6em;
+  margin-left: 5px;
+}
+
 .story-title {
   margin-bottom: 20px;
 }
@@ -30,6 +83,10 @@ body {
 .nav-right {
   float: right;
   margin-top: .5em;
+}
+
+.nav-right div {
+  padding-top: 4px;
 }
 
 .nav-right div {
@@ -82,6 +139,18 @@ body {
 .user-panel .navbar-nav {
   background-color: #fff;
   width: 100%;
+}
+
+.user-tab {
+  height: 35px;
+}
+
+.user-tab:hover {
+  opacity: .7;
+}
+
+.user-tab img {
+  float: right;
 }
 
 .user-header {
@@ -185,6 +254,10 @@ body {
   margin-bottom: 10px;
 }
 
+.user-details-form button {
+  margin-top: 10px;
+}
+
 .user-background-photo {
   width: 100%;
   height: 45vh;
@@ -239,6 +312,7 @@ body {
   height: 25px;
   background-color: lightgray;
   border-left: 1px solid #b7b5b5;
+  padding: 10px;
 }
 
 .nav-buffer {

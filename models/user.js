@@ -1,14 +1,13 @@
 var mongoose = require('mongoose');
 
 var schema = new mongoose.Schema({
-  first_name:{
-    type:'string',
-    required:true
-  },
-  last_name:{
-    type:'string',
-    required:true
-  },
+  first_name:String,
+  last_name:String,
+  // username:{
+  //   type:'string',
+  //   required:true
+  // },
+  username:String,
   userid:String,
   photo:String,
   affiliation:String,

@@ -5,6 +5,15 @@ import { hashHistory } from 'react-router';
 class Header extends Component{
   constructor(props){
     super(props);
+    this.state={
+      affiliation:''
+    }
+  }
+  componentWillMount(){
+    let affiliation = this.props.affiliation;
+    this.setState({
+      affiliation:this.props.affiliation
+    });
   }
   componentDidMount(){
     // setTimeout(()=>{
@@ -15,25 +24,47 @@ class Header extends Component{
     //   });
     // },2000);
   }
+  toggle_affiliation(e){
+    console.log('working in Header.js!');
+    let affiliation = e.target.value;
+    console.log('affiliation: ',affiliation);
+    this.setState({
+      affiliation:affiliation
+    });
+    this.props.toggle_affiliation(affiliation);
+  }
   render(){
     let profile = this.props.auth.getProfile();
     let userpic = profile.picture;
+    let username = this.props.username;
+    let affiliation = (this.state.affiliation) ? this.state.affiliation : this.props.affiliation;
+    console.log('aff in render: ',affiliation);
     console.log('user pic: ',userpic);
     return(
-      <header>
+      <header className={affiliation}>
+
         <div className="outer-nav-wrapper">
           <div className="nav">
-            NMA
-            <input type="text" name="search" placeholder="Search No Moderates Allowed" />
+            NMA &nbsp;
+            <input type="text" name="search" placeholder="Search CouchPolitics" />
+
             <div className="navbar-nav nav-right">
               <div><a className="log-out" onClick={this.props.logOut} href="#">Logout</a></div>
-              <div>icon&nbsp;</div>
-              <div>icon&nbsp;</div>
-              <div>icon&nbsp;</div>
+              <span>
+              <select onChange={this.toggle_affiliation.bind(this)} value={affiliation} className="header-toggle" name="user-affiliation" id="">
+                <optgroup value="Choose">
+                  <option value="conservative">Conservative</option>
+                  <option value="liberal">Liberal</option>
+                  <option value="none">None</option>
+                </optgroup>
+              </select>
+            </span>
+              <div className="fa fa-globe"></div>
               <div><NavLink to="/newsfeed"><a href="#">Home</a></NavLink>&nbsp;</div>
-              <div>{profile.given_name}&nbsp;</div>
-              <img className="user-pic" src={userpic} alt="user pic" />
+              <div>{username}&nbsp;</div>
+              <NavLink to="/account"><a href="#"><img className="user-pic" src={userpic} alt="user pic" /></a></NavLink>
             </div>
+
           </div>
 
         </div>
@@ -41,6 +72,7 @@ class Header extends Component{
         <div className="nav-buffer">
 
         </div>
+
       </header>
     );
   }

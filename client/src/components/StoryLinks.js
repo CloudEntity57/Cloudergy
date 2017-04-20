@@ -4,17 +4,15 @@ class StoryLinks extends Component{
   render(){
     let stories_array = this.props.stories;
     let stories;
-    let picurl;
+    let pic;
+
     if(stories_array){
       stories = stories_array.map((story)=>{
-        console.log('multimedia: ',story.multimedia.length);
-        if(story.multimedia.length>0){
-          picurl=story.multimedia[4].url;
-        }
+        pic=(story.photo) ? (<img className="img-responsive" src={story.photo} alt="pic1"/>) : '';
         return(
-          <div>
+          <div className="story">
             {/* {story.title} */}
-            <a href={story.url}><img className="img-responsive" src={picurl} alt="pic1"/><div className="story-title">{story.title}</div></a>
+            <a href={story.url} target="_blank">{pic}<span className="story-title">{story.title}</span><span className="story-source">{story.source}</span></a>
           </div>
         );
       });
@@ -32,6 +30,7 @@ class StoryLinks extends Component{
         </div>
         <div id="ads">
           <div className="panel panel-default">
+            <h4>Top Politics</h4>
             {stories}
           </div>
           <div className="panel panel-default">
