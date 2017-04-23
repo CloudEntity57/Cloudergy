@@ -12,24 +12,16 @@ class LandingPage extends Component{
   }
   componentWillMount(){
     const {auth} = this.props;
-    const token = auth.getToken();
-    console.log('user id token: ',token);
-    if(token){
-      // filterUser();
-      hashHistory.push('/signedin');
-    }
+    const user = auth.getProfile();
+    console.log('user in welcome: ',user);
+
   }
-  static propTypes = {
-    location: T.object,
-    auth: T.instanceOf(AuthService)
-  }
-  // logOut(e){
-  //   e.preventDefault();
-  //   auth.logout();
-  // }
 
   handleClick(e){
-    hashHistory.push('/login');
+    this.setState({
+      loggedIn:true
+    });
+    hashHistory.push('/newsfeed');
   }
   logOut(){
     const {auth} = this.props;
@@ -40,9 +32,10 @@ class LandingPage extends Component{
     const {auth} = this.props;
     return(
       <div>
-        Welcome - new users sign up and existing users sign in here!
-        <button type="submit" onClick={auth.login}>Sign In</button>
-
+        You are signed in as:
+        {/* <img src={} /> */}
+        <button type="submit" onClick={this.handleClick.bind(this)}>Yes</button>
+        {/* <a href="http://localhost:3000/#/newsfeed">Yes</a> */}
       </div>
     );
   }

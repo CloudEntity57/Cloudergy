@@ -31,23 +31,69 @@ header{
   }
 }
 .liberal{
-  background-color:#6e6ea2;
+  background-color: #5982ad;
 }
 .conservative{
   background-color:#bb5a49;
 }
 .none{
-  background-color:i#777659;
+  background-color:#777659;
+}
+body{
+  margin-top:35px;
+  background-color: #e8e7e7;
+}
+.header-navlink{
+  &:hover{
+    opacity:.8;
+  }
+  border-right:1px solid #545252;
+  padding-right:5px;
+  margin-right:5px;
 }
 .header-toggle{
   width:105px;
   height:1.5em;
   margin-right:5px;
 }
-body{
-  margin-top:35px;
-  background-color: #e8e7e7;
+.profile-edit-btn{
+  width:100px;
+  height:25px;
+  text-align: center;
+  padding-top:.2em;
+  background-color:lightgrey;
 }
+.post-header{
+  position: relative;
+}
+.post-date{
+  font-size: .7em;
+  color:gray;
+}
+.post-username{
+  color:#5982ad;
+  font-weight: bold;
+}
+.post-header-text{
+  display:inline-block;
+  position: absolute;
+  left:45px;
+}
+.post-text{
+  margin-top:15px;
+}
+.post-pic-col{
+  display:inline-block;
+  position:relative;
+  margin-left:10px;
+  img{
+    position:absolute;
+    top:-15px;
+    left:0px;
+    margin-top: 0em;
+  }
+}
+
 .nav{
   width:950px;
   margin:auto;
@@ -118,6 +164,7 @@ body{
   }
 }
 .user-tab{
+  position: relative;
   height:35px;
   &:hover{
     opacity:.7;
@@ -125,6 +172,40 @@ body{
   img{
     float:right;
   }
+}
+.liberalstripe{
+  background-color:#5982ad;
+}
+.conservativestripe{
+  background-color:#bb5a49;
+}
+.user-panel-stripe{
+  width:8px;
+  height:30px;
+  position:absolute;
+  left:133px;
+  bottom:10px;
+}
+.exp-user-panel-stripe{
+  width:8px;
+  height:30px;
+  position:absolute;
+  left:148px;
+  bottom:10px;
+  // left:135px;
+  // bottom:10px;
+}
+.user-stripe{
+  position:absolute;
+  left:-8px;
+  bottom:-15px;
+  width:8px;
+  height:30px;
+  // background-color:blue;
+  z-index: 1;
+  border-left:1px solid #d2d2d2;
+  border-top:1px solid #d2d2d2;
+  border-bottom:1px solid #d2d2d2;
 }
 .user-header{
   position: relative;
@@ -135,13 +216,58 @@ body{
     }
   }
 }
+.user-tab-pic{
+  position: relative;
+}
 .user-pic{
   margin-top:-.3em;
   margin-right:.5em;
   height:30px;
   width:30px;
+  // border-right:1px solid #d2d2d2;
+  // border-top:1px solid #d2d2d2;
+  // border-bottom:1px solid #d2d2d2;
+}
+.post-header-pic{
+  margin-top:-.3em;
+  margin-right:.5em;
+  height:30px;
+  width:30px;
+  border-right:1px solid #d2d2d2;
+  border-top:1px solid #d2d2d2;
+  border-bottom:1px solid #d2d2d2;
+}
+// .userpic-stripe{
+//   width:8px;
+//   height:30px;
+//   border-left:1px solid #d2d2d2;
+//   border-top:1px solid #d2d2d2;
+//   border-bottom:1px solid #d2d2d2;
+// }
+.user-pic-container{
+  position:absolute;
+  left:-8px;
+  bottom:-15px;
+  position: relative;
 }
 .comment-form{
+  textarea{
+    height:2em;
+    border:none;
+    resize:none;
+    width:100%;
+    &:focus{
+      border: 0 none #fff;
+      outline:none;
+    }
+  }
+  .btn{
+    float:right;
+  }
+}
+.tall-comment-form{
+  position:relative;
+  z-index:3;
   textarea{
     border:none;
     resize:none;
@@ -154,6 +280,19 @@ body{
   .btn{
     float:right;
   }
+
+}
+.opaqueBackground{
+  position:absolute;
+  top:-15vh;
+  left:0;
+  width:100vw;
+  height:200vh;
+  opacity:.65;
+  z-index: -1;
+  background-color: white;
+  -webkit-transition: background-color 1s; /* Safari */
+  transition: background-color 1s;
 }
 .user-nav{
   padding-left:140px !important;
@@ -268,6 +407,24 @@ body{
   background-color:lightgray;
   border-left: 1px solid #b7b5b5;
   padding:10px;
+  border: 1px solid #b7b5b5;
+}
+.expanded-user-column{
+  // height:50vh;
+  width:200px;
+  padding: 15px 0px 15px 5px;
+  position:fixed;
+  right:50px;
+  background-color: #e8e7e7;
+  bottom:0px;
+  border: 1px solid #b7b5b5;
+  .userToggle{
+    padding-bottom:15px;
+  }
+}
+.userToggle{
+  position:relative;
+  bottom:8px;
 }
 .nav-buffer{
   width:200px;
@@ -297,6 +454,10 @@ body{
   .outer-wrapper,.outer-nav-wrapper{
     width:80%;
   }
+  .userToggle,.expanded-user-column{
+    display:none;
+  }
+
   .users{
     display: block;
     background-color:#e8e7e7;

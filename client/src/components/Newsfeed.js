@@ -4,7 +4,7 @@ import StoryLinks from './StoryLinks';
 import Post from './Post';
 import Posts from './Posts';
 import UserPanel from './UserPanel';
-import { filterUser } from './FilterUser';
+import { filterUser } from './Functions';
 import jquery from 'jquery';
 import { hashHistory } from 'react-router';
 import { nyt_feed } from './apis/NYT_API';
@@ -20,15 +20,25 @@ class Newsfeed extends Component{
     this.state={
       test:'',
       stories:[],
-      affiliation:this.props.affiliation
+      affiliation:this.props.affiliation,
+      editing:false
     }
   }
   componentWillMount(){
+    let user = this.props.user;
+    console.log('user in cdm newsfeed: ',user);
+    this.setState({
+      user:user
+    });
+    this.setState({
+      editing:false
+    });
     console.log('api key: ',nytkey);
     let affiliation = this.state.affiliation;
     console.log('affiliation in newsfeed: ',affiliation);
     let fullfeed=[];
     let result;
+
     // let setLiberal = (fullfeed)=>{
     //   this.setState({
     //     liberalstories:fullfeed
@@ -47,6 +57,14 @@ class Newsfeed extends Component{
       });
     }
       this.getNews(callback);
+  }
+  componentDidMount(){
+    // let user = this.props.user;
+    // console.log('user in cdm newsfeed: ',user);
+    // this.setState({
+    //   user:this.props.user
+    // });
+
   }
   getNews(callback){
     nyt_feed(nytkey,callback);
@@ -115,7 +133,15 @@ class Newsfeed extends Component{
     //
     // },300);
   // }
+  emphasizeForm(e){
+    let editing = this.state.editing;
+    editing = (editing) ? false : true;
+    this.setState({
+      editing:editing
+    });
+  }
   render(){
+
     const profile = this.props.auth.getProfile();
     if(profile !== {}){
       console.log('render profile: ', profile);
@@ -141,6 +167,11 @@ class Newsfeed extends Component{
       });
     }
     stories = this.shuffle(stories);
+    let user = this.props.user;
+    // if (!user.hasOwnProperty('first_name')){
+    //   window.reload();
+    // }
+    console.log('user in newsfeed render: ',user);
     return(
       <div>
         <div className="outer-wrapper">
@@ -151,7 +182,7 @@ class Newsfeed extends Component{
                   <div className="panel panel-default">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa nihil optio quae sunt possimus fugit doloribus quidem nisi inventore iusto aut, distinctio hic, maxime adipisci facilis illo sint laboriosam exercitationem.</div>
                   <div className="panel panel-default">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis nam sed odit maiores corporis accusantium dignissimos quis consequatur, accusamus et. Sapiente aperiam excepturi, perferendis aliquam cumque amet praesentium quasi adipisci.</div>
                 </div>
-                <Posts />
+                <Posts user={user}/>
               <StoryLinks stories={stories}/>
             </div>
         </div>

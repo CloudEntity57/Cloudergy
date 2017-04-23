@@ -14,8 +14,11 @@ class Header extends Component{
     this.setState({
       affiliation:this.props.affiliation
     });
+
   }
   componentDidMount(){
+    let uid= this.props.uid;
+    console.log('uid in header: ',uid);
     // setTimeout(()=>{
     //   let profile = this.props.auth.getProfile();
     //   let userpic = profile.picture;
@@ -51,18 +54,28 @@ class Header extends Component{
             <div className="navbar-nav nav-right">
               <div><a className="log-out" onClick={this.props.logOut} href="#">Logout</a></div>
               <span>
-              <select onChange={this.toggle_affiliation.bind(this)} value={affiliation} className="header-toggle" name="user-affiliation" id="">
-                <optgroup value="Choose">
-                  <option value="conservative">Conservative</option>
-                  <option value="liberal">Liberal</option>
-                  <option value="none">None</option>
-                </optgroup>
-              </select>
-            </span>
-              <div className="fa fa-globe"></div>
-              <div><NavLink to="/newsfeed"><a href="#">Home</a></NavLink>&nbsp;</div>
-              <div>{username}&nbsp;</div>
-              <NavLink to="/account"><a href="#"><img className="user-pic" src={userpic} alt="user pic" /></a></NavLink>
+                <select onChange={this.toggle_affiliation.bind(this)} value={affiliation} className="header-toggle" name="user-affiliation" id="">
+                  <optgroup value="Choose">
+                    <option value="conservative">Conservative</option>
+                    <option value="liberal">Liberal</option>
+                    <option value="none">None</option>
+                  </optgroup>
+                </select>
+              </span>
+
+
+              <NavLink to="/user">
+                <a className="header-navlink" href="#">
+                  <img className="user-pic" src={userpic} alt="user pic" />
+                  {username}&nbsp;
+                </a>
+              </NavLink>
+
+              <div className="fa fa-globe">
+              </div>
+              <NavLink to="/newsfeed"><a href="#">Home</a></NavLink>&nbsp;
+
+
             </div>
 
           </div>

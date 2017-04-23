@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var Test = require('../models/test');
 var User = require('../models/user');
+var Post = require('../models/post');
 
 
 /* GET home page. */
@@ -33,7 +34,7 @@ router.get('/user/:userid',function(req,res,next){
   // console.log('userid: ',userid);
   User.find({userid:userid},'', function(err,profile){
     if(err)console.log('error: ',err);
-    // console.log('current user profile: ',profile);
+    console.log('current user profile: ',profile);
     res.json(profile);
   });
   // User.find({req.},''
@@ -70,6 +71,26 @@ router.post('/user/:userid',function(req,res,next){
     }
   );
 
+});
+
+router.post('/post',function(req,res,next){
+  let post = req.body;
+  console.log('post: ',post);
+  let newPost = new Post(post);
+  newPost.save(function(err,success){
+    if(err) console.log('error: ',err);
+    let posts=Post.find({},'',function(err,posts){
+      if(err) console.log('error: ',err);
+      res.json(posts);
+    });
+  });
+});
+
+router.get('/posts',function(req,res,next){
+  let posts = Post.find({},'',function(err,profile){
+    if(err) console.log('error: ',err);
+    res.json(profile);
+  });
 });
 
 module.exports = router;

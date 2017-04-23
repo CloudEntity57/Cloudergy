@@ -46,7 +46,8 @@ export class App extends React.Component{
             let affiliation = val[0].affiliation;
             this.setState({
               username:val[0].username,
-              affiliation:affiliation
+              affiliation:affiliation,
+              user:val[0]
             });
           }
         });
@@ -106,6 +107,8 @@ export class App extends React.Component{
   render(){
    let profile = auth.getProfile();
    let children = null;
+   let user = (this.state.user) ? this.state.user : '';
+   console.log('user in app.js render: ',user);
   //  let affiliation = (this.state.affiliation) ? this.state.affiliation : '';
    let affiliation = this.state.affiliation;
    console.log('affiliation app.js render: ',affiliation);
@@ -120,12 +123,13 @@ export class App extends React.Component{
        profile:profile,
        username:username,
        affiliation:affiliation,
-       update:update
+       update:update,
+       user:user
      })
    }
    return (
     <div>
-      <Header username={username} affiliation={affiliation} toggle_affiliation={this.toggle_affiliation.bind(this)} logOut={this.logOut.bind(this)} auth={auth} />
+      <Header username={username} uid={user.uid} affiliation={affiliation} toggle_affiliation={this.toggle_affiliation.bind(this)} logOut={this.logOut.bind(this)} auth={auth} />
       {children || <LandingPage />}
       <UserPanel users={users}/>
     </div>

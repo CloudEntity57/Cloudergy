@@ -4,7 +4,7 @@ var schema = new mongoose.Schema({
   text:{
     type:String,
     required:true
-  }
+  },
   uid:{
     type:String,
     required:true

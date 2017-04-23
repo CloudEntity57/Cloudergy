@@ -4,7 +4,9 @@ import AuthService from './utils/AuthService'
 import App from './App'
 import Login from './components/Login';
 import Newsfeed from './components/Newsfeed';
+import UserPage from './components/UserPage';
 import Account from './components/Account';
+import SignedIn from './components/SignedIn';
 import LandingPage from './components/LandingPage';
 const authid = process.env.REACT_APP_AUTH0_CLIENT_ID;
 const authdomain = process.env.REACT_APP_AUTH0_DOMAIN;
@@ -27,6 +29,8 @@ export const makeMainRoutes = () => {
         <IndexRoute component={ LandingPage } />
         <Route path="landing" component={LandingPage} />
         <Route path="account" component={Account} />
+        <Route path="user" component={UserPage} />
+        <Route path="signedin" component={SignedIn} />
         <Route path="newsfeed" component={Newsfeed} onEnter={requireAuth} />
         <Route path="login" component={Login} />
       </Route>
