@@ -37,11 +37,11 @@ class UserPage extends Component{
     });
     if (!nextAccountId) {
       console.log('its the same');
-      this.findUser(profile.clientID,targetURL);
+      this.configureUser(profile.clientID,targetURL);
     }
-    this.findUser(nextAccountId,targetURL);
+    this.configureUser(nextAccountId,targetURL);
 }
-findUser(nextAccountId,targetURL){
+configureUser(nextAccountId,targetURL){
   getUser(nextAccountId,targetURL).then((val)=>{
     console.log('the query is finished!',val);
     let allies = [];
