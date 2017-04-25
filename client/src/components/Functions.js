@@ -39,21 +39,15 @@ module.exports = {
       }
     });
   },
-  getUser : ()=>{
-    let targetURL = "http://localhost:3001/user/";
-    let user;
-    console.log('app js auth: ',auth);
-    const profile = auth.getProfile();
-    let query = jquery.ajax({
-      url:targetURL+profile.clientID,
+  getUser : (clientID,targetURL)=>{
+    return jquery.ajax({
+      url:targetURL+clientID,
       type:'GET',
       success:(val)=>{
         console.log('getUser says: user in database: ',val);
-        user = val;
+        return val;
       }
-    }).then(()=>{console.log('ajax over: ',user); return user;});
-
-
+    });
   },
   createDate: ()=>{
     var today = new Date();

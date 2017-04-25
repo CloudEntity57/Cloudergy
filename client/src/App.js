@@ -61,6 +61,7 @@ export class App extends React.Component{
                 first_name:profile.given_name,
                 last_name:profile.family_name,
                 photo:profile.picture,
+                largephoto:profile.picture_large,
                 userid:profile.clientID
               },
               type:'POST'

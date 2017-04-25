@@ -30,6 +30,7 @@ export const makeMainRoutes = () => {
         <Route path="landing" component={LandingPage} />
         <Route path="account" component={Account} />
         <Route path="user" component={UserPage} />
+        <Route path="user/:uid" component={UserPage} />
         <Route path="signedin" component={SignedIn} />
         <Route path="newsfeed" component={Newsfeed} onEnter={requireAuth} />
         <Route path="login" component={Login} />

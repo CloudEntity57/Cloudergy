@@ -4,8 +4,8 @@ import jquery from 'jquery';
 import { createDate } from './Functions';
 
 class Posts extends Component{
-  construtor(props){
-    super.props();
+  constructor(props){
+    super(props);
     this.state={
       editing:false
     }

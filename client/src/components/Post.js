@@ -63,7 +63,20 @@ class Post extends Component{
         <PostHeader userpic={userpic} user={user} date={date}/>
 
         <div className="post-text">{text}</div>
-
+        <div className="like-bar">
+          <a href="#">
+            <span className="fa fa-thumbs-up"></span>
+            <span>Like</span>
+          </a>
+          <a href="#">
+            <span className="fa fa-comment"></span>
+            <span>Comment</span>
+          </a>
+          <a href="#">
+            <span className="fa fa-share"></span>
+            <span>Share</span>
+          </a>
+        </div>
       </div>
     );
   }

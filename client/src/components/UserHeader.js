@@ -7,10 +7,11 @@ class UserHeader extends Component{
   render(){
     var route = hashHistory.getCurrentLocation().pathname;
     console.log('header is now: ',route);
-
     const username=this.props.username;
+    const userpic=this.props.userpic;
     let destination = (route=="/user") ? "/account" : "/user";
     let buttontext = (route=="/user") ? "Edit Profile" : "View Profile";
+    let style = {'background-image': 'url('+userpic+')'};
     return(
       <div className="user-header">
         <div className="user-background-photo">
@@ -28,7 +29,7 @@ class UserHeader extends Component{
         <a href="#"><li>About</li></a>
         <a href="#"><li>Allies</li></a>
         </ul>
-          <div className="profile-pic">
+          <div className="profile-pic" style={style}>
           </div>
       </div>
     );

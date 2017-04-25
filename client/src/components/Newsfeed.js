@@ -91,48 +91,7 @@ class Newsfeed extends Component{
 
        return array;
   }
-  // componentDidMount(){
-  //   let auth = this.props.auth;
-  //   let targetURL = "http://localhost:3001/user/"
-  //   console.log('app js auth: ',auth);
-  //
-  //   setTimeout(()=>{
-  //     // const profile = auth.getProfile();
-  //     const profile = this.props.profile;
-  //     console.log('cwm profile: ', profile);
-  //     console.log('app js profile: ',profile);
-  //       this.setState({
-  //         profile:profile
-  //       });
-  //       let query = jquery.ajax({
-  //         url:targetURL+profile.clientID,
-  //         type:'GET',
-  //         success:(val)=>{
-  //           console.log('success: ',val);
-  //         }
-  //       });
-  //       query.done((val)=>{
-  //         console.log('user in database: ',val);
-  //         if(!val || val.length===0){
-  //           console.log('val empty! Not on file.');
-  //           let post = jquery.ajax({
-  //             url:targetURL,
-  //             data:{
-  //               first_name:profile.given_name,
-  //               last_name:profile.family_name,
-  //               photo:profile.picture,
-  //               userid:profile.clientID
-  //             },
-  //             type:'POST'
-  //           });
-  //           hashHistory.push('/account');
-  //         }
-  //       });
-  // },1000);
-    // setTimeout(()=>{
-    //
-    // },300);
-  // }
+
   emphasizeForm(e){
     let editing = this.state.editing;
     editing = (editing) ? false : true;
@@ -161,10 +120,6 @@ class Newsfeed extends Component{
         return story.affiliation == 'conservative';
       });
       break;
-      case 'none':
-      stories = stories.filter((story)=>{
-        return story;
-      });
     }
     stories = this.shuffle(stories);
     let user = this.props.user;

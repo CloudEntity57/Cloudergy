@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import UserPic from './UserPic';
+import NavLink from './NavLink';
 
 class UserPanel extends Component{
   constructor(props){
@@ -8,7 +9,8 @@ class UserPanel extends Component{
       expanded:false
     }
   }
-  expandColumn(){
+  expandColumn(e){
+    e.preventDefault();
     let boolean = this.state.expanded;
     boolean = (this.state.expanded) ? false : true;
     this.setState({
@@ -21,19 +23,23 @@ class UserPanel extends Component{
     let expandedColumn = (this.state.expanded) ?
     this.props.users.map((user)=>{
       let color = user.affiliation + ' stripe exp-user-panel-stripe';
+      // let userLink='/user/'+user.userid;
+      //Add user chat functionality here:
       return(
-        <div className="user-tab">
-          {user.first_name}&nbsp;
-          {user.last_name}
-          <div className={color}></div>
-          <img id={user.id} className='user-pic' src={user.photo} alt='user image' />
+        // <NavLink to={userLink}>
+          <div className="user-tab">
+            {user.first_name}&nbsp;
+            {user.last_name}
+            <div className={color}></div>
+            <img id={user.id} className='user-pic' src={user.photo} alt='user image' />
 
-        </div>
+          </div>
+        // </NavLink>
       )
     })
     : '';
 
-    let memberToggle = (<div onClick={this.expandColumn.bind(this)} className="userToggle">Members</div>);
+    let memberToggle = (<a className="member-toggle" href="#"><div onClick={this.expandColumn.bind(this)} className="userToggle">&middot; Members</div></a>);
 
     let expandedContainer = (this.state.expanded) ? (
       <div className="expanded-user-column">
@@ -43,14 +49,18 @@ class UserPanel extends Component{
     ) : '';
     let users = (!this.props.users=='') ? this.props.users.map((user)=>{
       let color = user.affiliation + ' stripe user-panel-stripe';
+      let userLink='/user/'+user.userid;
+      //Remove NavLink and add user chat functionality here:
       return(
-        <div className="user-tab">
-          {user.first_name}&nbsp;
-          {user.last_name}
-          <span className={color}></span>
-          <img id={user.id} className='user-pic' src={user.photo} alt='user image' />
-          {/* <UserPic user={user} /> */}
-        </div>
+        <NavLink to={userLink}>
+          <div className="user-tab">
+            {user.first_name}&nbsp;
+            {user.last_name}
+            <span className={color}></span>
+            <img id={user.id} className='user-pic' src={user.photo} alt='user image' />
+            {/* <UserPic user={user} /> */}
+          </div>
+        </NavLink>
 
       );
     }) : '';
