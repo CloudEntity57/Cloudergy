@@ -84,7 +84,6 @@ class Posts extends Component{
 
 
   render(){
-    // let user = (this.props.user) ? this.props.user : '';
     let user = this.props.user;
     let opaqueBackground = (this.state.editing) ?
     (
@@ -114,7 +113,7 @@ class Posts extends Component{
     let posts = (this.state.posts) ? this.state.posts.map((post)=>{
       console.log('post in posts: ',post);
       return(
-        <Post user={user} uid={post.uid} post={post} />
+        <Post uid={post.uid} post={post} />
       );
     }) : '';
     return(

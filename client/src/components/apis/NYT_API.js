@@ -17,6 +17,7 @@ module.exports = {
           result.url=article.url;
           result.photo=picurl;
           result.title=article.title;
+          result.publishedAt=article.published_date;
           result.source="(New York Times)";
           result.affiliation="liberal";
           return result;

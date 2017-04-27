@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import jquery from 'jquery';
 import UserHeader from './UserHeader';
-import { getUser } from './Functions';
 import NavLink from './NavLink';
+let functionsModule = require('./Functions');
+let Functions = new functionsModule();
 
 
 class UserPage extends Component{
@@ -42,7 +43,7 @@ class UserPage extends Component{
     this.configureUser(nextAccountId,targetURL);
 }
 configureUser(nextAccountId,targetURL){
-  getUser(nextAccountId,targetURL).then((val)=>{
+  Functions.getUser(nextAccountId,targetURL).then((val)=>{
     console.log('the query is finished!',val);
     let allies = [];
     this.setState({
@@ -51,7 +52,7 @@ configureUser(nextAccountId,targetURL){
     });
     let length = val[0].allies.length;
     for(let i=0; i<length; i++){
-      getUser(val[0].allies[i],targetURL).then((val)=>{
+      Functions.getUser(val[0].allies[i],targetURL).then((val)=>{
         console.log('adding ',val,' to the allies array');
         allies.push(val[0]);
         if(i===length-1){

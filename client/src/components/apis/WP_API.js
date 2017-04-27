@@ -14,6 +14,7 @@ module.exports = {
           result.url=article.url;
           result.photo=article.urlToImage;
           result.title=article.title;
+          result.publishedAt=article.publishedAt;
           result.source="(Washington Post)";
           result.affiliation="liberal"
           return result;

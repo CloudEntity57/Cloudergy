@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import moment from 'moment';
 
 class StoryLinks extends Component{
   render(){
@@ -8,11 +9,12 @@ class StoryLinks extends Component{
 
     if(stories_array){
       stories = stories_array.map((story)=>{
+        let publishedTime = moment(story.publishedAt).format("LLLL");
         pic=(story.photo) ? (<img className="img-responsive" src={story.photo} alt="pic1"/>) : '';
         return(
           <div className="story">
             {/* {story.title} */}
-            <a href={story.url} target="_blank">{pic}<span className="story-title">{story.title}</span><span className="story-source">{story.source}</span></a>
+            <a href={story.url} target="_blank">{pic}<span className="story-title">{story.title}</span><span className="story-source">{story.source} - {publishedTime}</span></a>
           </div>
         );
       });
@@ -23,9 +25,9 @@ class StoryLinks extends Component{
         ADS
         <div className="panel panel-default">
           <ul>
-          <li>Nisi veniam deleniti, maxime consequuntur at nesciunt nobis.</li>
-          <li>Nisi veniam deleniti, maxime consequuntur at nesciunt nobis.</li>
-          <li>Nisi veniam deleniti, maxime consequuntur at nesciunt nobis.</li>
+            <li>Nisi veniam deleniti, maxime consequuntur at nesciunt nobis.</li>
+            <li>Nisi veniam deleniti, maxime consequuntur at nesciunt nobis.</li>
+            <li>Nisi veniam deleniti, maxime consequuntur at nesciunt nobis.</li>
           </ul>
         </div>
         <div id="ads">

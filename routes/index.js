@@ -93,4 +93,39 @@ router.get('/posts',function(req,res,next){
   });
 });
 
+router.post('/ally/request/:id',function(req,res,next){
+  let target_ally=req.body.ally_request;
+  let userId = req.body.user;
+  console.log('userid: ',userId);
+  console.log('target_ally: ',target_ally);
+//record my id on the other person's user info:
+ User.findOneAndUpdate(
+    {"userid":target_ally},{"$push":{ally_invitations_received:userId}},
+    { "new": true, "upsert": true },(err,friend)=>{
+      if(err) {console.log('error! ',err);}
+      console.log('userid requesting: ',userId);
+      // friend.ally_invitations_received.push({invitation:userId});
+      console.log('ally invitations: ',friend.ally_invitations_received);
+    });
+//record their id on my own user info:
+User.findOneAndUpdate(
+   {"userid":userId},{"$push":{ally_requests_sent:target_ally}},
+   { "new": true, "upsert": true },(err,friend)=>{
+     if(err) {console.log('error! ',err);}
+     console.log('ally requests sent: ',friend.ally_requests_sent);
+   });
+  res.send('success');
+});
+
+router.post('/ally/logrequest/:id',function(req,res,next){
+  let target_ally=req.body.user;
+  console.log('I am: ',target_ally);
+  res.send('success');
+});
+
+router.post('/makeally',function(req,res,next){
+  let newAlly = req.body.newAlly;
+  console.log('new ally: ',newAlly);
+});
+
 module.exports = router;

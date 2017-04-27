@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import UserPic from './UserPic';
 import PostHeader from './PostHeader';
-import {getUser} from './Functions';
 import jquery from 'jquery';
+let functionsModule = require('./Functions');
+let Functions = new functionsModule();
 
 class Post extends Component{
   constructor(props){
@@ -14,18 +15,10 @@ class Post extends Component{
   componentWillMount(){
     let uid = (this.props.uid) ? this.props.uid : '';
     console.log('post uid: ',uid);
-    let query = jquery.ajax({
-      url:'http://localhost:3001/user/'+uid,
-      type:'GET',
-      success:(val)=>{
-        console.log('post.js loaded user: ', val);
-        this.setState({
-          user:val[0]
-        });
-      }
-    });
-    query.done((val)=>{
-      console.log('post.js loaded user',val);
+    Functions.getUser(uid).then((val)=>{
+      this.setState({
+        user:val[0]
+      });
     });
   }
   displayUser(e){
@@ -43,8 +36,8 @@ class Post extends Component{
     jquery(e.target).siblings('div').remove();
   }
   render(){
-    // let user = (this.state.user) ? this.state.user : '';
-    let user = this.state.user;
+    let user = (this.state.user) ? this.state.user : '';
+    // let user = this.state.user;
     console.log('user in post render: ',user);
     let teamcolor = user.affiliation + " user-stripe";
     let userpic = (
@@ -60,7 +53,7 @@ class Post extends Component{
     let id = post._id;
     return(
       <div id={id} className="panel panel-default">
-        <PostHeader userpic={userpic} user={user} date={date}/>
+        <PostHeader pic={userpic} id={user.userid} user={user} date={date}/>
 
         <div className="post-text">{text}</div>
         <div className="like-bar">

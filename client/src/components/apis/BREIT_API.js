@@ -11,6 +11,7 @@ module.exports = {
         let results=stories.map((article)=>{
           let object={};
           object.url=article.url;
+          object.publishedAt=article.publishedAt;
           object.photo=article.urlToImage;
           object.title=article.title;
           object.source="(Breitbart News)";

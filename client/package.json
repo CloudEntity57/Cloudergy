@@ -12,6 +12,7 @@
     "font-awesome": "^4.7.0",
     "fontawesome": "^4.7.2",
     "jquery": "^3.2.0",
+    "moment": "^2.18.1",
     "react": "^15.4.2",
     "react-bootstrap": "^0.30.8",
     "react-dom": "^15.4.2",

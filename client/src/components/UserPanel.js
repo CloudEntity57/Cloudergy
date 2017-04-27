@@ -49,17 +49,21 @@ class UserPanel extends Component{
     ) : '';
     let users = (!this.props.users=='') ? this.props.users.map((user)=>{
       let color = user.affiliation + ' stripe user-panel-stripe';
-      let userLink='/user/'+user.userid;
+      let userid = user.userid;
+      let userLink='/user/'+userid;
+
       //Remove NavLink and add user chat functionality here:
       return(
         <NavLink to={userLink}>
-          <div className="user-tab">
-            {user.first_name}&nbsp;
-            {user.last_name}
-            <span className={color}></span>
-            <img id={user.id} className='user-pic' src={user.photo} alt='user image' />
-            {/* <UserPic user={user} /> */}
-          </div>
+          <a className="link_normalize" href="#">
+            <div className="userpic-tab">
+            {/* <div className="user-tab"> */}
+              {user.first_name}&nbsp;{user.last_name}
+              {/* <span className={color}></span> */}
+              {/* <img id={user.id} className='user-pic' src={user.photo} alt='user image' /> */}
+              <div><UserPic userid={userid} /></div>
+            </div>
+          </a>
         </NavLink>
 
       );

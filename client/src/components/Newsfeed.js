@@ -10,8 +10,10 @@ import { hashHistory } from 'react-router';
 import { nyt_feed } from './apis/NYT_API';
 import { wp_feed } from './apis/WP_API';
 import { breitbart_feed } from './apis/BREIT_API';
+import moment from 'moment';
 const nytkey=process.env.REACT_APP_NYTAPI;
 const wpkey=process.env.REACT_APP_WP_API;
+
 
 
 class Newsfeed extends Component{
@@ -127,6 +129,11 @@ class Newsfeed extends Component{
     //   window.reload();
     // }
     console.log('user in newsfeed render: ',user);
+    // let moment1 = moment('2017-04-26T11:44:36-04:00').format("HH:mm:ss");
+    // let moment2 = moment().format("HH:mm:ss");
+    // let moment1 = moment('2017-04-26T11:44:36-04:00').format("LLLL");
+    // let moment2 = moment().format();
+    // let moment3 = moment2.subtract(moment1);
     return(
       <div>
         <div className="outer-wrapper">
@@ -137,7 +144,7 @@ class Newsfeed extends Component{
                   <div className="panel panel-default">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa nihil optio quae sunt possimus fugit doloribus quidem nisi inventore iusto aut, distinctio hic, maxime adipisci facilis illo sint laboriosam exercitationem.</div>
                   <div className="panel panel-default">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis nam sed odit maiores corporis accusantium dignissimos quis consequatur, accusamus et. Sapiente aperiam excepturi, perferendis aliquam cumque amet praesentium quasi adipisci.</div>
                 </div>
-                <Posts user={user}/>
+                <Posts userid={this.props.userid} user={user}/>
               <StoryLinks stories={stories}/>
             </div>
         </div>

@@ -62,7 +62,9 @@ export class App extends React.Component{
                 last_name:profile.family_name,
                 photo:profile.picture,
                 largephoto:profile.picture_large,
-                userid:profile.clientID
+                userid:profile.clientID,
+                ally_requests_sent:[],
+                ally_invitations_received:['12345']
               },
               type:'POST'
             });
