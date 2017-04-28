@@ -24,7 +24,7 @@ class UserPage extends Component{
     const profile = auth.getProfile();
     let clientID = (userid !== '') ? userid : profile.clientID;
     this.findUser(clientID,targetURL);
-
+    this.configureUser(clientID,targetURL);
   }
   componentWillReceiveProps(nextProps) {
     let auth = this.props.auth;
@@ -36,33 +36,35 @@ class UserPage extends Component{
       userpic:'',
       allies:[]
     });
-    if (!nextAccountId) {
-      console.log('its the same');
+    if (!nextAccountId){
+      console.log('its the home user');
       this.configureUser(profile.clientID,targetURL);
+    }else{
+      this.configureUser(nextAccountId,targetURL);
     }
-    this.configureUser(nextAccountId,targetURL);
 }
 configureUser(nextAccountId,targetURL){
   Functions.getUser(nextAccountId,targetURL).then((val)=>{
     console.log('the query is finished!',val);
-    let allies = [];
+    let allies=[];
     this.setState({
       username:val[0].username,
       userpic:val[0].largephoto
     });
-    let length = val[0].allies.length;
-    for(let i=0; i<length; i++){
-      Functions.getUser(val[0].allies[i],targetURL).then((val)=>{
-        console.log('adding ',val,' to the allies array');
-        allies.push(val[0]);
-        if(i===length-1){
+    let allyList = val[0].allies;
+    let len = allyList.length;
+    console.log('len: ',len);
+    for(let i=0; i<len; i++){
+      Functions.getUser(allyList[i],targetURL).then((ally)=>{
+        console.log('adding ',ally[0],' to the allies array');
+        allies.push(ally[0]);
           console.log('final list of allies: ',allies);
           this.setState({
             allies:allies
           });
-        }
       });
     }
+
   });
 }
   render(){
@@ -85,7 +87,8 @@ configureUser(nextAccountId,targetURL){
       );
     }) : '';
     let allynumber = (this.state.allies) ? this.state.allies.length : '';
-    console.log('user allies: ',allies);
+    console.log('ally number: ',allynumber);
+    console.log('user allies: ',this.state.allies);
     // const userpic = user.picture;
     console.log('user pic: ',userpic);
     return(

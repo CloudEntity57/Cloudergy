@@ -84,27 +84,29 @@ body {
   left: -360px;
   background-color: lightgray;
   width: 400px;
-  padding: 0px 5px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
+  padding: 0px 10px;
 }
 
 .ally-request-dropdown .ally-invitation-tab {
+  width: 100%;
+  float: none;
   color: black;
-  padding-left: 5px;
   min-height: 45px !important;
-  margin-bottom: 5px;
   border-top: 1px solid gray;
 }
 
-.ally-request-dropdown .ally-invitation-tab .user-pic-container {
-  margin-top: -18px;
+.ally-request-dropdown .ally-invitation-tab .user-pic-stripe, .ally-request-dropdown .ally-invitation-tab .userpic-pic {
+  height: 50px;
 }
 
-.allyRequestText {
-  position: absolute;
-  padding-top: 1em;
+.ally-request-dropdown .ally-invitation-tab .col-xs-12 {
+  padding: 0px;
+  margin-bottom: 5px;
+}
+
+.ally-request-dropdown .ally-invitation-tab .user-pic-container {
+  position: relative;
+  bottom: 1.75em;
 }
 
 .accept-button {
@@ -112,7 +114,7 @@ body {
   height: 25px;
   background-color: #c1bebe;
   padding: 2px 5px;
-  margin: 0px 5px;
+  margin-right: 5px;
   border: 1px solid gray;
 }
 
@@ -426,10 +428,6 @@ body {
   width: 30px;
 }
 
-.userpic-pic {
-  height: 113%;
-}
-
 .post-header-pic {
   margin-top: -.3em;
   margin-right: .5em;
@@ -713,18 +711,21 @@ body {
   text-decoration: none;
 }
 
-.user-preview-box .user-preview-footer div {
+.user-preview-box .user-preview-footer span {
   text-align: center;
   color: black;
-  width: 90px;
+  min-width: 90px;
+  max-width: 50%;
+  padding: 2px 10px;
   font-size: 1em;
   font-weight: normal;
-  margin-top: .6em;
+  position: absolute;
+  top: .25em;
   background-color: #f9f9f9;
   border: 1px solid lightgrey;
 }
 
-.user-preview-box .user-preview-footer div:hover {
+.user-preview-box .user-preview-footer span:hover {
   background-color: lightgray;
 }
 

@@ -23,7 +23,7 @@ class PostHeader extends Component{
   componentWillReceiveProps(nextProps){
     let currentUserId = this.state.currentUserId;
     let user = (nextProps.id) ? nextProps.id : '';
-    console.log('other person posting: ',user);
+    // console.log('other person posting: ',user);
     let callback = (isFriend)=>{
       console.log('this person is my friend - ',isFriend);
       this.setState({
@@ -68,17 +68,31 @@ class PostHeader extends Component{
     let currentUserId = (this.state.currentUserId) ? this.state.currentUserId : '';
     let userpic = this.props.pic;
     let user = (this.props.user.hasOwnProperty('username')) ? this.props.user : {};
-    console.log('user we are dealing with: ',user);
+    // console.log('user we are dealing with: ',user);
     let date = this.props.date;
     let allies = (user.hasOwnProperty('username')) ? user.allies : [];
-    let currentfriend= (this.state.isFriends) ? this.state.isFriends : false;
-    for(let i=0; i<allies.length; i++){
-      if(allies[i]===currentUserId){
-        currentfriend=true;
-      }
+    let friendStatus= (this.state.isFriend=="invited" || this.state.isFriend==true || this.state.isFriend==false) ? this.state.isFriend : '';
+    // for(let i=0; i<allies.length; i++){
+    //   if(allies[i]===currentUserId){
+    //     currentfriend=true;
+    //   }
+    // }
+    let offerAllegiance;
+    let ally_status;
+    switch (friendStatus){
+      case true:
+        offerAllegiance = this.doNothing.bind(this);
+        ally_status = ('Allies');
+        break;
+      case false:
+        offerAllegiance = this.offerAllegiance.bind(this);
+        ally_status = ('Allies');
+        break;
+      case 'invited':
+        offerAllegiance = this.doNothing.bind(this);
+        ally_status = ('Request Sent');
+        break;
     }
-    let offerAllegiance = (!currentfriend) ? this.offerAllegiance.bind(this) : this.doNothing.bind(this);
-    let ally_status = (!currentfriend) ? ('Make Ally') : ('Allies');
     let embedded_pic = (<img className="img-responsive user-preview-pic" src={user.largephoto} alt="user photo" />);
     let userlink = "/user/"+user.userid;
 // User Dropdown div:
@@ -91,7 +105,7 @@ class PostHeader extends Component{
         </div>
           { embedded_pic }
         <div className="user-preview-footer">
-          <a href="#"><div id={user.userid} onClick={offerAllegiance}>{ally_status}</div></a>
+          <a href="#"><span id={user.userid} onClick={offerAllegiance}>{ally_status}</span></a>
         </div>
       </div>
     ) : '';

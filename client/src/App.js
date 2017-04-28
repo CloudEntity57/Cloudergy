@@ -25,7 +25,7 @@ export class App extends React.Component{
     }
   }
   componentWillMount(){
-
+    console.log('mounting App.js!!!');
     let targetURL = "http://localhost:3001/user/"
     console.log('app js auth: ',auth);
 

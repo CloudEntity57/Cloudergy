@@ -92,13 +92,13 @@ router.get('/posts',function(req,res,next){
     res.json(profile);
   });
 });
-
 router.post('/ally/request/:id',function(req,res,next){
   let target_ally=req.body.ally_request;
   let userId = req.body.user;
+  let results;
   console.log('userid: ',userId);
   console.log('target_ally: ',target_ally);
-//record my id on the other person's user info:
+//record my id on the other person's invitations received list:
  User.findOneAndUpdate(
     {"userid":target_ally},{"$push":{ally_invitations_received:userId}},
     { "new": true, "upsert": true },(err,friend)=>{
@@ -107,25 +107,76 @@ router.post('/ally/request/:id',function(req,res,next){
       // friend.ally_invitations_received.push({invitation:userId});
       console.log('ally invitations: ',friend.ally_invitations_received);
     });
-//record their id on my own user info:
+//record their id on my own requests sent list:
 User.findOneAndUpdate(
    {"userid":userId},{"$push":{ally_requests_sent:target_ally}},
    { "new": true, "upsert": true },(err,friend)=>{
      if(err) {console.log('error! ',err);}
      console.log('ally requests sent: ',friend.ally_requests_sent);
    });
-  res.send('success');
+  // res.send('success');
+  res.json(results);
 });
 
-router.post('/ally/logrequest/:id',function(req,res,next){
-  let target_ally=req.body.user;
-  console.log('I am: ',target_ally);
-  res.send('success');
-});
-
-router.post('/makeally',function(req,res,next){
-  let newAlly = req.body.newAlly;
+//=================================Route for accepting an alliance invitation:
+router.post('/acceptally',function(req,res,next){
+  let newAlly = req.body.allyid;
+  let userId = req.body.userid;
+  let result;
   console.log('new ally: ',newAlly);
+  console.log('current user: ',userId);
+//remove your id from your new ally's sent invitations list:
+  User.find({"userid":newAlly},'ally_requests_sent',(err,val)=>{
+    if(err){
+      console.log('error! ',err);
+    }
+    console.log("new friend's ally requests: ",val[0].ally_requests_sent);
+    let requests = val[0].ally_requests_sent;
+    //go through ally's requests and remove yours:
+    for(var i=0; i<requests.length; i++){
+      console.log('requests[i]: ',requests[i]);
+      if(requests[i] === userId){
+        requests.splice(i,1);
+        console.log('after removal: ',requests);
+        //update the request list in the database:
+        User.findOneAndUpdate({"userid":newAlly},{"ally_requests_sent":requests},function(err,ally){
+             if(err) {console.log('error! ',err);}
+             console.log('updated ally requests sent: ',ally.ally_requests_sent);
+           });
+        //add your id to your ally's friends list:
+        User.findOneAndUpdate({"userid":newAlly},{"$push":{"allies":userId}},{"new": true, "upsert": true },function(err,ally){
+            if(err) {console.log('error! ',err);}
+          });
+      }
+    }
+  });
+//remove ally's id from your received invitations list:
+User.find({"userid":userId},'ally_invitations_received',(err,val)=>{
+  if(err){
+    console.log('error! ',err);
+  }
+  console.log("my ally invitations received: ",val[0].ally_invitations_received);
+  let invitations = val[0].ally_invitations_received;
+  //go through your invitations and remove ally's id:
+  for(var i=0; i<invitations.length; i++){
+    console.log('invitations[i]: ',invitations[i]);
+    if(invitations[i] === newAlly){
+      invitations.splice(i,1);
+      console.log('after removal: ',invitations);
+      result = invitations;
+      //update the invitations list in your database:
+      User.findOneAndUpdate({"userid":userId},{"ally_invitations_received":invitations},function(err,user){
+           if(err) {console.log('error! ',err);}
+           console.log('updated ally invitations received: ',user.ally_invitations_received);
+         });
+      //add ally's id to your friends list:
+      User.findOneAndUpdate({"userid":userId},{"$push":{"allies":newAlly}},{"new": true, "upsert": true },function(err,user){
+          if(err) {console.log('error! ',err);}
+        });
+    }
+  }
+});
+  res.json(result);
 });
 
 module.exports = router;

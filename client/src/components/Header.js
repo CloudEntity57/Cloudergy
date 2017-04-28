@@ -4,6 +4,7 @@ import UserPic from './UserPic';
 import { hashHistory } from 'react-router';
 let functionsModule = require('./Functions');
 let Functions = new functionsModule();
+import jquery from 'jquery';
 
 class Header extends Component{
   constructor(props){
@@ -46,13 +47,6 @@ class Header extends Component{
         ally_invitations_received:user[0].ally_invitations_received
       });
     });
-    // setTimeout(()=>{
-    //   let profile = this.props.auth.getProfile();
-    //   let userpic = profile.picture;
-    //   this.setState({
-    //     userpic:userpic
-    //   });
-    // },2000);
   }
   toggle_affiliation(e){
     console.log('working in Header.js!');
@@ -69,11 +63,34 @@ class Header extends Component{
     this.setState({
       previewingAlly:previewingAlly
     });
+    if(this.state.previewingAlly){
+      jquery('.invites').remove();
+    }
   }
   acceptAlly(e){
     e.preventDefault();
     const allyId = e.target.id;
-    console.log('ally: ',allyId);
+    const userId = this.state.user[0].userid;
+    let invitations_list;
+    console.log('ally accepted: ',allyId);
+    let callback=function(invites_list){
+      invitations_list = invites_list;
+    };
+    Functions.acceptAlly(allyId,userId,callback);
+    this.updateInvitesList(invitations_list);
+    let allyLink = "#"+allyId;
+    console.log('ally element: ',allyLink);
+    jquery('#'+allyId).slideUp();
+    jquery('.invites').remove();
+  }
+  updateInvitesList(invitations_list){
+    console.log('calling updateInvitesList');
+    console.log('invites: ',invitations_list);
+    jquery('.invites').remove();
+    this.setState({
+      ally_invitations_received:invitations_list,
+      previewingAlly:false
+    });
   }
   ignoreRequest(e){
     e.preventDefault();
@@ -85,20 +102,20 @@ class Header extends Component{
     let userpic = profile.picture;
     let ally_invitations_received = (this.state.ally_invitations_received) ? this.state.ally_invitations_received : '';
     let allyRequestNumber = (ally_invitations_received.length > 0) ? (<div className="invites">{ally_invitations_received.length}</div>) : ''
-    // let userpic = (this.state.user !==undefined) ? user[0].photo : profile.picture;
+    // let allyRequestNumber = (<div className="invites">{ally_invitations_received.length}</div>);
     let username = this.props.username;
     let affiliation = (this.state.affiliation) ? this.state.affiliation : this.props.affiliation;
     let potential_allies = (this.state.potential_allies) ? this.state.potential_allies : '';
     console.log('potential allies: ',potential_allies);
-//Build Ally Requests dropdown HTML:
+//Build individual Ally Request tab HTML:
     let allyReqs = (potential_allies) ? potential_allies.map((val)=>{
       console.log('user val: ',val);
         return (
-          <div className="ally-invitation-tab">
-            <span className="allyRequestText">
-              <span>
-                {val[0].username}
-              </span> would like to be your ally!
+          <div id={val[0].userid} className="ally-invitation-tab clearfix">
+            <div className="col-xs-12">
+              {val[0].username} would like to be your ally!
+            </div>
+            <div className="col-xs-12">
     {/* Accept button */}
             <a onClick={this.acceptAlly.bind(this)} href="#">
               <span id={val[0].userid} className='accept-button'>
@@ -111,17 +128,15 @@ class Header extends Component{
                 Ignore
               </span>
             </a>
-          </span>
-          <UserPic userid={val[0].userid} />
+            <UserPic userid={val[0].userid} />
+          </div>
         </div>
         );
-      // return (
-      //   <div>{val}</div>
-      // );
     }) : '';
+  //Build ally requests dropdown HTML
     let allyPreview = (this.state.previewingAlly) ?
     (
-      <div className="ally-request-dropdown">
+      <div key="./Header" className="ally-request-dropdown">
         Ally Requests
         {allyReqs}
       </div>

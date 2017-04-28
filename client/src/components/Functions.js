@@ -72,25 +72,11 @@ function myFunctions(){
       },
       success:(val)=>{
         console.log('success!');
-        this.logAllyRequest(friendId,userId);
         callback();
       }
     });
   }
-  this.logAllyRequest = (friendId,userId)=>{
-    targetURL = "http://localhost:3001/ally/logrequest/"+friendId;
-    console.log('we have: ',userId);
-    jquery.ajax({
-      url:targetURL,
-      type:'POST',
-      data:{
-        user:userId
-      },
-      success:(val)=>{
-        console.log('log success!');
-      }
-    });
-  }
+
   this.createDate = ()=>{
     var today = new Date();
     var dd = today.getDate();
@@ -119,11 +105,36 @@ function myFunctions(){
         if(friends[i]==allyid){
           isFriend = true;
           callback(isFriend);
+        }else{
+          let reqsList = val[0].ally_requests_sent;
+          for(let i=0; i<reqsList.length; i++){
+            if(allyid == reqsList[i]){
+              isFriend="invited";
+              callback(isFriend);
+              return;
+            }
+          }
         }
+        callback(false);
       }
 
     });
-
+  }
+  this.acceptAlly = (allyid,userid,resFunction)=>{
+    let targetURL = 'http://localhost:3001/acceptally';
+    jquery.ajax({
+      url:targetURL,
+      type:'POST',
+      data:{
+        userid:userid,
+        allyid:allyid
+      },
+      success:()=>{
+        console.log('ally accepted!');
+      }
+    }).then(()=>{
+      resFunction();
+    });
   }
 }
 module.exports = myFunctions;
