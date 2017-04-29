@@ -60,11 +60,10 @@ class Post extends Component{
     // console.log('Post post: ',post);
     let text = post.text;
     let date = post.date;
-    let postId = post.uid;
     let id = post._id;
     return(
       <div id={id} className="panel panel-default">
-        <PostHeader pic={userpic} id={postId} user={user} date={date}/>
+        <PostHeader pic={userpic} id={user.userid} user={user} date={date}/>
 
         <div className="post-text">{text}</div>
         <div className="like-bar">
