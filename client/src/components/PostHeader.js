@@ -10,7 +10,8 @@ class PostHeader extends Component{
   constructor(props){
     super(props);
     this.state={
-      userpreview:false
+      userpreview:false,
+      user:{}
     }
   }
   componentWillMount(){
@@ -23,12 +24,12 @@ class PostHeader extends Component{
   componentWillReceiveProps(nextProps){
     let currentUserId = this.state.currentUserId;
     let user = (nextProps.id) ? nextProps.id : '';
-    // Functions.getUser(uid).then((val)=>{
-    //   this.setState({
-    //     user:val[0]
-    //   });
-    // });
-    // console.log('other person posting: ',user);
+    Functions.getUser(user).then((val)=>{
+      this.setState({
+        user:val[0]
+      });
+    });
+    console.log('other person posting: ',user);
     let callback = (isFriend)=>{
       console.log('this person is my friend - ',isFriend);
       this.setState({
@@ -73,7 +74,7 @@ class PostHeader extends Component{
     let currentUserId = (this.state.currentUserId) ? this.state.currentUserId : '';
     // let userpic = this.props.pic;
 
-    let user = (this.props.user.hasOwnProperty('username')) ? this.props.user : {};
+    let user = (this.state.user.hasOwnProperty('username')) ? this.state.user : {};
     let teamcolor = user.affiliation + " user-stripe";
     let userpic = (
         <div>
