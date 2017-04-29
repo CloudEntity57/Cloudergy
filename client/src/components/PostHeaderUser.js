@@ -10,7 +10,8 @@ class PostHeader extends Component{
   constructor(props){
     super(props);
     this.state={
-      userpreview:false
+      userpreview:false,
+      user:{}
     }
   }
   componentWillMount(){
@@ -23,7 +24,7 @@ class PostHeader extends Component{
   componentWillReceiveProps(nextProps){
     let currentUserId = this.state.currentUserId;
     let user = (nextProps.id) ? nextProps.id : '';
-    Functions.getUser(uid).then((val)=>{
+    Functions.getUser(user).then((val)=>{
       this.setState({
         user:val[0]
       });
