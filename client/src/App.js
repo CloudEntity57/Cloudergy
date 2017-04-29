@@ -64,6 +64,7 @@ export class App extends React.Component{
                 largephoto:profile.picture_large,
                 userid:profile.clientID,
                 ally_requests_sent:[],
+                //give every new user a friend invitation from Forrest Gump:
                 ally_invitations_received:['12345']
               },
               type:'POST'

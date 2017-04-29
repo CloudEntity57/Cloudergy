@@ -98,6 +98,7 @@ class Header extends Component{
   }
   render(){
     let user = (this.state.user) ? this.state.user : '';
+    let uid = (this.state.user) ? this.state.user[0].userid : '';
     let profile = this.props.auth.getProfile();
     let userpic = profile.picture;
     let ally_invitations_received = (this.state.ally_invitations_received) ? this.state.ally_invitations_received : '';
@@ -143,6 +144,7 @@ class Header extends Component{
     ) : '';
     console.log('aff in render: ',affiliation);
     console.log('user pic: ',userpic);
+    let userlink = "/user/"+uid;
     return(
       <header className={affiliation}>
 
@@ -164,7 +166,7 @@ class Header extends Component{
               </span>
 
 
-              <NavLink to="/user">
+              <NavLink to={userlink}>
                 <a className="header-navlink" href="#">
                   <img className="user-pic" src={userpic} alt="user pic" />
                   {username}&nbsp;

@@ -254,9 +254,12 @@ body {
   top: 35px;
 }
 
+.posts-wrapper {
+  margin-left: 190px;
+}
+
 .live-posts-panel {
   width: 440px;
-  margin-left: 190px;
 }
 
 .ads-panel a, .friends-panel a {
@@ -293,7 +296,7 @@ body {
 
 .friends-panel {
   width: 300px;
-  margin-left: 0px;
+  margin: 0px;
   position: relative;
   display: flex;
   flex-direction: row;

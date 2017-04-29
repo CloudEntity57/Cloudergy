@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import jquery from 'jquery';
 import UserHeader from './UserHeader';
 import NavLink from './NavLink';
+import Posts from './Posts';
 let functionsModule = require('./Functions');
 let Functions = new functionsModule();
 
@@ -10,8 +11,37 @@ class UserPage extends Component{
   constructor(props){
     super(props);
     this.state={
-      updated:false
+      updated:false,
+      posts:[]
     }
+  }
+  componentWillMount(){
+    //filter user's posts:
+    let userid=(this.props.params.uid) ? this.props.params.uid.toString() : '';
+    console.log('userpage uid: ',userid);
+      let querystring = "http://localhost:3001/posts";
+      let postsquery = jquery.ajax({
+        url:querystring,
+        type:'GET',
+        success:(posts)=>{
+          posts = posts.reverse();
+          console.log('userpage posts: ',posts);
+          let results = [];
+          for(let i=0; i<posts.length; i++){
+            if(posts[i].uid == userid){
+              console.log('userpage uid: ',userid);
+              console.log('compared to: ',posts[i].uid);
+              results.push(posts[i]);
+              console.log('posts is now: ',results);
+              this.setState({
+                posts:[]
+              });
+
+            }
+          }
+
+        }
+      });
   }
   componentDidMount(){
     console.log('remounting');
@@ -25,6 +55,7 @@ class UserPage extends Component{
     let clientID = (userid !== '') ? userid : profile.clientID;
     this.findUser(clientID,targetURL);
     this.configureUser(clientID,targetURL);
+
   }
   componentWillReceiveProps(nextProps) {
     let auth = this.props.auth;
@@ -34,14 +65,11 @@ class UserPage extends Component{
     this.setState({
       username:'',
       userpic:'',
-      allies:[]
+      allies:[],
+      userid:nextAccountId
     });
-    if (!nextAccountId){
-      console.log('its the home user');
-      this.configureUser(profile.clientID,targetURL);
-    }else{
-      this.configureUser(nextAccountId,targetURL);
-    }
+    this.configureUser(nextAccountId,targetURL);
+
 }
 configureUser(nextAccountId,targetURL){
   Functions.getUser(nextAccountId,targetURL).then((val)=>{
@@ -49,7 +77,8 @@ configureUser(nextAccountId,targetURL){
     let allies=[];
     this.setState({
       username:val[0].username,
-      userpic:val[0].largephoto
+      userpic:val[0].largephoto,
+      user:val[0]
     });
     let allyList = val[0].allies;
     let len = allyList.length;
@@ -66,13 +95,45 @@ configureUser(nextAccountId,targetURL){
     }
 
   });
+
+  //set up individual user's posts:
+  // console.log('userpage uid: ',nextAccountId);
+    let querystring = "http://localhost:3001/posts";
+    let postsquery = jquery.ajax({
+      url:querystring,
+      type:'GET',
+      success:(posts)=>{
+        posts = posts.reverse();
+        console.log('userpage posts: ',posts);
+        let results = [];
+        for(let i=0; i<posts.length; i++){
+          if(posts[i].uid == nextAccountId){
+            console.log('userpage uid: ',nextAccountId);
+            console.log('compared to: ',posts[i].uid);
+            results.push(posts[i]);
+            console.log('posts is now: ',results);
+            this.setState({
+              posts:results
+            });
+
+          }
+        }
+
+      }
+    });
+
 }
   render(){
     // const profile = this.props.auth.getProfile();
+    let posts = (this.state.posts) ? this.state.posts : '';
+    console.log('posts in userpage: ',posts);
     const username = (this.state.username) ? this.state.username : '';
     const userpic = (this.state.userpic) ? this.state.userpic : '';
     // const user = (this.state.profile) ? (this.state.profile[0]) : '';
     // console.log('user page user: ',user);
+    const user = (this.state.user) ? this.state.user : '';
+    const userid = (this.state.user) ? this.state.user.userid : '';
+    console.log('user in userpage: ',user,' userid: ',userid);
     let allies = (this.state.allies) ? this.state.allies.map((ally)=>{
       let allyLink = '/user/'+ally.userid;
       return(
@@ -106,6 +167,7 @@ configureUser(nextAccountId,targetURL){
               </div>
                 {allies}
             </div>
+            <Posts posts={posts} userid={userid} user={user}/>
         </div>
       </div>
     </div>

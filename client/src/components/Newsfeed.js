@@ -41,16 +41,19 @@ class Newsfeed extends Component{
     let fullfeed=[];
     let result;
 
-    // let setLiberal = (fullfeed)=>{
-    //   this.setState({
-    //     liberalstories:fullfeed
-    //   });
-    // }
-    // let setConservative = (fullfeed)=>{
-    //   this.setState({
-    //     conservativestories:fullfeed
-    //   });
-    // }
+    let querystring = "http://localhost:3001/posts";
+    let postsquery = jquery.ajax({
+      url:querystring,
+      type:'GET',
+      success:(posts)=>{
+        posts = posts.reverse();
+        console.log('posts: ',posts);
+        this.setState({
+          posts:posts
+        });
+      }
+    });
+
     let callback = (stories)=>{
       console.log('stories in callback: ',stories);
       fullfeed=fullfeed.concat(stories);
@@ -107,7 +110,8 @@ class Newsfeed extends Component{
     if(profile !== {}){
       console.log('render profile: ', profile);
     }
-    // let affiliation = (this.state.affiliation) ? this.state.affiliation : '';
+    let posts = (this.state.posts) ? this.state.posts : '';
+    console.log('posts in newsfeed: ',posts);
     let affiliation = this.props.affiliation;
     console.log('affiliation in render: ',affiliation);
     let stories = this.state.stories;
@@ -125,15 +129,7 @@ class Newsfeed extends Component{
     }
     stories = this.shuffle(stories);
     let user = this.props.user;
-    // if (!user.hasOwnProperty('first_name')){
-    //   window.reload();
-    // }
     console.log('user in newsfeed render: ',user);
-    // let moment1 = moment('2017-04-26T11:44:36-04:00').format("HH:mm:ss");
-    // let moment2 = moment().format("HH:mm:ss");
-    // let moment1 = moment('2017-04-26T11:44:36-04:00').format("LLLL");
-    // let moment2 = moment().format();
-    // let moment3 = moment2.subtract(moment1);
     return(
       <div>
         <div className="outer-wrapper">
@@ -144,8 +140,11 @@ class Newsfeed extends Component{
                   <div className="panel panel-default">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa nihil optio quae sunt possimus fugit doloribus quidem nisi inventore iusto aut, distinctio hic, maxime adipisci facilis illo sint laboriosam exercitationem.</div>
                   <div className="panel panel-default">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis nam sed odit maiores corporis accusantium dignissimos quis consequatur, accusamus et. Sapiente aperiam excepturi, perferendis aliquam cumque amet praesentium quasi adipisci.</div>
                 </div>
-                <Posts userid={this.props.userid} user={user}/>
-              <StoryLinks stories={stories}/>
+                <div className="posts-wrapper">
+                  <Posts posts={posts} userid={this.props.userid} user={user}/>
+                </div>
+                  <StoryLinks stories={stories}/>
+
             </div>
         </div>
 

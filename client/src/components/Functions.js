@@ -18,10 +18,10 @@ function myFunctions(){
   }
   //this function currently does not work because it sets a state:
   this.filterUser = ()=>{
-    console.log('app js auth: ',auth);
+    // console.log('app js auth: ',auth);
     const profile = auth.getProfile();
     setTimeout(()=>{
-      console.log('app js profile: ',profile);
+      // console.log('app js profile: ',profile);
       this.setState({
         profile:profile,
         test:'hello there'
@@ -31,9 +31,9 @@ function myFunctions(){
       url:targetURL+profile.clientID,
       type:'GET',
       success:(val)=>{
-        console.log('user in database: ',val);
+        // console.log('user in database: ',val);
         if(val.length===0){
-          console.log('val empty! Not on file.');
+          // console.log('val empty! Not on file.');
           let post = jquery.ajax({
             url:targetURL,
             data:{
@@ -54,7 +54,7 @@ function myFunctions(){
       url:targetURL+clientID,
       type:'GET',
       success:(val)=>{
-        console.log('getUser says: user in database: ',val);
+        // console.log('getUser says: user in database: ',val);
         return val;
       }
     });
@@ -71,7 +71,7 @@ function myFunctions(){
         user:userId
       },
       success:(val)=>{
-        console.log('success!');
+        // console.log('success!');
         callback();
       }
     });
@@ -100,7 +100,7 @@ function myFunctions(){
     this.getUser(userid,targetURL).then((val)=>{
       let friends = val[0].allies;
       let isFriend = false;
-      console.log('current friends: ',friends);
+      // console.log('current friends: ',friends);
       for(let i=0; i<friends.length; i++){
         if(friends[i]==allyid){
           isFriend = true;
@@ -130,7 +130,7 @@ function myFunctions(){
         allyid:allyid
       },
       success:()=>{
-        console.log('ally accepted!');
+        // console.log('ally accepted!');
       }
     }).then(()=>{
       resFunction();

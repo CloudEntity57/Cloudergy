@@ -7,7 +7,8 @@ class Posts extends Component{
   constructor(props){
     super(props);
     this.state={
-      editing:false
+      editing:false,
+      user:{}
     }
   }
   componentWillMount(){
@@ -15,21 +16,13 @@ class Posts extends Component{
       editing:false
     });
   }
-  componentDidMount(){
-    let querystring = "http://localhost:3001/posts";
-    let postsquery = jquery.ajax({
-      url:querystring,
-      type:'GET',
-      success:(posts)=>{
-        posts = posts.reverse();
-        console.log('posts: ',posts);
-        this.setState({
-          posts:posts
-        });
-      }
+  componentWillReceiveProps(nextProps){
+    let user = nextProps.user;
+    this.setState({
+      user:user
     });
-
   }
+
   emphasizeForm(){
     console.log('bing!');
     let editing = this.state.editing;
@@ -84,7 +77,7 @@ class Posts extends Component{
 
 
   render(){
-    let user = this.props.user;
+    let user = (this.state.user) ? this.state.user : '';
     let opaqueBackground = (this.state.editing) ?
     (
       <div onClick={this.emphasizeForm.bind(this)} className="opaqueBackground"></div>
@@ -110,10 +103,10 @@ class Posts extends Component{
               <div onClick={this.submitPost.bind(this)} className="btn btn-primary">Post</div>
         </div>
     );
-    let posts = (this.state.posts) ? this.state.posts.map((post)=>{
-      console.log('post in posts: ',post);
+    let posts = (this.props.posts.length>0) ? this.props.posts.map((post)=>{
+      // console.log('post in posts: ',post);
       return(
-        <Post uid={post.uid} post={post} />
+        <Post uid={post.uid} user={user} post={post} />
       );
     }) : '';
     return(
