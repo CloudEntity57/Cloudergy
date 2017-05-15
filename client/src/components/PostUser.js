@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import UserPic from './UserPic';
-import PostHeader from './PostHeader';
+import PostHeaderUser from './PostHeaderUser';
 import jquery from 'jquery';
 let functionsModule = require('./Functions');
 let Functions = new functionsModule();
 
-class Post extends Component{
+class PostUser extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -64,7 +64,7 @@ class Post extends Component{
     let id = post._id;
     return(
       <div id={id} className="panel panel-default">
-        <PostHeader pic={userpic} id={postId} user={user} date={date}/>
+        <PostHeaderUser pic={userpic} currentId={postId} id={postId} user={user} date={date}/>
 
         <div className="post-text">{text}</div>
         <div className="like-bar">
@@ -86,4 +86,4 @@ class Post extends Component{
   }
 }
 
-export default Post;
+export default PostUser;

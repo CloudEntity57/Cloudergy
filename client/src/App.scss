@@ -67,6 +67,42 @@ body{
 .ally-request-holder{
   position: relative;
 }
+.user-post{
+  margin-bottom:15px;
+}
+.post-panel{
+  padding:5px;
+  border-top-right-radius: 3px;
+  border-top-left-radius: 3px;
+  margin-bottom:0px !important;
+  background-color:white;
+}
+.comment-panel{
+  border-top:1px solid lightgrey;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+  margin-top:0px !important;
+  background-color: #f7f7f7;
+  margin:0px;
+  padding:5px 10px;
+  .user-pic-container{
+    position:relative;
+    bottom:0px;
+    left:5px;
+    display:inline-block;
+  }
+  .userpic-pic,.user-pic-stripe{
+    height:85%;
+  }
+  form{
+    display:inline-block;
+    width:85%;
+    input{
+      width:100%;
+      height:33px;
+    }
+  }
+}
 .ally-request-dropdown{
   box-shadow: 5px 5px 5px gray;
   position:absolute;
@@ -122,6 +158,37 @@ body{
   padding:3px;
   line-height:1em;
   border-radius:15px;
+}
+.post-header-deleteicon{
+  position: relative;
+}
+.post-header-deletebar{
+  border-radius: 3px;
+  box-shadow: 0px 3px 3px 1px #a9a9a9;
+  position:absolute;
+  right:0px;
+  bottom:10px;
+  padding:0px !important;
+  width:200px;
+  background-color:white;
+  font-family: helvetica,arial,sans-serif !important;
+  padding:2.5px;
+  a{
+    font-family: helvetica,arial,sans-serif !important;
+    font-size:.9em;
+    padding-top:.35em;
+    padding-left:5px;
+    color:black;
+    display:block;
+    width:100%;
+    height:20px;
+    text-decoration: none;
+    &:hover{
+      background-color:#386286;
+      color:lightgrey;
+      text-decoration: none;
+    }
+  }
 }
 .profile-edit-btn{
   width:100px;
@@ -225,6 +292,7 @@ body{
 }
 .live-posts-panel{
   width:440px;
+  // display:inline-block;
   // margin-left:190px;
 }
 .ads-panel, .friends-panel{
@@ -255,14 +323,24 @@ body{
   font-size:1.15em;
   min-width:300px;
   margin-bottom:5px;
+  display:inline
+}
+.user-posts-container{
+  margin-left:300px;
+  position: absolute;
+  top:0px;
+  z-index: 0;
+}
+.user-page-container{
+  position:relative;
 }
 .friends-panel{
   width:300px;
   margin:0px;
-  position: relative;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  z-index: 0;
 }
 .ally-pic{
   position: relative;
@@ -326,6 +404,9 @@ body{
 }
 .conservativestripe{
   background-color:#bb5a49;
+}
+.nonestripe{
+  background-color:#777659;
 }
 .user-panel-stripe{
   width:8px;
@@ -650,7 +731,7 @@ body{
         text-decoration: none;
       }
     }
-    span{
+    div{
       text-align: center;
       color:black;
       min-width:90px;

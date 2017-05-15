@@ -1,31 +1,29 @@
 import React, { Component } from 'react';
-import Post from './Post';
+import PostUser from './PostUser';
 import jquery from 'jquery';
-import { createDate } from './Functions';
-let newModule = require('./Functions');
-let Functions = new newModule();
+// import { createDate } from './Functions';
+let functionsModule = require('./Functions');
+let Functions = new functionsModule();
 
-class Posts extends Component{
+class PostsUser extends Component{
   constructor(props){
     super(props);
     this.state={
       editing:false,
-      user:{},
-      posts:this.props.posts
+      user:{}
     }
   }
   componentWillMount(){
     this.setState({
-      editing:false,
-      posts:this.props.posts
+      editing:false
     });
   }
   componentWillReceiveProps(nextProps){
     let user = nextProps.user;
-    let posts = nextProps.posts;
+    let currentUser = nextProps.currentUser;
     this.setState({
       user:user,
-      posts:posts
+      currentUser:currentUser
     });
   }
 
@@ -45,25 +43,38 @@ class Posts extends Component{
       },15);
   }
   submitPost(e){
-    console.log('submitting post');
     this.emphasizeForm();
-    let comment = this.refs.comment.value;
-    console.log('comment: ',comment);
+    let postText = this.refs.comment.value;
+    // console.log('comment: ',comment);
+
+    //user whose wall this is:
     let user = this.props.user;
+
+    //user looking at page:
+    let currentUser = this.state.currentUser;
+
     console.log('user: ',user);
+    console.log('currentUser: ',currentUser);
     //create date information for post:
     var today = Functions.createDate();
     console.log('today: ',today);
     //create remaining variables for post:
-    let userid = user.userid;
+    let uid = currentUser.userid;
     let affiliation = user.affiliation;
+    //make user's post on his own page have 'NA' for postedon
+    let postedon;
+    if(currentUser.userid==user.userid){
+      postedon='NA';
+    }else{
+      postedon=user.userid
+    }
     //create post for POST request
     let post = {
-      text:comment,
-      uid:userid,
+      text:postText,
+      uid:uid,
       affiliation:affiliation,
       date:today,
-      postedon:'NA'
+      postedon:postedon
     }
     console.log('post: ',post);
     let queryString = "http://localhost:3001/post/"
@@ -73,36 +84,24 @@ class Posts extends Component{
       data:post,
       success:(val)=>{'success!! ',val}
     });
-    this.refs.comment.value = '';
-    this.setState({
-      posts:[]
+    postsquery.done((posts)=>{
+      console.log('success!! posts: ',posts);
+      posts = posts.reverse();
+      this.refs.comment.value = '';
+      this.setState({
+        posts:posts
+      });
     });
-    this.props.update();
-    // postsquery.done((posts)=>{
-    //   console.log('success!! posts: ',posts);
-    //   posts = posts.reverse();
-    //   this.refs.comment.value = '';
-    //   this.setState({
-    //     posts:posts
-    //   });
-    // });
-  }
-  updatePosts(){
-    console.log('updating in posts');
-    this.setState({
-      posts:[]
-    });
-    this.props.update();
   }
 
 
   render(){
     let user = (this.state.user) ? this.state.user : '';
-    let opaqueBackground = (this.state.editing) ?
-    (
-      <div onClick={this.emphasizeForm.bind(this)} className="opaqueBackground"></div>
-    )
-    : '';
+    // let opaqueBackground = (this.state.editing) ?
+    // (
+    //   <div onClick={this.emphasizeForm.bind(this)} className="opaqueBackground"></div>
+    // )
+    // : '';
     // let opaqueBackground = (
     //   <div onClick={this.emphasizeForm.bind(this)} className="opaqueBackground"></div>
     // );
@@ -123,20 +122,19 @@ class Posts extends Component{
               <div onClick={this.submitPost.bind(this)} className="btn btn-primary">Post</div>
         </div>
     );
-    let posts = (this.state.posts.length>0) ? this.state.posts.map((post)=>{
+    let posts = (this.props.posts.length>0) ? this.props.posts.map((post)=>{
       // console.log('post in posts: ',post);
       return(
-        <Post updatePosts={this.updatePosts.bind(this)} uid={post.uid} user={user} post={post} />
+        <PostUser uid={post.uid} user={user} post={post} />
       );
     }) : '';
     return(
       <div className="live-posts-panel">
         LIVE POSTS
-        {opaqueBackground}
+        {/* {opaqueBackground} */}
         <div className="scroller">
           {postEntry}
           {posts}
-          {/* <div className="tall panel panel-default">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste optio, veniam consequatur sed molestias. Corporis temporibus accusamus nesciunt perspiciatis quaerat vel cum omnis modi dolores fugit ex impedit, ullam libero.</div> */}
         </div>
 
       </div>
@@ -144,4 +142,4 @@ class Posts extends Component{
   }
 }
 
-export default Posts;
+export default PostsUser;

@@ -6,7 +6,7 @@ import { hashHistory } from 'react-router';
 let functionsModule = require('./Functions');
 let Functions = new functionsModule();
 
-class PostHeader extends Component{
+class PostHeaderUser extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -21,17 +21,18 @@ class PostHeader extends Component{
       currentUserId: currentUserId
     });
   }
-  componentWillReceiveProps(nextProps){
-    let currentUserId = this.state.currentUserId;
-    let user = (nextProps.id) ? nextProps.id : '';
+  componentDidMount(nextProps){
+    // let currentUserId = this.state.currentUserId;
+    let currentUserId = this.props.currentId;
+    let user = (this.props.id) ? this.props.id : '';
     Functions.getUser(user).then((val)=>{
       this.setState({
         user:val[0]
       });
     });
-    console.log('other person posting: ',user);
+    // console.log('other person posting: ',user);
     let callback = (isFriend)=>{
-      console.log('this person is my friend - ',isFriend);
+      // console.log('this person is my friend - ',isFriend);
       this.setState({
         isFriend:isFriend
       });
@@ -112,11 +113,12 @@ class PostHeader extends Component{
 // User Dropdown div:
     let userinfo = (this.state.userpreview) ? (
       <div onMouseLeave={this.hideUser.bind(this)} className="user-preview-box">
-        <div className="user-preview-header">
+        <NavLink to={userlink}><div className="user-preview-header">
           <div className="user-preview-pointer"></div>
           <div className="opaque-connector"></div>
-          <NavLink to={userlink}><a href="#"><span>{ user.username }</span></a></NavLink>
+          <a href="#"><span>{ user.username }</span></a>
         </div>
+        </NavLink>
           { embedded_pic }
         <div className="user-preview-footer">
           <a href="#"><div id={user.userid} onClick={offerAllegiance}>{ally_status}</div></a>
@@ -137,9 +139,10 @@ class PostHeader extends Component{
           </span>
           <div className="post-date">{date}</div>
         </div>
+        <div className="fa fa-sort-desc pull-right post-header-deletebar"></div>
       </div>
     )
   }
 }
 
-export default PostHeader;
+export default PostHeaderUser;

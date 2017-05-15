@@ -26,6 +26,26 @@ class Newsfeed extends Component{
       editing:false
     }
   }
+  filterPosts(){
+    let querystring = "http://localhost:3001/posts";
+    let postsquery = jquery.ajax({
+      url:querystring,
+      type:'GET',
+      success:(posts)=>{
+        posts = posts.reverse();
+        posts = posts.filter((val)=>{
+          return val.postedon=='NA';
+        });
+        console.log('posts: ',posts);
+        this.setState({
+          posts:[]
+        });
+        this.setState({
+          posts:posts
+        });
+      }
+    });
+  }
   componentWillMount(){
     let user = this.props.user;
     console.log('user in cdm newsfeed: ',user);
@@ -41,18 +61,7 @@ class Newsfeed extends Component{
     let fullfeed=[];
     let result;
 
-    let querystring = "http://localhost:3001/posts";
-    let postsquery = jquery.ajax({
-      url:querystring,
-      type:'GET',
-      success:(posts)=>{
-        posts = posts.reverse();
-        console.log('posts: ',posts);
-        this.setState({
-          posts:posts
-        });
-      }
-    });
+    this.filterPosts();
 
     let callback = (stories)=>{
       console.log('stories in callback: ',stories);
@@ -62,6 +71,10 @@ class Newsfeed extends Component{
       });
     }
       this.getNews(callback);
+  }
+  updatePosts(){
+    this.filterPosts();
+    console.log('updating!!!');
   }
   componentDidMount(){
     // let user = this.props.user;
@@ -77,7 +90,6 @@ class Newsfeed extends Component{
     breitbart_feed(callback);
   }
   shuffle(array){
-    //Fisher-Yates shuffle algorithm:
     //Fisher-Yates shuffle algorithm:
        var currentIndex = array.length, temporaryValue, randomIndex;
 
@@ -141,7 +153,7 @@ class Newsfeed extends Component{
                   <div className="panel panel-default">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis nam sed odit maiores corporis accusantium dignissimos quis consequatur, accusamus et. Sapiente aperiam excepturi, perferendis aliquam cumque amet praesentium quasi adipisci.</div>
                 </div>
                 <div className="posts-wrapper">
-                  <Posts posts={posts} userid={this.props.userid} user={user}/>
+                  <Posts update={this.updatePosts.bind(this)} posts={posts} userid={this.props.userid} user={user}/>
                 </div>
                   <StoryLinks stories={stories}/>
 

@@ -10,29 +10,51 @@ class PostHeader extends Component{
   constructor(props){
     super(props);
     this.state={
-      userpreview:false
+      userpreview:false,
+      toggleStatus:false,
+      myPost:false,
+      postId:''
     }
   }
   componentWillMount(){
-    let currentUserId = Functions.getCurrentUserId();
-    console.log('cwm currentUserId: ',currentUserId);
-    this.setState({
-      currentUserId: currentUserId
-    });
+    // let currentUserId = Functions.getCurrentUserId();
+    // console.log('cwm currentUserId: ',currentUserId);
+    // this.setState({
+    //   currentUserId: currentUserId
+    // });
   }
   componentWillReceiveProps(nextProps){
-    let currentUserId = this.state.currentUserId;
-    let user = (nextProps.id) ? nextProps.id : '';
+    // let currentUserId = this.state.currentUserId;
+    let currentUserId = this.props.currentId;
+    let postId = this.props.postId;
+    console.log('postID: ',postId);
+    this.setState({
+      postId:postId
+    });
+    // let user = (nextProps.id) ? nextProps.id : '';
+    let user = Functions.getCurrentUserId();
+    console.log(currentUserId,' vs ',user);
     // Functions.getUser(uid).then((val)=>{
     //   this.setState({
     //     user:val[0]
     //   });
     // });
     // console.log('other person posting: ',user);
-    let callback = (isFriend)=>{
-      console.log('this person is my friend - ',isFriend);
+    if(currentUserId == user){
+      console.log('true');
       this.setState({
-        isFriend:isFriend
+        myPost:true
+      });
+    }else{
+      this.setState({
+        myPost:false
+      });
+    }
+    let callback = (isFriend)=>{
+      // console.log('this person is my friend - ',isFriend);
+      this.setState({
+        isFriend:isFriend,
+        currentUserId:currentUserId
       });
     }
     Functions.allyCheck(user,currentUserId,callback);
@@ -67,12 +89,36 @@ class PostHeader extends Component{
     e.preventDefault();
     console.log('doing nothing');
   }
+  toggleDeleteBar(){
+    let toggleStatus = (this.state.toggleStatus==true) ? false : true;
+    this.setState({
+      toggleStatus:toggleStatus
+    });
+  }
+  deletePost(e){
+    e.preventDefault();
+    let targetURL = "http://localhost:3001/deletepost";
+    console.log('deleting post');
+    console.log('post is: ',e.target.id);
+    let postId = e.target.id;
+    jquery.ajax({
+      url:targetURL,
+      type:'POST',
+      data:{
+        post:postId
+      },
+      success:()=>{
+        console.log('success! ');
+        this.props.updatePosts();
+      }
+    });
+  }
   render(){
 
     let friendrequest = (this.state.friendrequest) ? this.state.friendrequest : '';
     let currentUserId = (this.state.currentUserId) ? this.state.currentUserId : '';
     // let userpic = this.props.pic;
-
+    let postId = (this.state.postId) ? this.state.postId : '';
     let user = (this.props.user.hasOwnProperty('username')) ? this.props.user : {};
     let teamcolor = user.affiliation + " user-stripe";
     let userpic = (
@@ -111,16 +157,29 @@ class PostHeader extends Component{
 // User Dropdown div:
     let userinfo = (this.state.userpreview) ? (
       <div onMouseLeave={this.hideUser.bind(this)} className="user-preview-box">
+        <NavLink to={userlink}>
         <div className="user-preview-header">
           <div className="user-preview-pointer"></div>
           <div className="opaque-connector"></div>
-          <NavLink to={userlink}><a href="#"><span>{ user.username }</span></a></NavLink>
+          <a href="#"><span>{ user.username }</span></a>
         </div>
+        </NavLink>
           { embedded_pic }
         <div className="user-preview-footer">
           <a href="#"><div id={user.userid} onClick={offerAllegiance}>{ally_status}</div></a>
         </div>
       </div>
+    ) : '';
+    let linkBarLinks = (this.state.myPost) ?
+    //links if it's my post
+    (
+       <a id={postId} className="deletebar-item" onClick={this.deletePost.bind(this)} href="#">Delete</a>
+     )
+    :
+    //links if it's not my post
+    '';
+    let linkbar = (this.state.toggleStatus) ? (
+      <div className="post-header-deletebar">{linkBarLinks}</div>
     ) : '';
     return(
       <div href="#" className="post-header">
@@ -136,6 +195,8 @@ class PostHeader extends Component{
           </span>
           <div className="post-date">{date}</div>
         </div>
+        <div onClick={this.toggleDeleteBar.bind(this)} className="fa fa-sort-desc pull-right post-header-deleteicon">{linkbar}</div>
+
       </div>
     )
   }
