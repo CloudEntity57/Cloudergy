@@ -6,6 +6,11 @@ import { hashHistory } from 'react-router';
 let functionsModule = require('./Functions');
 let Functions = new functionsModule();
 
+//redux
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { mainApp } from '../actions/index';
+
 class PostHeader extends Component{
   constructor(props){
     super(props);
@@ -202,4 +207,17 @@ class PostHeader extends Component{
   }
 }
 
-export default PostHeader;
+function mapStateToProps(state){
+  let user = state.allReducers.mainApp.user;
+  return{
+    user
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return bindActionCreators({
+    mainApp
+  },dispatch);
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(PostHeader);

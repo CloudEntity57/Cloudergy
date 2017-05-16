@@ -3,6 +3,11 @@ import AuthService from '../utils/AuthService'
 import { hashHistory } from 'react-router';
 import { filterUser } from './Functions';
 
+//redux
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { mainApp } from '../actions/index';
+
 class LandingPage extends Component{
   constructor(props){
     super(props);
@@ -42,4 +47,17 @@ class LandingPage extends Component{
 
 }
 
-export default LandingPage;
+function mapStateToProps(state){
+  let user = state.allReducers.mainApp.user;
+  return{
+    user
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return bindActionCreators({
+    mainApp
+  },dispatch);
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(LandingPage);

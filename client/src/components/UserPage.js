@@ -6,6 +6,11 @@ import PostsUser from './PostsUser';
 let functionsModule = require('./Functions');
 let Functions = new functionsModule();
 
+//redux
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { mainApp } from '../actions/index';
+
 
 class UserPage extends Component{
   constructor(props){
@@ -112,7 +117,7 @@ configureUser(postUserId,targetURL,currentuser){
             return val.uid == postUserId || val.postedon == postUserId
           }
         });
-        let results = []; 
+        let results = [];
 
         for(let i=0; i<posts.length; i++){
           let uidGlobalPost = posts[i].uid;
@@ -187,4 +192,17 @@ configureUser(postUserId,targetURL,currentuser){
   }
 }
 
-export default UserPage;
+function mapStateToProps(state){
+  let user = state.allReducers.mainApp.user;
+  return{
+    user
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return bindActionCreators({
+    mainApp
+  },dispatch);
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(UserPage);

@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import jquery from 'jquery';
-// import Functions from './Functions';
 import NavLink from './NavLink';
 import { hashHistory } from 'react-router';
 let functionsModule = require('./Functions');
 let Functions = new functionsModule();
+
+//redux
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { mainApp } from '../actions/index';
 
 class PostHeaderUser extends Component{
   constructor(props){
@@ -145,4 +149,17 @@ class PostHeaderUser extends Component{
   }
 }
 
-export default PostHeaderUser;
+function mapStateToProps(state){
+  let user = state.allReducers.mainApp.user;
+  return{
+    user
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return bindActionCreators({
+    mainApp
+  },dispatch);
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(PostHeaderUser);

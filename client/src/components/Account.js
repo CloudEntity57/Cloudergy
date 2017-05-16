@@ -2,6 +2,11 @@ import React, {Component} from 'react';
 import jquery from 'jquery';
 import UserHeader from './UserHeader';
 
+//redux
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { mainApp } from '../actions/index';
+
 
 class Account extends Component{
   constructor(props){
@@ -107,4 +112,17 @@ class Account extends Component{
   }
 }
 
-export default Account;
+function mapStateToProps(state){
+  let user = state.allReducers.mainApp.user;
+  return{
+    user
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return bindActionCreators({
+    mainApp
+  },dispatch);
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Account);

@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import { Router, hashHistory, Route, IndexRedirect} from 'react-router';
+import { Route } from 'react-router-dom';
 import dotenv from 'dotenv';
 import AuthService from './utils/AuthService';
 import Newsfeed from './components/Newsfeed';
@@ -10,13 +10,41 @@ import Login from './components/Login';
 import { makeMainRoutes } from './routes.js';
 dotenv.config({ silent:true });
 
+//redux links
+import {Provider} from 'react-redux';
+import { createStore, applyMiddleware, combineReducers } from 'redux';
+import { connectRouter, ConnectedRouter, routerMiddleware } from 'connected-react-router';
+import thunk from 'redux-thunk';
+import promise from 'redux-promise';
+import { createLogger } from 'redux-logger';
+const logger = createLogger();
+
+//redux internal links
+import createHistory from 'history/createBrowserHistory';
+const history = createHistory();
+import allReducers from './reducers';
+import {} from './actions';
+
+//create store
+
+const store = createStore(
+  connectRouter(history)(combineReducers({ allReducers })),
+  applyMiddleware( thunk, promise, logger, routerMiddleware(history))
+);
+console.log('state: ',store.getState());
+
 
 const routes = makeMainRoutes();
 
 ReactDOM.render(
-    <div>
-      {routes}
-    </div>
+  <Provider store={store}>
+    <ConnectedRouter history = { history }>
+      <Route path="/" component={ App } />
+    </ConnectedRouter>
+  </Provider>
+    // <div>
+    //   {routes}
+    // </div>
   ,
     document.getElementById('root')
 

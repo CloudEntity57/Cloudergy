@@ -2,6 +2,11 @@ import React, { Component } from 'react';
 let functionsModule = require('./Functions');
 let Functions = new functionsModule();
 
+//redux
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { mainApp } from '../actions/index';
+
 
 class UserPic extends Component{
   constructor(props){
@@ -31,4 +36,17 @@ class UserPic extends Component{
   }
 }
 
-export default UserPic;
+function mapStateToProps(state){
+  let user = state.allReducers.mainApp.user;
+  return{
+    user
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return bindActionCreators({
+    mainApp
+  },dispatch);
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(UserPic);

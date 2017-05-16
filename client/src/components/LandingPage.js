@@ -2,6 +2,12 @@ import React, { Component, PropTypes as T  } from 'react';
 import AuthService from '../utils/AuthService'
 import { hashHistory } from 'react-router';
 import { filterUser } from './Functions';
+import { push } from 'connected-react-router';
+
+//redux
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { mainApp } from '../actions/index';
 
 class LandingPage extends Component{
   constructor(props){
@@ -49,4 +55,17 @@ class LandingPage extends Component{
 
 }
 
-export default LandingPage;
+function mapStateToProps(state){
+  let user = state.allReducers.mainApp.user;
+  return{
+    user
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return bindActionCreators({
+    mainApp
+  },dispatch);
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(LandingPage);

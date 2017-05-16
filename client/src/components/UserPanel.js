@@ -2,6 +2,11 @@ import React, { Component } from 'react';
 import UserPic from './UserPic';
 import NavLink from './NavLink';
 
+//redux
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { mainApp } from '../actions/index';
+
 class UserPanel extends Component{
   constructor(props){
     super(props);
@@ -80,4 +85,17 @@ class UserPanel extends Component{
   }
 }
 
-export default UserPanel;
+function mapStateToProps(state){
+  let user = state.allReducers.mainApp.user;
+  return{
+    user
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return bindActionCreators({
+    mainApp
+  },dispatch);
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(UserPanel);

@@ -6,6 +6,11 @@ let functionsModule = require('./Functions');
 let Functions = new functionsModule();
 import jquery from 'jquery';
 
+//redux 
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { mainApp } from '../actions/index';
+
 class Header extends Component{
   constructor(props){
     super(props);
@@ -199,4 +204,19 @@ class Header extends Component{
   }
 }
 
-export default Header;
+function mapStateToProps(state){
+  let previewingAlly = state.allReducers.mainApp.previewingAlly;
+  let affiliation = state.allReducers.mainApp.affiliation;
+  return{
+    previewingAlly,
+    affiliation
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return bindActionCreators({
+    mainApp
+  },dispatch);
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Header);

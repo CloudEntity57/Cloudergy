@@ -5,6 +5,11 @@ import jquery from 'jquery';
 let functionsModule = require('./Functions');
 let Functions = new functionsModule();
 
+//redux
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { mainApp } from '../actions/index';
+
 class Post extends Component{
   constructor(props){
     super(props);
@@ -129,4 +134,17 @@ class Post extends Component{
   }
 }
 
-export default Post;
+function mapStateToProps(state){
+  let user = state.allReducers.mainApp.user;
+  return{
+    user
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return bindActionCreators({
+    mainApp
+  },dispatch);
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Post);

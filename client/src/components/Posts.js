@@ -5,6 +5,11 @@ import { createDate } from './Functions';
 let newModule = require('./Functions');
 let Functions = new newModule();
 
+//redux
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { mainApp } from '../actions/index';
+
 class Posts extends Component{
   constructor(props){
     super(props);
@@ -144,4 +149,17 @@ class Posts extends Component{
   }
 }
 
-export default Posts;
+function mapStateToProps(state){
+  let user = state.allReducers.mainApp.user;
+  return{
+    user
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return bindActionCreators({
+    mainApp
+  },dispatch);
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Posts);

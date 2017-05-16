@@ -1,20 +1,41 @@
 import React, { PropTypes as T } from 'react'
 import jquery from 'jquery';
 import './App.css';
-import LandingPage from './components/LandingPage';
-import Header from './components/Header';
-import AuthService from './utils/AuthService';
-import UserPanel from './components/UserPanel';
+import { Switch, Route } from 'react-router-dom';
 import { hashHistory } from 'react-router';
+
+import Header from './components/Header';
+import UserPanel from './components/UserPanel';
+import Login from './components/Login';
+import Newsfeed from './components/Newsfeed';
+import UserPage from './components/UserPage';
+import Account from './components/Account';
+import SignedIn from './components/SignedIn';
+import LandingPage from './components/LandingPage';
+
+import AuthService from './utils/AuthService';
 const authid = process.env.REACT_APP_AUTH0_CLIENT_ID;
 const authdomain = process.env.REACT_APP_AUTH0_DOMAIN;
 const auth = new AuthService(authid, authdomain);
+console.log('auth : ', auth);
+
+//redux
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { mainApp } from './actions/index';
+
+// validate authentication for private routes
+const requireAuth = (nextState, replace) => {
+  if (!auth.loggedIn()) {
+    replace({ pathname: '/' })
+  }
+}
 
 // authorize(e){
 //   e.preventDefault();
 // }
 
-export class App extends React.Component{
+class App extends React.Component{
 
   constructor(props){
     super(props);
@@ -120,25 +141,57 @@ export class App extends React.Component{
    console.log('username app.js render: ',username);
    let users = (this.state.users) ? this.state.users : '';
    let update = this.update.bind(this);
-   if (this.props.children) {
-     children = React.cloneElement(this.props.children, {
-       //sends props to children
-       auth: auth,
-       profile:profile,
-       username:username,
-       affiliation:affiliation,
-       update:update,
-       user:user
-     })
+  //  if (this.props.children) {
+  //    children = React.cloneElement(this.props.children, {
+  //      //sends props to children
+  //      auth: auth,
+  //      profile:profile,
+  //      username:username,
+  //      affiliation:affiliation,
+  //      update:update,
+  //      user:user
+  //    })
+  //  }
+
+   let props = {
+     //sends props to children
+     auth: auth,
+     profile:profile,
+     username:username,
+     affiliation:affiliation,
+     update:update,
+     user:user
    }
    return (
     <div>
       <Header username={username} uid={user.uid} affiliation={affiliation} toggle_affiliation={this.toggle_affiliation.bind(this)} logOut={this.logOut.bind(this)} auth={auth} />
-      {children || <LandingPage />}
+      {/* {children || <LandingPage />} */}
+      <Switch props={props}>
+        <Route path="landing" component={LandingPage} />
+        <Route path="account" component={Account} />
+        <Route path="user" component={UserPage} />
+        <Route path="user/:uid" component={UserPage} />
+        <Route path="signedin" component={SignedIn} />
+        <Route path="newsfeed" component={Newsfeed} onEnter={requireAuth} />
+        <Route path="login" component={Login} />
+      </Switch>
       <UserPanel users={users}/>
     </div>
   )
 }
 }
 
-export default App;
+function mapStateToProps(state){
+  let user = state.allReducers.mainApp.user;
+  return{
+    user
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return bindActionCreators({
+    mainApp
+  },dispatch);
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(App);

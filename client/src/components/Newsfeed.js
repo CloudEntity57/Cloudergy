@@ -14,6 +14,10 @@ import moment from 'moment';
 const nytkey=process.env.REACT_APP_NYTAPI;
 const wpkey=process.env.REACT_APP_WP_API;
 
+//redux
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { mainApp } from '../actions/index';
 
 
 class Newsfeed extends Component{
@@ -169,4 +173,17 @@ class Newsfeed extends Component{
   }
 }
 
-export default Newsfeed;
+function mapStateToProps(state){
+  let user = state.allReducers.mainApp.user;
+  return{
+    user
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return bindActionCreators({
+    mainApp
+  },dispatch);
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Newsfeed);
