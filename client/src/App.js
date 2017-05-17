@@ -167,8 +167,8 @@ class App extends React.Component{
     <div>
       <Header username={username} uid={user.uid} affiliation={affiliation} toggle_affiliation={this.toggle_affiliation.bind(this)} logOut={this.logOut.bind(this)} auth={auth} />
       {/* {children || <LandingPage />} */}
-      <Switch props={props}>
-        <Route exact path="/" {...props} component={LandingPage} />
+      <Switch>
+        <Route exact path="/" props={props} component={LandingPage} />
         <Route path="account" component={Account} />
         <Route path="user" component={UserPage} />
         <Route path="user/:uid" component={UserPage} />

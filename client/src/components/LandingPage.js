@@ -17,8 +17,9 @@ class LandingPage extends Component{
     }
   }
   componentWillMount(){
-    const {auth} = this.props.auth;
+    const {auth} = this.props.props.auth;
     const token = auth.getToken();
+    console.log('landing page mounting');
     console.log('user id token: ',token);
     if(token){
       // filterUser();
