@@ -1,13 +1,13 @@
 import React, { Component, PropTypes as T  } from 'react';
 import AuthService from '../utils/AuthService'
-import { hashHistory } from 'react-router';
+// import { hashHistory } from 'react-router';
 import { filterUser } from './Functions';
-import { push } from 'connected-react-router';
 
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { mainApp } from '../actions/index';
+import { push } from 'connected-react-router';
 
 class LandingPage extends Component{
   constructor(props){
@@ -17,12 +17,12 @@ class LandingPage extends Component{
     }
   }
   componentWillMount(){
-    const {auth} = this.props;
+    const {auth} = this.props.auth;
     const token = auth.getToken();
     console.log('user id token: ',token);
     if(token){
       // filterUser();
-      hashHistory.push('/signedin');
+      this.props.push('/signedin');
     }
   }
   static propTypes = {
@@ -35,12 +35,12 @@ class LandingPage extends Component{
   // }
 
   handleClick(e){
-    hashHistory.push('/login');
+    this.props.push('/login');
   }
   logOut(){
     const {auth} = this.props;
     auth.logout();
-    hashHistory.push('/landing');
+    this.props.push('/landing');
   }
   render(){
     const {auth} = this.props;
@@ -64,7 +64,8 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
-    mainApp
+    mainApp,
+    push
   },dispatch);
 }
 

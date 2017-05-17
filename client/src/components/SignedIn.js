@@ -1,12 +1,13 @@
 import React, { Component, PropTypes as T  } from 'react';
 import AuthService from '../utils/AuthService'
-import { hashHistory } from 'react-router';
+// import { this.props } from 'react-router';
 import { filterUser } from './Functions';
 
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { mainApp } from '../actions/index';
+import { push } from 'connected-react-router';
 
 class LandingPage extends Component{
   constructor(props){
@@ -16,7 +17,7 @@ class LandingPage extends Component{
     }
   }
   componentWillMount(){
-    const {auth} = this.props;
+    const {auth} = this.props.auth;
     const user = auth.getProfile();
     console.log('user in welcome: ',user);
 
@@ -26,12 +27,12 @@ class LandingPage extends Component{
     this.setState({
       loggedIn:true
     });
-    hashHistory.push('/newsfeed');
+    this.props.push('/newsfeed');
   }
   logOut(){
     const {auth} = this.props;
     auth.logout();
-    hashHistory.push('/landing');
+    this.props.push('/landing');
   }
   render(){
     const {auth} = this.props;

@@ -2,7 +2,7 @@ import React, { PropTypes as T } from 'react'
 import jquery from 'jquery';
 import './App.css';
 import { Switch, Route } from 'react-router-dom';
-import { hashHistory } from 'react-router';
+// import { hashHistory } from 'react-router';
 
 import Header from './components/Header';
 import UserPanel from './components/UserPanel';
@@ -23,6 +23,7 @@ console.log('auth : ', auth);
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { mainApp } from './actions/index';
+import { push } from 'connected-react-router';
 
 // validate authentication for private routes
 const requireAuth = (nextState, replace) => {
@@ -90,7 +91,7 @@ class App extends React.Component{
               },
               type:'POST'
             });
-            hashHistory.push('/account');
+            this.props.push('/account');
           }else{
             console.log('app.js has confirmed user exists');
           }
@@ -112,7 +113,7 @@ class App extends React.Component{
     });
   }
   logOut(){
-    hashHistory.push('/landing');
+    this.props.push('/landing');
     console.log('logging out');
     auth.logout();
   }
@@ -155,24 +156,24 @@ class App extends React.Component{
 
    let props = {
      //sends props to children
-     auth: auth,
-     profile:profile,
-     username:username,
-     affiliation:affiliation,
-     update:update,
-     user:user
+     auth,
+     profile,
+     username,
+     affiliation,
+     update,
+     user
    }
    return (
     <div>
       <Header username={username} uid={user.uid} affiliation={affiliation} toggle_affiliation={this.toggle_affiliation.bind(this)} logOut={this.logOut.bind(this)} auth={auth} />
       {/* {children || <LandingPage />} */}
       <Switch props={props}>
-        <Route path="landing" component={LandingPage} />
+        <Route exact path="/" {...props} component={LandingPage} />
         <Route path="account" component={Account} />
         <Route path="user" component={UserPage} />
         <Route path="user/:uid" component={UserPage} />
         <Route path="signedin" component={SignedIn} />
-        <Route path="newsfeed" component={Newsfeed} onEnter={requireAuth} />
+        <Route path="newsfeed" {...props} component={Newsfeed} onEnter={requireAuth} />
         <Route path="login" component={Login} />
       </Switch>
       <UserPanel users={users}/>
@@ -190,7 +191,8 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
-    mainApp
+    mainApp,
+    push
   },dispatch);
 }
 

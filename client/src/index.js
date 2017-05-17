@@ -37,14 +37,12 @@ console.log('state: ',store.getState());
 const routes = makeMainRoutes();
 
 ReactDOM.render(
-  <Provider store={store}>
+  
+  <Provider store={ store }>
     <ConnectedRouter history = { history }>
       <Route path="/" component={ App } />
     </ConnectedRouter>
   </Provider>
-    // <div>
-    //   {routes}
-    // </div>
   ,
     document.getElementById('root')
 
