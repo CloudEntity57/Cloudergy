@@ -15,13 +15,14 @@ import { mainApp } from '../actions/index';
 class UserPage extends Component{
   constructor(props){
     super(props);
-    this.state={
-      updated:false,
-      posts:[]
-    }
+    // this.state={
+    //   updated:false,
+    //   posts:[]
+    // }
   }
   componentWillMount(){
     //filter user's posts:
+    console.log('user page mounting');
     let userid=(this.props.params.uid) ? this.props.params.uid.toString() : '';
     console.log('userpage uid: ',userid);
       let querystring = "http://localhost:3001/posts";

@@ -17,7 +17,8 @@ class LandingPage extends Component{
     }
   }
   componentWillMount(){
-    const {auth} = this.props.props.auth;
+    console.log('auth in landing page: ',this.props.auth);
+    const {auth} = this.props.auth;
     const token = auth.getToken();
     console.log('landing page mounting');
     console.log('user id token: ',token);
@@ -58,8 +59,10 @@ class LandingPage extends Component{
 
 function mapStateToProps(state){
   let user = state.allReducers.mainApp.user;
+  let auth = state.allReducers.mainApp.auth;
   return{
-    user
+    user,
+    auth
   }
 }
 

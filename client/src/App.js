@@ -22,7 +22,7 @@ console.log('auth : ', auth);
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { mainApp } from './actions/index';
+import { mainApp, fetchUserInfo } from './actions/index';
 import { push } from 'connected-react-router';
 
 // validate authentication for private routes
@@ -51,12 +51,19 @@ class App extends React.Component{
     let targetURL = "http://localhost:3001/user/"
     console.log('app js auth: ',auth);
 
+      const profile = auth.getProfile();
+      this.props.fetchUserInfo(profile.clientID);
+      // console.log('appyj user: ',user);
     setTimeout(()=>{
       const profile = auth.getProfile();
       console.log('cwm profile: ', profile);
         this.setState({
           profile:profile
         });
+
+        // getting current user information:
+        let user = this.props.fetchUserInfo(profile.clientID);
+        console.log('appyj user: ',user);
         let query = jquery.ajax({
           url:targetURL+profile.clientID,
           type:'GET',
@@ -163,14 +170,20 @@ class App extends React.Component{
      update,
      user
    }
+   let monkey=1,trout=2;
+   const test = {
+     monkey,
+     trout
+   }
+   console.log('props in app are: ',props);
    return (
     <div>
       <Header username={username} uid={user.uid} affiliation={affiliation} toggle_affiliation={this.toggle_affiliation.bind(this)} logOut={this.logOut.bind(this)} auth={auth} />
       {/* {children || <LandingPage />} */}
       <Switch>
-        <Route exact path="/" component={LandingPage} />
+        <Route exact path="/" render = {(props)=>(<LandingPage />)} />
         <Route path="account" component={Account} />
-        <Route path="user" component={UserPage} />
+        <Route path="/user" render = {(props)=>(<UserPage {...props} />)} />
         <Route path="user/:uid" component={UserPage} />
         <Route path="signedin" component={SignedIn} />
         <Route path="newsfeed" component={Newsfeed} onEnter={requireAuth} />
@@ -192,6 +205,7 @@ function mapStateToProps(state){
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
     mainApp,
+    fetchUserInfo,
     push
   },dispatch);
 }
