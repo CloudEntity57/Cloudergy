@@ -8,7 +8,7 @@ let Functions = new functionsModule();
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { mainApp } from '../actions/index';
+import { mainApp, displayUserPreview, hideUserPreview,setActivePost,clearActivePost } from '../actions/index';
 
 class Post extends Component{
   constructor(props){
@@ -19,6 +19,8 @@ class Post extends Component{
   }
   componentWillMount(){
     let uid = (this.props.uid) ? this.props.uid : '';
+    let post = (this.props.post) ? this.props.post : '';
+    console.log('this post is: ',post._id);
     console.log('post uid: ',uid);
     let myId = Functions.getCurrentUserId();
     Functions.getUser(uid).then((val)=>{
@@ -38,19 +40,20 @@ class Post extends Component{
 //       user:user
 //     });
 // }
-  displayUser(e){
-    let target = e.target;
-    console.log('displaying! ',e.target);
-    let message = (<div id="user-hover-tab">hello!!!!!</div>);
-    setTimeout(
-      function(){
-        target.after(message);
-      },1000);
+  displayUser(){
+    let postid = this.props.post._id
+    console.log('displaying');
+    // setTimeout(
+      // ()=>{
+        this.props.setActivePost(postid);
+      // },1500);
   }
-  hideUser(e){
-    let target = e.target
-    console.log('hiding! ',e.target);
-    jquery(e.target).siblings('div').remove();
+  hideUser(){
+    console.log('hiding');
+    // setTimeout(
+      // ()=>{
+        this.props.clearActivePost();
+      // },1000);
   }
   updatePosts(){
     this.props.updatePosts();
@@ -103,7 +106,7 @@ class Post extends Component{
       updatePosts:this.updatePosts.bind(this)
     }
     return(
-      <div className="user-post">
+      <div onMouseLeave={()=>this.hideUser()} onMouseEnter={()=>this.displayUser()} className="user-post">
       <div id={id} className="post-panel">
         <PostHeader {...props} id={user.userid}  user={user}/>
 
@@ -136,14 +139,20 @@ class Post extends Component{
 
 function mapStateToProps(state){
   let user = state.allReducers.mainApp.user;
+  let user_preview_showing = state.allReducers.mainApp.user_preview_showing;
   return{
-    user
+    user,
+    user_preview_showing
   }
 }
 
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
-    mainApp
+    mainApp,
+    displayUserPreview,
+    hideUserPreview,
+    setActivePost,
+    clearActivePost
   },dispatch);
 }
 

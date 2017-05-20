@@ -6,7 +6,7 @@ let functionsModule = require('./Functions');
 let Functions = new functionsModule();
 import jquery from 'jquery';
 
-//redux 
+//redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { mainApp } from '../actions/index';
@@ -102,43 +102,85 @@ class Header extends Component{
     console.log('ignoring request');
   }
   render(){
-    let user = (this.state.user) ? this.state.user : '';
-    let uid = (this.state.user) ? this.state.user[0].userid : '';
-    let profile = this.props.auth.getProfile();
-    let userpic = profile.picture;
-    let ally_invitations_received = (this.state.ally_invitations_received) ? this.state.ally_invitations_received : '';
-    let allyRequestNumber = (ally_invitations_received.length > 0) ? (<div className="invites">{ally_invitations_received.length}</div>) : ''
-    // let allyRequestNumber = (<div className="invites">{ally_invitations_received.length}</div>);
-    let username = this.props.username;
-    let affiliation = (this.state.affiliation) ? this.state.affiliation : this.props.affiliation;
-    let potential_allies = (this.state.potential_allies) ? this.state.potential_allies : '';
-    console.log('potential allies: ',potential_allies);
-//Build individual Ally Request tab HTML:
-    let allyReqs = (potential_allies) ? potential_allies.map((val)=>{
-      console.log('user val: ',val);
-        return (
-          <div id={val[0].userid} className="ally-invitation-tab clearfix">
-            <div className="col-xs-12">
-              {val[0].username} would like to be your ally!
+    // let user = (this.state.user) ? this.state.user : '';
+    let user, uid, userpic, ally_invitations_received, allyRequestNumber,username, affiliation,allyReqs,potential_allies;
+    if(this.props.user !==''){
+      user = this.props.user;
+      uid = this.props.user[0].userid;
+      userpic = this.props.user[0].photo;
+      ally_invitations_received = this.props.user[0].ally_invitations_received;
+      allyRequestNumber = (<div className="invites">{ally_invitations_received.length}</div>);
+      username = this.props.user[0].username;
+      affiliation = this.props.user[0].affiliation;
+      potential_allies = [];
+      if (ally_invitations_received.length>0){
+        ally_invitations_received.map((ally)=>{
+          Functions.getUser(ally).then((val)=>{
+            potential_allies.push(val);
+          });
+        });
+        allyReqs = potential_allies.map((val)=>{
+          console.log('user val: ',val);
+            return (
+              <div id={val[0].userid} className="ally-invitation-tab clearfix">
+                <div className="col-xs-12">
+                  {val[0].username} would like to be your ally!
+                </div>
+                <div className="col-xs-12">
+        {/* Accept button */}
+                <a onClick={this.acceptAlly.bind(this)} href="#">
+                  <span id={val[0].userid} className='accept-button'>
+                    Accept
+                  </span>
+                </a>
+        {/* Ignore button */}
+                <a onClick={this.ignoreRequest.bind(this)} href="#">
+                  <span id={val[0].userid} className='accept-button'>
+                    Ignore
+                  </span>
+                </a>
+                <UserPic userid={val[0].userid} />
+              </div>
             </div>
-            <div className="col-xs-12">
-    {/* Accept button */}
-            <a onClick={this.acceptAlly.bind(this)} href="#">
-              <span id={val[0].userid} className='accept-button'>
-                Accept
-              </span>
-            </a>
-    {/* Ignore button */}
-            <a onClick={this.ignoreRequest.bind(this)} href="#">
-              <span id={val[0].userid} className='accept-button'>
-                Ignore
-              </span>
-            </a>
-            <UserPic userid={val[0].userid} />
-          </div>
-        </div>
-        );
-    }) : '';
+            );
+        });
+      }
+
+    }
+      // potential_allies = this.props.user[0].potential_allies;
+      console.log('potential allies: ',potential_allies);
+  //Build individual Ally Request tab HTML:
+
+    console.log('userpic render: ',userpic);
+
+//     let potential_allies = (this.state.potential_allies) ? this.state.potential_allies : '';
+//     console.log('potential allies: ',potential_allies);
+// //Build individual Ally Request tab HTML:
+//     let allyReqs = (potential_allies.map((val)=>{
+//       console.log('user val: ',val);
+//         return (
+//           <div id={val[0].userid} className="ally-invitation-tab clearfix">
+//             <div className="col-xs-12">
+//               {val[0].username} would like to be your ally!
+//             </div>
+//             <div className="col-xs-12">
+//     {/* Accept button */}
+//             <a onClick={this.acceptAlly.bind(this)} href="#">
+//               <span id={val[0].userid} className='accept-button'>
+//                 Accept
+//               </span>
+//             </a>
+//     {/* Ignore button */}
+//             <a onClick={this.ignoreRequest.bind(this)} href="#">
+//               <span id={val[0].userid} className='accept-button'>
+//                 Ignore
+//               </span>
+//             </a>
+//             <UserPic userid={val[0].userid} />
+//           </div>
+//         </div>
+//         );
+//     });
   //Build ally requests dropdown HTML
     let allyPreview = (this.state.previewingAlly) ?
     (
@@ -169,7 +211,6 @@ class Header extends Component{
                   </optgroup>
                 </select>
               </span>
-
 
               <NavLink to={userlink}>
                 <a className="header-navlink" href="#">
@@ -207,9 +248,15 @@ class Header extends Component{
 function mapStateToProps(state){
   let previewingAlly = state.allReducers.mainApp.previewingAlly;
   let affiliation = state.allReducers.mainApp.affiliation;
+  let auth = state.allReducers.mainApp.auth;
+  let profile = state.allReducers.mainApp.profile;
+  let user = state.allReducers.mainApp.user;
   return{
     previewingAlly,
-    affiliation
+    affiliation,
+    auth,
+    user,
+    profile
   }
 }
 

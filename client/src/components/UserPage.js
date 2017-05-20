@@ -25,29 +25,44 @@ class UserPage extends Component{
     console.log('user page mounting');
     let userid=(this.props.params.uid) ? this.props.params.uid.toString() : '';
     console.log('userpage uid: ',userid);
-      let querystring = "http://localhost:3001/posts";
-      let postsquery = jquery.ajax({
-        url:querystring,
-        type:'GET',
-        success:(posts)=>{
-          posts = posts.reverse();
-          console.log('userpage posts: ',posts);
-          let results = [];
-          for(let i=0; i<posts.length; i++){
-            if(posts[i].uid || posts[i].postedon == userid){
-              console.log('userpage uid: ',userid);
-              console.log('compared to: ',posts[i].uid);
-              results.push(posts[i]);
-              console.log('posts is now: ',results);
-              this.setState({
-                posts:[]
-              });
+    let posts = this.props.posts.reverse;
+    console.log('userpage posts: ',posts);
+     let results = [];
+     for(let i=0; i<posts.length; i++){
+       if(posts[i].uid || posts[i].postedon == userid){
+         console.log('userpage uid: ',userid);
+         console.log('compared to: ',posts[i].uid);
+         results.push(posts[i]);
+         console.log('posts is now: ',results);
+         this.setState({
+           posts:[]
+         });
 
-            }
-          }
-
-        }
-      });
+       }
+     }
+      // let querystring = "http://localhost:3001/posts";
+      // let postsquery = jquery.ajax({
+      //   url:querystring,
+      //   type:'GET',
+      //   success:(posts)=>{
+      //     posts = posts.reverse();
+      //     console.log('userpage posts: ',posts);
+      //     let results = [];
+      //     for(let i=0; i<posts.length; i++){
+      //       if(posts[i].uid || posts[i].postedon == userid){
+      //         console.log('userpage uid: ',userid);
+      //         console.log('compared to: ',posts[i].uid);
+      //         results.push(posts[i]);
+      //         console.log('posts is now: ',results);
+      //         this.setState({
+      //           posts:[]
+      //         });
+      //
+      //       }
+      //     }
+      //
+      //   }
+      // });
   }
   componentDidMount(){
     console.log('remounting');
@@ -195,6 +210,7 @@ configureUser(postUserId,targetURL,currentuser){
 
 function mapStateToProps(state){
   let user = state.allReducers.mainApp.user;
+  let posts = state.allReducers.mainApp.posts;
   return{
     user
   }

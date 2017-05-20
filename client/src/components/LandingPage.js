@@ -18,13 +18,13 @@ class LandingPage extends Component{
   }
   componentWillMount(){
     console.log('auth in landing page: ',this.props.auth);
-    const {auth} = this.props.auth;
+    const auth = this.props.auth;
     const token = auth.getToken();
     console.log('landing page mounting');
     console.log('user id token: ',token);
     if(token){
       // filterUser();
-      this.props.push('/signedin');
+      this.props.push('/newsfeed');
     }
   }
   static propTypes = {

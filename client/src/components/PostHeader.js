@@ -9,7 +9,7 @@ let Functions = new functionsModule();
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { mainApp } from '../actions/index';
+import { mainApp,hideUserPreview,displayUserPreview,setActivePost, clearActivePost } from '../actions/index';
 
 class PostHeader extends Component{
   constructor(props){
@@ -30,15 +30,15 @@ class PostHeader extends Component{
   }
   componentWillReceiveProps(nextProps){
     // let currentUserId = this.state.currentUserId;
-    let currentUserId = this.props.currentId;
-    let postId = this.props.postId;
-    console.log('postID: ',postId);
+    let currentUserId = nextProps.currentId;
+    let postId = nextProps.postId;
+    // console.log('postID: ',postId, 'user: ',currentUserId);
     this.setState({
       postId:postId
     });
     // let user = (nextProps.id) ? nextProps.id : '';
-    let user = Functions.getCurrentUserId();
-    console.log(currentUserId,' vs ',user);
+    let user = nextProps.user[0].userid;
+    // console.log(currentUserId,' vs ',user);
     // Functions.getUser(uid).then((val)=>{
     //   this.setState({
     //     user:val[0]
@@ -46,11 +46,12 @@ class PostHeader extends Component{
     // });
     // console.log('other person posting: ',user);
     if(currentUserId == user){
-      console.log('true');
+      // console.log('cuid true');
       this.setState({
         myPost:true
       });
     }else{
+      // console.log('cuid false');
       this.setState({
         myPost:false
       });
@@ -64,25 +65,10 @@ class PostHeader extends Component{
     }
     Functions.allyCheck(user,currentUserId,callback);
   }
-  displayUser(e){
-    // console.log('displaying!');
-    // setTimeout(()=>{
-      this.setState({
-        userpreview:true
-      });
-    // },700);
-  }
-  hideUser(e){
-    setTimeout(()=>{
-      this.setState({
-        userpreview:false
-      });
-    },250);
-  }
   offerAllegiance(e){
     e.preventDefault();
     let userid = e.target.id;
-    console.log('be my ally, ',userid);
+    // console.log('be my ally, ',userid);
     let callback = ()=>{
       // this.setState({
       //   friendrequest:'hyena'
@@ -118,23 +104,65 @@ class PostHeader extends Component{
       }
     });
   }
+  displayUser(e){
+    // console.log('displaying!');
+    // this.props.setActivePost(this.props.id)
+    setTimeout(()=>{
+      this.setState({
+        userpreview:true
+      });
+    },1000);
+  }
+  hideUser(e){
+    // setTimeout(()=>{
+      // this.props.hideUserPreview(this.props.id)
+      this.setState({
+        userpreview:false
+      });
+    // },250);
+  }
   render(){
 
+    // console.log('user object: ',userObj);
     let friendrequest = (this.state.friendrequest) ? this.state.friendrequest : '';
     let currentUserId = (this.state.currentUserId) ? this.state.currentUserId : '';
-    // let userpic = this.props.pic;
     let postId = (this.state.postId) ? this.state.postId : '';
-    let user = (this.props.user.hasOwnProperty('username')) ? this.props.user : {};
-    let teamcolor = user.affiliation + " user-stripe";
-    let userpic = (
+    let user = {
+      photo:'',
+      affiliation:'',
+      allies:'',
+      userid:'',
+      username:''
+    };
+    let userpic,teamcolor,largephoto;
+    let userObj = this.props.userObject;
+    if(this.props.userObject !== undefined ){
+      user = userObj[currentUserId];
+    }
+    largephoto = user.largephoto
+    embedded_pic = (<img className="img-responsive user-preview-pic" src={largephoto} alt="user photo" />);
+    teamcolor = user.affiliation + " user-stripe";
+    userpic = (
         <div>
           <div className={teamcolor}></div>
           <img id={currentUserId} className='post-header-pic' src={user.photo} alt='pic' />
         </div>
       );
+
+    // let userpic = this.props.pic;
+
+    // let user = (this.props.user.hasOwnProperty('username')) ? this.props.user : {};
+
+    // console.log('user in posthedder: ',user);
+    // let userpic = (
+    //     <div>
+    //       <div className={teamcolor}></div>
+    //       <img id={currentUserId} className='post-header-pic' src={user.photo} alt='pic' />
+    //     </div>
+    //   );
     // console.log('user we are dealing with: ',user);
     let date = this.props.date;
-    let allies = (user.hasOwnProperty('username')) ? user.allies : [];
+    let allies = (user !==undefined) ? user.allies : [];
     let friendStatus= (this.state.isFriend=="invited" || this.state.isFriend==true || this.state.isFriend==false) ? this.state.isFriend : '';
     // for(let i=0; i<allies.length; i++){
     //   if(allies[i]===currentUserId){
@@ -157,10 +185,10 @@ class PostHeader extends Component{
         ally_status = ('Request Sent');
         break;
     }
-    let embedded_pic = (<img className="img-responsive user-preview-pic" src={user.largephoto} alt="user photo" />);
+    let embedded_pic = (<img className="img-responsive user-preview-pic" src={largephoto} alt="user photo" />);
     let userlink = "/user/"+user.userid;
 // User Dropdown div:
-    let userinfo = (this.state.userpreview) ? (
+    let userinfo = (postId==this.props.activePost && this.state.userpreview) ? (
       <div onMouseLeave={this.hideUser.bind(this)} className="user-preview-box">
         <NavLink to={userlink}>
         <div className="user-preview-header">
@@ -209,14 +237,26 @@ class PostHeader extends Component{
 
 function mapStateToProps(state){
   let user = state.allReducers.mainApp.user;
+  let users = state.allReducers.mainApp.users;
+  let userObject = state.allReducers.mainApp.userObject;
+  let user_preview_showing = state.allReducers.mainApp.user_preview_showing;
+  let activePost = state.allReducers.mainApp.activePost;
   return{
-    user
+    user,
+    users,
+    userObject,
+    user_preview_showing,
+    activePost
   }
 }
 
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
-    mainApp
+    mainApp,
+    hideUserPreview,
+    displayUserPreview,
+    setActivePost,
+    clearActivePost
   },dispatch);
 }
 

@@ -58,8 +58,8 @@ class Account extends Component{
     });
   }
   render(){
-    const profile = this.props.auth.getProfile();
-    const username = this.props.username || profile.name;
+    const profile = this.props.profile;
+    const username = profile.username || this.props.user.name;
     const userpic = profile.picture;
     console.log('user pic: ',userpic);
     return(
@@ -114,8 +114,10 @@ class Account extends Component{
 
 function mapStateToProps(state){
   let user = state.allReducers.mainApp.user;
+  let profile = state.allReducers.mainApp.profile;
   return{
-    user
+    user,
+    profile
   }
 }
 

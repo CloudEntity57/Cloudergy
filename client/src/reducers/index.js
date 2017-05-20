@@ -1,62 +1,14 @@
 import { combineReducers } from 'redux';
 
-//auth
-import AuthService from '../utils/AuthService';
-const authid = process.env.REACT_APP_AUTH0_CLIENT_ID;
-const authdomain = process.env.REACT_APP_AUTH0_DOMAIN;
-const auth = new AuthService(authid, authdomain);
-const requireAuth = (nextState, replace) => {
-  if (!auth.loggedIn()) {
-    replace({ pathname: '/' })
-  }
-}
+//import individual reducers:
+import getAllPosts from './getAllPosts.js';
+import getAllUsers from './getAllUsers.js';
+import getUser from './getUser.js';
+import initialState from './initialState.js';
 
-const initialState = {
-  //auth:
-  auth:auth,
-  //app.js:
-  profile:{},
-  updated:false,
-  affiliation:'',
-  //newsfeed:
-  test:'',
-  stories:[],
-  affiliation:'none',
-  editing:false,
-  //userpage:
-  usrpg_updated:false,
-  usrpg_posts:[],
-  //userpanel:
-  expanded:false,
-  //userPic:
-  up_user:{},
-  //header:
-  affiliation:'',
-  previewingAlly:false,
-  //account:
-  updated:false,
-  //postheader:
-  ph_userpreview:false,
-  toggleStatus:false,
-  myPost:false,
-  postId:'',
-  //post:
-  pst_user:{},
-  //posts:
-  editing:false,
-  user:{},
-  posts:{},
-  //postheaderuser:
-  phu_userpreview:false,
-  phu_user:{},
-  //signedin:
-  loggedIn:false,
-  //landingpage:
-  loggedIn:false,
-}
 
 //import actions:
-import { SET_INITIAL_STATE, REQUEST_USER_INFO, RECEIVE_USER_INFO } from '../actions/index';
+import { SET_INITIAL_STATE, REQUEST_USER_INFO, RECEIVE_USER_INFO, GET_PROFILE, REQUEST_ALL_USERS, RECEIVE_ALL_USERS, REQUESTING_POSTS, RECEIVING_POSTS, DISPLAY_USER_PREVIEW, HIDE_USER_PREVIEW, SET_ACTIVE_POST, CLEAR_ACTIVE_POST} from '../actions/index';
 
 const mainApp = (state = initialState, action) => {
   switch(action.type){
@@ -66,31 +18,102 @@ const mainApp = (state = initialState, action) => {
       return getUser(state,action);
     case RECEIVE_USER_INFO:
       return getUser(state,action);
+    case GET_PROFILE:
+      return getProfile(state,action);
+    case REQUEST_ALL_USERS:
+      return getAllUsers(state,action);
+    case RECEIVE_ALL_USERS:
+      return getAllUsers(state,action);
+    case REQUESTING_POSTS:
+      return getAllPosts(state,action);
+    case RECEIVING_POSTS:
+      return getAllPosts(state,action);
+    case DISPLAY_USER_PREVIEW:
+      return displayUserPreview(state,action);
+    case HIDE_USER_PREVIEW:
+      return hideUserPreview(state,action);
+      case SET_ACTIVE_POST:
+        return setActivePost(state,action);
+      case CLEAR_ACTIVE_POST:
+        return clearActivePost(state,action);
     default:
       return state;
   }
 }
 
-//get user info API call reducer:
-const getUser = (state={user:{},isFetching:false,lastUpdated:''},action) => {
-  console.log('userSubmitted run');
-  switch(action.type) {
-    case REQUEST_USER_INFO:
-      return {
+//toggle user preview:
+const displayUserPreview = (state={
+  user_preview_showing:false
+},action)=>{
+  switch(action.type){
+    case DISPLAY_USER_PREVIEW:
+      return{
         ...state,
-        isFetching:true
+        user_preview_showing:action.previewing
+      }
+    default:
+      return state;
   }
-    case RECEIVE_USER_INFO:
+};
+
+const hideUserPreview = (state={
+  user_preview_showing:false
+},action)=>{
+  switch(action.type){
+    case HIDE_USER_PREVIEW:
+      return{
+        ...state,
+        user_preview_showing:action.previewing
+      }
+    default:
+      return state;
+  }
+};
+
+const setActivePost = (state={
+  activePost:false
+},action)=>{
+  switch(action.type){
+    case SET_ACTIVE_POST:
+      return{
+        ...state,
+        activePost:action.post
+      }
+    default:
+      return state;
+  }
+};
+
+const clearActivePost = (state={
+  activePost:false
+},action)=>{
+  switch(action.type){
+    case CLEAR_ACTIVE_POST:
+      return{
+        ...state,
+        activePost:action.post
+      }
+    default:
+      return state;
+  }
+};
+
+
+
+//get user profile info from third party account:
+const getProfile = (state={profile:{}},action) => {
+  switch(action.type) {
+    case GET_PROFILE:
       return {
         ...state,
-        isFetching:false,
-        user:action.results,
-        lastUpdated:action.receivedAt
+        profile:action.profile
       }
     default:
       return state;
   }
 }
+
+
 
 const allReducers = combineReducers({
   mainApp

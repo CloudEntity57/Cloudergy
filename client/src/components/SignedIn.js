@@ -17,7 +17,8 @@ class LandingPage extends Component{
     }
   }
   componentWillMount(){
-    const {auth} = this.props.auth;
+    console.log('signed in mounting');
+    const auth = this.props.auth;
     const user = auth.getProfile();
     console.log('user in welcome: ',user);
 
@@ -35,7 +36,7 @@ class LandingPage extends Component{
     this.props.push('/landing');
   }
   render(){
-    const {auth} = this.props;
+    const auth = this.props.auth;
     return(
       <div>
         You are signed in as:
@@ -50,8 +51,10 @@ class LandingPage extends Component{
 
 function mapStateToProps(state){
   let user = state.allReducers.mainApp.user;
+  let auth = state.allReducers.mainApp.auth;
   return{
-    user
+    user,
+    auth
   }
 }
 

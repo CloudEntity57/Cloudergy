@@ -17,7 +17,7 @@ const wpkey=process.env.REACT_APP_WP_API;
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { mainApp } from '../actions/index';
+import { mainApp, fetchPosts } from '../actions/index';
 
 
 class Newsfeed extends Component{
@@ -30,27 +30,33 @@ class Newsfeed extends Component{
       editing:false
     }
   }
+  componentWillMount(){
+    console.log('newsfeed mount');
+  }
   filterPosts(){
-    let querystring = "http://localhost:3001/posts";
-    let postsquery = jquery.ajax({
-      url:querystring,
-      type:'GET',
-      success:(posts)=>{
-        posts = posts.reverse();
-        posts = posts.filter((val)=>{
-          return val.postedon=='NA';
-        });
-        console.log('posts: ',posts);
-        this.setState({
-          posts:[]
-        });
-        this.setState({
-          posts:posts
-        });
-      }
-    });
+    //convert to Redux API call:
+    // this.props.fetchPosts('');
+
+    // let postsquery = jquery.ajax({
+    //   url:querystring,
+    //   type:'GET',
+    //   success:(posts)=>{
+    //     posts = posts.reverse();
+    //     posts = posts.filter((val)=>{
+    //       return val.postedon=='NA';
+    //     });
+    //     console.log('posts: ',posts);
+    //     this.setState({
+    //       posts:[]
+    //     });
+    //     this.setState({
+    //       posts:posts
+    //     });
+    //   }
+    // });
   }
   componentWillMount(){
+    console.log('newsfeed receive props');
     let user = this.props.user;
     console.log('user in cdm newsfeed: ',user);
     this.setState({
@@ -60,11 +66,11 @@ class Newsfeed extends Component{
       editing:false
     });
     console.log('api key: ',nytkey);
-    let affiliation = this.state.affiliation;
+    let affiliation = user.affiliation;
     console.log('affiliation in newsfeed: ',affiliation);
     let fullfeed=[];
     let result;
-
+    this.props.fetchPosts();
     this.filterPosts();
 
     let callback = (stories)=>{
@@ -89,6 +95,7 @@ class Newsfeed extends Component{
 
   }
   getNews(callback){
+    console.log('getting news');
     nyt_feed(nytkey,callback);
     wp_feed(wpkey,callback);
     breitbart_feed(callback);
@@ -120,17 +127,21 @@ class Newsfeed extends Component{
       editing:editing
     });
   }
+  hideUser(){
+    console.log('hiding user baby');
+  }
   render(){
 
     const profile = this.props.auth.getProfile();
     if(profile !== {}){
       console.log('render profile: ', profile);
     }
-    let posts = (this.state.posts) ? this.state.posts : '';
+    let posts = (this.props.posts) ? this.props.posts : '';
     console.log('posts in newsfeed: ',posts);
     let affiliation = this.props.affiliation;
     console.log('affiliation in render: ',affiliation);
     let stories = this.state.stories;
+    console.log('stories in newsfeed: ',stories);
     switch(affiliation){
       case 'liberal':
       stories = stories.filter((story)=>{
@@ -175,14 +186,19 @@ class Newsfeed extends Component{
 
 function mapStateToProps(state){
   let user = state.allReducers.mainApp.user;
+  let auth = state.allReducers.mainApp.auth;
+  let posts = state.allReducers.mainApp.posts;
   return{
-    user
+    user,
+    auth,
+    posts
   }
 }
 
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
-    mainApp
+    mainApp,
+    fetchPosts
   },dispatch);
 }
 

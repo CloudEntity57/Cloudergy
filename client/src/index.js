@@ -48,13 +48,8 @@ const store = createStore(
   applyMiddleware( thunk, promise, logger, routerMiddleware(history))
 );
 console.log('state: ',store.getState());
-let monkey=1,trout=2;
-const test = {
-  monkey,
-  trout
-}
 
-const routes = makeMainRoutes();
+// const routes = makeMainRoutes();
 
 ReactDOM.render(
 

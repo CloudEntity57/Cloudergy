@@ -33,8 +33,7 @@ class UserPanel extends Component{
       return(
         // <NavLink to={userLink}>
           <div className="user-tab">
-            {user.first_name}&nbsp;
-            {user.last_name}
+            {user.username}
             <div className={color}></div>
             <img id={user.id} className='user-pic' src={user.photo} alt='user image' />
 
@@ -87,8 +86,10 @@ class UserPanel extends Component{
 
 function mapStateToProps(state){
   let user = state.allReducers.mainApp.user;
+  let users = state.allReducers.mainApp.users;
   return{
-    user
+    user,
+    users
   }
 }
 
