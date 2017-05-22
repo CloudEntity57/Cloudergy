@@ -8,7 +8,7 @@ dotenv.config({ silent:true });
 
 //redux links
 import {Provider} from 'react-redux';
-import { createStore, applyMiddleware, combineReducers } from 'redux';
+import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import { connectRouter, ConnectedRouter, routerMiddleware } from 'connected-react-router';
 import thunk from 'redux-thunk';
 import promise from 'redux-promise';
@@ -35,6 +35,8 @@ const requireAuth = (nextState, replace) => {
   }
 }
 
+const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+
 //redux internal links
 import createHistory from 'history/createBrowserHistory';
 const history = createHistory();
@@ -43,10 +45,19 @@ import {} from './actions';
 
 //create store
 
+// old version without compose:
 const store = createStore(
   connectRouter(history)(combineReducers({ allReducers })),
   applyMiddleware( thunk, promise, logger, routerMiddleware(history))
 );
+console.log('state: ',store.getState());
+//
+// const store = createStore(
+//   connectRouter(history)(combineReducers({ allReducers })),
+//   composeEnhancer(
+//   applyMiddleware( thunk, promise, logger, routerMiddleware(history))
+// )
+// );
 console.log('state: ',store.getState());
 
 // const routes = makeMainRoutes();
@@ -54,7 +65,7 @@ console.log('state: ',store.getState());
 ReactDOM.render(
 
   <Provider store={ store }>
-    <ConnectedRouter history = { history }>
+    <ConnectedRouter history={ history }>
       <Route path="/" component={ App } />
     </ConnectedRouter>
   </Provider>

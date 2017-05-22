@@ -14,6 +14,7 @@ import SignedIn from './components/SignedIn';
 import LandingPage from './components/LandingPage';
 
 import AuthService from './utils/AuthService';
+import { ConnectedRouter } from 'connected-react-router';
 const authid = process.env.REACT_APP_AUTH0_CLIENT_ID;
 const authdomain = process.env.REACT_APP_AUTH0_DOMAIN;
 const auth = new AuthService(authid, authdomain);
@@ -52,12 +53,7 @@ class App extends React.Component{
     console.log('app js auth: ',auth);
 
     const profile = auth.getProfile();
-    this.props.fetchUserInfo(profile.clientID);
-    //save user's third party info to store:
-    this.props.getProfile(profile);
-    //find and store all users currently in the API database:
-    this.props.fetchAllUsers('');
-    this.props.fetchPosts('');
+  
 
   }
   componentWillReceiveProps(nextProps){
@@ -195,7 +191,8 @@ class App extends React.Component{
         <Route path="/user" render = {(props)=>(<UserPage {...props} />)} />
         <Route path="/user/:uid" render = {(props)=>(<UserPage {...props} />)} />
         <Route path="/signedin" component={SignedIn} />
-        <Route path="/newsfeed" render = {(props)=>(<Newsfeed />)} onEnter={requireAuth} />
+        <Route path="/newsfeed" render = {(props)=>(<Newsfeed {...props} />)} rand={Math.random()}  onEnter={requireAuth} />
+        {/* <Route path="/newsfeed" component = {Newsfeed} onEnter={requireAuth} /> */}
         <Route path="/login" component={Login} />
       </Switch>
       <UserPanel/>

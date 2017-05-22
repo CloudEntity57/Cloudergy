@@ -1,4 +1,4 @@
-import {REQUESTING_POSTS, RECEIVING_POSTS} from '../actions/index.js';
+import {REQUESTING_POSTS, RECEIVING_POSTS} from '../../actions/index.js';
 const getAllPosts = (state={posts:{}},action) => {
   switch(action.type) {
     case REQUESTING_POSTS:

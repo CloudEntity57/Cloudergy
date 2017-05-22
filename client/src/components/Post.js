@@ -43,10 +43,10 @@ class Post extends Component{
   displayUser(){
     let postid = this.props.post._id
     console.log('displaying');
-    // setTimeout(
-      // ()=>{
+    setTimeout(
+      ()=>{
         this.props.setActivePost(postid);
-      // },1500);
+      },1000);
   }
   hideUser(){
     console.log('hiding');
@@ -94,6 +94,8 @@ class Post extends Component{
     let postId = post._id;
     console.log('post id: ',postId);
     let currentId = post.uid;
+    //to avoid props confusion:
+    let thisuser=user;
     const props = {
       post : (this.props.post) ? this.props.post : '',
       // console.log('Post post: ',post);
@@ -106,9 +108,9 @@ class Post extends Component{
       updatePosts:this.updatePosts.bind(this)
     }
     return(
-      <div onMouseLeave={()=>this.hideUser()} onMouseEnter={()=>this.displayUser()} className="user-post">
-      <div id={id} className="post-panel">
-        <PostHeader {...props} id={user.userid}  user={user}/>
+      <div className="user-post">
+      <div onMouseLeave={()=>this.hideUser()} onMouseEnter={()=>this.displayUser()} id={id} className="post-panel">
+        <PostHeader {...props} id={user.userid}  user={thisuser}/>
 
         <div className="post-text">{text}</div>
         <div className="like-bar">

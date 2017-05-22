@@ -5,7 +5,7 @@ import { hashHistory } from 'react-router';
 class UserHeader extends Component{
 
   render(){
-    var route = hashHistory.getCurrentLocation().pathname;
+    var route = history.location;
     console.log('header is now: ',route);
     const username=this.props.username;
     const userpic=this.props.userpic;

@@ -6,6 +6,7 @@ import Posts from './Posts';
 import UserPanel from './UserPanel';
 import { filterUser } from './Functions';
 import jquery from 'jquery';
+import { refresh } from 'react-router';
 import { hashHistory } from 'react-router';
 import { nyt_feed } from './apis/NYT_API';
 import { wp_feed } from './apis/WP_API';
@@ -17,21 +18,22 @@ const wpkey=process.env.REACT_APP_WP_API;
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { mainApp, fetchPosts } from '../actions/index';
+import { mainApp, fetchPosts, fetchAllUsers,
+fetchUserInfo,
+getProfile
+} from '../actions/index';
 
 
 class Newsfeed extends Component{
   constructor(props){
     super(props);
     this.state={
+      rand:this.props.rand,
       test:'',
       stories:[],
       affiliation:this.props.affiliation,
       editing:false
     }
-  }
-  componentWillMount(){
-    console.log('newsfeed mount');
   }
   filterPosts(){
     //convert to Redux API call:
@@ -56,7 +58,15 @@ class Newsfeed extends Component{
     // });
   }
   componentWillMount(){
+    let profile=this.props.auth.getProfile();
+    this.props.fetchUserInfo(profile.clientID);
+    //save user's third party info to store:
+    this.props.getProfile(profile);
+    //find and store all users and posts currently in the API database:
+    this.props.fetchAllUsers('');
+    this.props.fetchPosts('');
     console.log('newsfeed receive props');
+    let rand = this.props.rand;
     let user = this.props.user;
     console.log('user in cdm newsfeed: ',user);
     this.setState({
@@ -198,7 +208,10 @@ function mapStateToProps(state){
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
     mainApp,
-    fetchPosts
+    fetchPosts,
+    fetchAllUsers,
+    fetchUserInfo,
+    getProfile
   },dispatch);
 }
 

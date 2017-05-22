@@ -1,5 +1,5 @@
 //auth
-import AuthService from '../utils/AuthService';
+import AuthService from '../../utils/AuthService';
 const authid = process.env.REACT_APP_AUTH0_CLIENT_ID;
 const authdomain = process.env.REACT_APP_AUTH0_DOMAIN;
 const auth = new AuthService(authid, authdomain);
@@ -11,6 +11,7 @@ const requireAuth = (nextState, replace) => {
 
 const initialState = {
   activePost:'',
+  userPageId:'',
   //auth:
   auth:auth,
   //app.js:

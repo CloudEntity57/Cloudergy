@@ -1,14 +1,14 @@
 import { combineReducers } from 'redux';
 
 //import individual reducers:
-import getAllPosts from './getAllPosts.js';
-import getAllUsers from './getAllUsers.js';
-import getUser from './getUser.js';
-import initialState from './initialState.js';
+import getAllPosts from './app/getAllPosts.js';
+import getAllUsers from './app/getAllUsers.js';
+import getUser from './app/getUser.js';
+import initialState from './app/initialState.js';
 
 
 //import actions:
-import { SET_INITIAL_STATE, REQUEST_USER_INFO, RECEIVE_USER_INFO, GET_PROFILE, REQUEST_ALL_USERS, RECEIVE_ALL_USERS, REQUESTING_POSTS, RECEIVING_POSTS, DISPLAY_USER_PREVIEW, HIDE_USER_PREVIEW, SET_ACTIVE_POST, CLEAR_ACTIVE_POST} from '../actions/index';
+import { SET_INITIAL_STATE, REQUEST_USER_INFO, RECEIVE_USER_INFO, GET_PROFILE, REQUEST_ALL_USERS, RECEIVE_ALL_USERS, REQUESTING_POSTS, RECEIVING_POSTS, DISPLAY_USER_PREVIEW, HIDE_USER_PREVIEW, SET_ACTIVE_POST, CLEAR_ACTIVE_POST, SET_USERPAGE_ID} from '../actions/index';
 
 const mainApp = (state = initialState, action) => {
   switch(action.type){
@@ -16,6 +16,8 @@ const mainApp = (state = initialState, action) => {
       return state;
     case REQUEST_USER_INFO:
       return getUser(state,action);
+    case SET_USERPAGE_ID:
+      return setUserPageId(state,action);
     case RECEIVE_USER_INFO:
       return getUser(state,action);
     case GET_PROFILE:
@@ -98,7 +100,18 @@ const clearActivePost = (state={
   }
 };
 
-
+//get user profile info from third party account:
+const setUserPageId = (state={userPageId:''},action) => {
+  switch(action.type) {
+    case SET_USERPAGE_ID:
+      return {
+        ...state,
+        userPageId:action.id
+      }
+    default:
+      return state;
+  }
+}
 
 //get user profile info from third party account:
 const getProfile = (state={profile:{}},action) => {

@@ -40,6 +40,12 @@ export const hideUserPreview = () =>({
   previewing:false
 })
 
+export const SET_USERPAGE_ID = "SET_USERPAGE_ID";
+export const setUserPageId = (id) =>({
+  type:SET_USERPAGE_ID,
+  id
+})
+
 
 //fetch API call to get user info:
 let apiCall = (reqType, recType, url1,url2) => {

@@ -1,4 +1,4 @@
-import {REQUEST_ALL_USERS, RECEIVE_ALL_USERS} from '../actions/index.js';
+import {REQUEST_ALL_USERS, RECEIVE_ALL_USERS} from '../../actions/index.js';
 
 const getAllUsers = (state={users:{}},action) => {
   switch(action.type) {

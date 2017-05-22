@@ -1,4 +1,4 @@
-import { REQUEST_USER_INFO, RECEIVE_USER_INFO } from '../actions/index.js';
+import { REQUEST_USER_INFO, RECEIVE_USER_INFO } from '../../actions/index.js';
 
 const getUser = (state={user:{},isFetching:false,lastUpdated:''},action) => {
   console.log('userSubmitted run');

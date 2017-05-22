@@ -2,14 +2,15 @@ import React, { Component } from 'react';
 import jquery from 'jquery';
 // import Functions from './Functions';
 import NavLink from './NavLink';
+import FilterLink from './FilterLink';
 import { hashHistory } from 'react-router';
 let functionsModule = require('./Functions');
 let Functions = new functionsModule();
-
+import { push } from 'connected-react-router';
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { mainApp,hideUserPreview,displayUserPreview,setActivePost, clearActivePost } from '../actions/index';
+import { mainApp,hideUserPreview,displayUserPreview,setActivePost, clearActivePost, setUserPageId } from '../actions/index';
 
 class PostHeader extends Component{
   constructor(props){
@@ -37,7 +38,7 @@ class PostHeader extends Component{
       postId:postId
     });
     // let user = (nextProps.id) ? nextProps.id : '';
-    let user = nextProps.user[0].userid;
+    let userid = this.props.thisuser[0].userid;
     // console.log(currentUserId,' vs ',user);
     // Functions.getUser(uid).then((val)=>{
     //   this.setState({
@@ -45,7 +46,7 @@ class PostHeader extends Component{
     //   });
     // });
     // console.log('other person posting: ',user);
-    if(currentUserId == user){
+    if(currentUserId == userid){
       // console.log('cuid true');
       this.setState({
         myPost:true
@@ -63,7 +64,28 @@ class PostHeader extends Component{
         currentUserId:currentUserId
       });
     }
-    Functions.allyCheck(user,currentUserId,callback);
+    // Functions.allyCheck(userid,currentUserId,callback);
+    let user = this.props.user;
+    let friends = user[0].allies;
+    let isFriend = false;
+    // console.log('current friends: ',friends);
+    for(let i=0; i<friends.length; i++){
+      if(friends[i]==userid){
+        isFriend = true;
+        callback(isFriend);
+      }else{
+        let reqsList = user[0].ally_requests_sent;
+        for(let i=0; i<reqsList.length; i++){
+          if(userid == reqsList[i]){
+            isFriend="invited";
+            callback(isFriend);
+            return;
+          }else{
+            callback(false);
+          }
+        }
+      }
+    }
   }
   offerAllegiance(e){
     e.preventDefault();
@@ -105,13 +127,13 @@ class PostHeader extends Component{
     });
   }
   displayUser(e){
-    // console.log('displaying!');
+    console.log('displaying!');
     // this.props.setActivePost(this.props.id)
-    setTimeout(()=>{
+    // setTimeout(()=>{
       this.setState({
         userpreview:true
       });
-    },1000);
+    // },1000);
   }
   hideUser(e){
     // setTimeout(()=>{
@@ -137,7 +159,7 @@ class PostHeader extends Component{
     let userpic,teamcolor,largephoto;
     let userObj = this.props.userObject;
     if(this.props.userObject !== undefined ){
-      user = userObj[currentUserId];
+      user = this.props.userObject[currentUserId];
     }
     largephoto = user.largephoto
     embedded_pic = (<img className="img-responsive user-preview-pic" src={largephoto} alt="user photo" />);
@@ -186,17 +208,27 @@ class PostHeader extends Component{
         break;
     }
     let embedded_pic = (<img className="img-responsive user-preview-pic" src={largephoto} alt="user photo" />);
-    let userlink = "/user/"+user.userid;
+    let userlink = "/user";
 // User Dropdown div:
     let userinfo = (postId==this.props.activePost && this.state.userpreview) ? (
-      <div onMouseLeave={this.hideUser.bind(this)} className="user-preview-box">
-        <NavLink to={userlink}>
+      <div className="user-preview-box">
+        <NavLink onClick={()=>this.props.setUserPageId(user.userid)} to={userlink}>
         <div className="user-preview-header">
           <div className="user-preview-pointer"></div>
           <div className="opaque-connector"></div>
           <a href="#"><span>{ user.username }</span></a>
         </div>
         </NavLink>
+        {/* <div>
+        <div className="user-preview-header">
+          <div className="user-preview-pointer"></div>
+          <div className="opaque-connector"></div>
+          <a onClick={()=>{
+            this.props.setUserPageId(user.userid)
+            this.props.push('/user')
+          }}><span>{ user.username }</span></a>
+        </div>
+      </div> */}
           { embedded_pic }
         <div className="user-preview-footer">
           <a href="#"><div id={user.userid} onClick={offerAllegiance}>{ally_status}</div></a>
@@ -221,10 +253,15 @@ class PostHeader extends Component{
         </div>
         <div className="post-header-text">
           <span className="post-username">
-            <NavLink to={userlink}><a href="#" onMouseEnter={this.displayUser.bind(this)}>
+            <FilterLink filter={userlink}><a href="#" onMouseEnter={this.displayUser.bind(this)} onMouseLeave={this.hideUser.bind(this)}>
               { user.username }
-            </a></NavLink>
-            {userinfo}
+              {userinfo}
+            </a></FilterLink>
+          {/* <a onClick={()=>this.props.push('/user')} onMouseEnter={this.displayUser.bind(this)} onMouseLeave={this.hideUser.bind(this)}>
+              { user.username }
+              {userinfo}
+            </a> */}
+
           </span>
           <div className="post-date">{date}</div>
         </div>
@@ -256,7 +293,9 @@ function mapDispatchToProps(dispatch){
     hideUserPreview,
     displayUserPreview,
     setActivePost,
-    clearActivePost
+    clearActivePost,
+    setUserPageId,
+    push
   },dispatch);
 }
 
