@@ -42,7 +42,7 @@ class LandingPage extends Component{
   logOut(){
     const {auth} = this.props;
     auth.logout();
-    this.props.push('/landing');
+    this.props.push('/');
   }
   render(){
     const {auth} = this.props;

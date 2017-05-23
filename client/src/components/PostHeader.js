@@ -38,7 +38,7 @@ class PostHeader extends Component{
       postId:postId
     });
     // let user = (nextProps.id) ? nextProps.id : '';
-    let userid = this.props.thisuser[0].userid;
+    let userid = this.props.user[0].userid;
     // console.log(currentUserId,' vs ',user);
     // Functions.getUser(uid).then((val)=>{
     //   this.setState({
