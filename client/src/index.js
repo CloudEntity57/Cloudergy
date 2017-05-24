@@ -29,11 +29,11 @@ import AuthService from './utils/AuthService';
 const authid = process.env.REACT_APP_AUTH0_CLIENT_ID;
 const authdomain = process.env.REACT_APP_AUTH0_DOMAIN;
 const auth = new AuthService(authid, authdomain);
-const requireAuth = (nextState, replace) => {
-  if (!auth.loggedIn()) {
-    replace({ pathname: '/' })
-  }
-}
+// const requireAuth = (nextState, replace) => {
+//   if (!auth.loggedIn()) {
+//     replace({ pathname: '/' })
+//   }
+// }
 
 const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 

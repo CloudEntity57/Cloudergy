@@ -2,11 +2,12 @@ import React, { Component, PropTypes as T  } from 'react';
 import AuthService from '../utils/AuthService'
 // import { hashHistory } from 'react-router';
 import { filterUser } from './Functions';
+import jquery from 'jquery';
 
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { mainApp } from '../actions/index';
+import { mainApp, doAuthentication, login} from '../actions/index';
 import { push } from 'connected-react-router';
 
 class LandingPage extends Component{
@@ -16,12 +17,12 @@ class LandingPage extends Component{
       loggedIn:false
     }
   }
-  componentWillMount(){
+  componentWillReceiveProps(){
     console.log('auth in landing page: ',this.props.auth);
     const auth = this.props.auth;
     const token = auth.getToken();
     console.log('landing page mounting');
-    console.log('user id token: ',token);
+    console.log('user id token: ',this.props.token);
     if(token){
       // filterUser();
       this.props.push('/newsfeed');
@@ -37,7 +38,10 @@ class LandingPage extends Component{
   // }
 
   handleClick(e){
-    this.props.push('/login');
+    // this.props.push('/login');
+    console.log('handling click');
+    this.props.login();
+    // jquery.when(()=>{this.props.doAuthentication();}).done(()=>{this.props.push('/newsfeed')});
   }
   logOut(){
     const {auth} = this.props;
@@ -49,7 +53,7 @@ class LandingPage extends Component{
     return(
       <div>
         Welcome - new users sign up and existing users sign in here!
-        <button type="submit" onClick={auth.login}>Sign In</button>
+        <button type="submit" onClick={()=>this.handleClick()}>Sign In</button>
 
       </div>
     );
@@ -60,15 +64,19 @@ class LandingPage extends Component{
 function mapStateToProps(state){
   let user = state.allReducers.mainApp.user;
   let auth = state.allReducers.mainApp.auth;
+  let token = state.allReducers.mainApp.token;
   return{
     user,
-    auth
+    auth,
+    token
   }
 }
 
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
     mainApp,
+    doAuthentication,
+    login,
     push
   },dispatch);
 }

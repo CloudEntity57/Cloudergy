@@ -119,3 +119,60 @@ export const fetchPosts = apiCall(REQUESTING_POSTS, RECEIVING_POSTS,'http://loca
 
 //create user
 export const createNewUser = postApiCall(REQUESTING_T0_POST_PROFILE_INFO,RECEIVING_POST_CONFIRMATION,data=null,'http://localhost:3001/user/','');
+
+//auth0 actions:
+export const SHOW_LOCK = 'SHOW_LOCK'
+export const LOCK_SUCCESS = 'LOCK_SUCCESS'
+export const LOCK_ERROR = 'LOCK_ERROR'
+function showLock() {
+  return {
+    type: SHOW_LOCK
+  }
+}
+
+function lockSuccess(profile, token) {
+  return {
+    type: LOCK_SUCCESS,
+    profile,
+    token
+  }
+}
+
+function lockError(err) {
+  return {
+    type: LOCK_ERROR,
+    err
+  }
+}
+
+const authid = process.env.REACT_APP_AUTH0_CLIENT_ID;
+const authdomain = process.env.REACT_APP_AUTH0_DOMAIN;
+import Auth0Lock from 'auth0-lock'
+const lock = new Auth0Lock(authid, authdomain);
+
+export function login() {
+  // display lock widget
+  return dispatch => {
+    lock.show();
+  }
+}
+
+// Listen to authenticated event and get the profile of the user
+export function doAuthentication() {
+  console.log('doing auth');
+    return dispatch => {
+      lock.on("authenticated", function(authResult) {
+            lock.getProfile(authResult.idToken, function(error, profile) {
+
+              if (error) {
+                // handle error
+                return dispatch(lockError(error))
+              }
+              console.log('redux profile: ',profile, ' redux id token: ',authResult.idToken);
+              localStorage.setItem('profile', JSON.stringify(profile))
+              localStorage.setItem('id_token', authResult.idToken)
+              return dispatch(lockSuccess(profile,authResult.idToken))
+            });
+      });
+    }
+}

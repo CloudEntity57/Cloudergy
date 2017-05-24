@@ -8,7 +8,7 @@ import initialState from './app/initialState.js';
 
 
 //import actions:
-import { SET_INITIAL_STATE, REQUEST_USER_INFO, RECEIVE_USER_INFO, GET_PROFILE, REQUEST_ALL_USERS, RECEIVE_ALL_USERS, REQUESTING_POSTS, RECEIVING_POSTS, DISPLAY_USER_PREVIEW, HIDE_USER_PREVIEW, SET_ACTIVE_POST, CLEAR_ACTIVE_POST, SET_USERPAGE_ID} from '../actions/index';
+import { SET_INITIAL_STATE, REQUEST_USER_INFO, RECEIVE_USER_INFO, GET_PROFILE, REQUEST_ALL_USERS, RECEIVE_ALL_USERS, REQUESTING_POSTS, RECEIVING_POSTS, DISPLAY_USER_PREVIEW, HIDE_USER_PREVIEW, SET_ACTIVE_POST, CLEAR_ACTIVE_POST, SET_USERPAGE_ID, SHOW_LOCK, LOCK_SUCCESS, LOCK_ERROR} from '../actions/index';
 
 const mainApp = (state = initialState, action) => {
   switch(action.type){
@@ -34,14 +34,53 @@ const mainApp = (state = initialState, action) => {
       return displayUserPreview(state,action);
     case HIDE_USER_PREVIEW:
       return hideUserPreview(state,action);
-      case SET_ACTIVE_POST:
-        return setActivePost(state,action);
-      case CLEAR_ACTIVE_POST:
-        return clearActivePost(state,action);
+    case SET_ACTIVE_POST:
+      return setActivePost(state,action);
+    case CLEAR_ACTIVE_POST:
+      return showLock(state,action);
+    case SHOW_LOCK:
+      return showLock(state,action);
+    case LOCK_SUCCESS:
+      return lockSuccess(state,action);
+    case LOCK_ERROR:
+      return lockError(state,action);
     default:
       return state;
   }
 }
+
+//auth0-lock
+const showLock = (state={lockShowing:false},action) =>{
+  switch(action.type){
+    case SHOW_LOCK:
+    return{
+      ...state,
+      lockShowing:true
+    }
+  }
+};
+
+const lockSuccess = (state={profile:{}},action) =>{
+  switch(action.type){
+    case LOCK_SUCCESS:
+      console.log('the token is:: ',action.token);
+    return{
+      ...state,
+      profile:action.profile,
+      token:action.token
+    }
+  }
+};
+
+const lockError = (state={profile:{},token:''},action) =>{
+  switch(action.type){
+    case LOCK_ERROR:
+    return{
+      ...state,
+      lockError:action.err
+    }
+  }
+};
 
 //toggle user preview:
 const displayUserPreview = (state={

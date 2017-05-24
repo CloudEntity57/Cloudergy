@@ -23,14 +23,21 @@ console.log('auth : ', auth);
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { mainApp, fetchUserInfo, fetchPosts, getProfile,createNewUser, fetchAllUsers } from './actions/index';
+import { mainApp, fetchUserInfo, fetchPosts, getProfile,createNewUser, fetchAllUsers,doAuthentication } from './actions/index';
 import { push } from 'connected-react-router';
 
 // validate authentication for private routes
 const requireAuth = (nextState, replace) => {
-  if (!auth.loggedIn()) {
-    replace({ pathname: '/' })
-  }
+  jquery.when(()=>{
+    this.props.doAuthentication();
+    console.log('checking token: ',this.props.token);
+  }).done(()=>{
+    if (!this.props.token) {
+      console.log('no token!');
+      replace({ pathname: '/' })
+    }
+  });
+
 }
 
 // authorize(e){
@@ -41,6 +48,7 @@ class App extends React.Component{
 
   constructor(props){
     super(props);
+    this.props.doAuthentication();
     this.state={
       profile:{},
       updated:false,
@@ -53,11 +61,11 @@ class App extends React.Component{
     console.log('app js auth: ',auth);
 
     const profile = auth.getProfile();
-  
+
 
   }
   componentWillReceiveProps(nextProps){
-    let user = nextProps.user;
+    let user = this.props.user;
     console.log('user in willreceive: ',user);
     //if user is new, save auth username, affiliation, first, last, pic, big pic, userid, requests sent, received in STORE:
     //all of this is already saved in store under 'user'
@@ -126,7 +134,7 @@ class App extends React.Component{
     // });
   }
   logOut(){
-    this.props.push('/landing');
+    this.props.push('/');
     console.log('logging out');
     auth.logout();
   }
@@ -191,7 +199,7 @@ class App extends React.Component{
         <Route path="/user" render = {(props)=>(<UserPage {...props} />)} />
         <Route path="/user/:uid" render = {(props)=>(<UserPage {...props} />)} />
         <Route path="/signedin" component={SignedIn} />
-        <Route path="/newsfeed" render = {(props)=>(<Newsfeed {...props} />)} rand={Math.random()}  onEnter={requireAuth} />
+        <Route path="/newsfeed" render = {(props)=>(<Newsfeed {...props} />)} onEnter={requireAuth} />
         {/* <Route path="/newsfeed" component = {Newsfeed} onEnter={requireAuth} /> */}
         <Route path="/login" component={Login} />
       </Switch>
@@ -205,10 +213,12 @@ function mapStateToProps(state){
   let user = state.allReducers.mainApp.user;
   let profile = state.allReducers.mainApp.profile;
   let users = state.allReducers.mainApp.users;
+  let token = state.allReducers.mainApp.token;
   return{
     user,
     users,
-    profile
+    profile,
+    token
   }
 }
 
@@ -220,6 +230,7 @@ function mapDispatchToProps(dispatch){
     getProfile,
     createNewUser,
     fetchAllUsers,
+    doAuthentication,
     fetchPosts
   },dispatch);
 }
