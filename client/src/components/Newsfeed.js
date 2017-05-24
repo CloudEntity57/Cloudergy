@@ -58,15 +58,16 @@ class Newsfeed extends Component{
     // });
   }
   componentWillMount(){
-    let profile=this.props.auth.getProfile();
+    let profile=this.props.profile;
     this.props.fetchUserInfo(profile.clientID);
     //save user's third party info to store:
     this.props.getProfile(profile);
     //find and store all users and posts currently in the API database:
     this.props.fetchAllUsers('');
     this.props.fetchPosts('');
+  // }
+  // componentWillReceiveProps(){
     console.log('newsfeed receive props');
-    let rand = this.props.rand;
     let user = this.props.user;
     console.log('user in cdm newsfeed: ',user);
     this.setState({
@@ -198,10 +199,12 @@ function mapStateToProps(state){
   let user = state.allReducers.mainApp.user;
   let auth = state.allReducers.mainApp.auth;
   let posts = state.allReducers.mainApp.posts;
+  let profile = state.allReducers.mainApp.profile;
   return{
     user,
     auth,
-    posts
+    posts,
+    profile
   }
 }
 

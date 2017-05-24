@@ -61,7 +61,9 @@ class App extends React.Component{
     console.log('app js auth: ',auth);
 
     const profile = auth.getProfile();
-
+    // this.props.fetchUserInfo(profile.clientID);
+    // //save user's third party info to store:
+    // this.props.getProfile(profile);
 
   }
   componentWillReceiveProps(nextProps){
@@ -83,7 +85,7 @@ class App extends React.Component{
            ally_invitations_received:['12345']
          };
       //  this.props.createNewUser(userData);
-       this.props.push( '/account');
+       this.props.push('/account');
      }else{
        console.log('app.js has confirmed user exists');
      }
@@ -200,9 +202,20 @@ class App extends React.Component{
         <Route path="/user/:uid" render = {(props)=>(<UserPage {...props} />)} />
         <Route path="/signedin" component={SignedIn} />
         <Route path="/newsfeed" render = {(props)=>(<Newsfeed {...props} />)} onEnter={requireAuth} />
-        {/* <Route path="/newsfeed" component = {Newsfeed} onEnter={requireAuth} /> */}
+        <Route path="/newsfeed" component = {Newsfeed} onEnter={requireAuth} /> */}
         <Route path="/login" component={Login} />
       </Switch>
+
+
+        {/* <Route exact path="/" component={LandingPage} />
+        <Route path="/account" component={Account} />
+        <Route path="/user" component = {UserPage} />
+        <Route path="/signedin" component={SignedIn} />
+        <Route path="/newsfeed" component = {Newsfeed} onEnter={requireAuth} />
+        {/* <Route path="/newsfeed" component = {Newsfeed} onEnter={requireAuth} /> */}
+        {/* <Route path="/login" component={Login}  */}
+
+
       <UserPanel/>
     </div>
   )
