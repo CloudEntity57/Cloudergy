@@ -20,6 +20,8 @@ const getAllUsers = (state={users:{}},action) => {
         users:action.results,
         userObject
       }
+      default:
+      return state;
   }
 }
 

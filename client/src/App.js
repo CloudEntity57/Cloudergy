@@ -3,6 +3,8 @@ import jquery from 'jquery';
 import './App.css';
 import { Switch, Route } from 'react-router-dom';
 // import { hashHistory } from 'react-router';
+import createHistory from 'history/createBrowserHistory';
+const history = createHistory();
 
 import Header from './components/Header';
 import UserPanel from './components/UserPanel';
@@ -23,7 +25,7 @@ console.log('auth : ', auth);
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { mainApp, fetchUserInfo, fetchPosts, getProfile,createNewUser, fetchAllUsers,doAuthentication } from './actions/index';
+import { mainApp, fetchUserInfo, fetchPosts, saveProfile,createNewUser, fetchAllUsers,doAuthentication } from './actions/index';
 import { push } from 'connected-react-router';
 
 // validate authentication for private routes
@@ -59,16 +61,16 @@ class App extends React.Component{
     console.log('mounting App.js!!!');
     let targetURL = "http://localhost:3001/user/"
     console.log('app js auth: ',auth);
-
-    const profile = auth.getProfile();
+    // const profile = auth.getProfile();
     // this.props.fetchUserInfo(profile.clientID);
     // //save user's third party info to store:
-    // this.props.getProfile(profile);
+    // this.props.saveProfile(profile);
 
   }
   componentWillReceiveProps(nextProps){
     let user = this.props.user;
     console.log('user in willreceive: ',user);
+
     //if user is new, save auth username, affiliation, first, last, pic, big pic, userid, requests sent, received in STORE:
     //all of this is already saved in store under 'user'
     if(user !=='' && user.length===0){
@@ -157,7 +159,7 @@ class App extends React.Component{
   }
   render(){
    let profile = auth.getProfile();
-   let children = null;
+   let children = this.props.children;
    let user = (this.state.user) ? this.state.user : '';
    console.log('user in app.js render: ',user);
   //  let affiliation = (this.state.affiliation) ? this.state.affiliation : '';
@@ -194,17 +196,17 @@ class App extends React.Component{
    return (
     <div>
       <Header uid={user.uid} affiliation={affiliation} toggle_affiliation={this.toggle_affiliation.bind(this)} logOut={this.logOut.bind(this)}/>
-      {/* {children || <LandingPage />} */}
-      <Switch>
-        <Route exact path="/" render = {(props)=>(<LandingPage />)} />
+      {children || <LandingPage />}
+    {/* <Switch> */}
+        {/* <Route exact path="/" render = {(props)=>(<LandingPage />)} />
         <Route path="/account" component={Account} />
         <Route path="/user" render = {(props)=>(<UserPage {...props} />)} />
         <Route path="/user/:uid" render = {(props)=>(<UserPage {...props} />)} />
         <Route path="/signedin" component={SignedIn} />
         <Route path="/newsfeed" render = {(props)=>(<Newsfeed {...props} />)} onEnter={requireAuth} />
-        <Route path="/newsfeed" component = {Newsfeed} onEnter={requireAuth} /> */}
-        <Route path="/login" component={Login} />
-      </Switch>
+        <Route path="/newsfeed" component = {Newsfeed} onEnter={requireAuth} />
+        <Route path="/login" component={Login} /> */}
+      {/* </Switch> */}
 
 
         {/* <Route exact path="/" component={LandingPage} />
@@ -214,6 +216,18 @@ class App extends React.Component{
         <Route path="/newsfeed" component = {Newsfeed} onEnter={requireAuth} />
         {/* <Route path="/newsfeed" component = {Newsfeed} onEnter={requireAuth} /> */}
         {/* <Route path="/login" component={Login}  */}
+
+        {/* <ConnectedRouter history={history}>
+          <div>
+        <Route exact path="/" render = {(props)=>(<LandingPage />)} />
+        <Route path="/account" component={Account} />
+        <Route path="/user" render = {(props)=>(<UserPage {...props} />)} />
+        <Route path="/user/:uid" render = {(props)=>(<UserPage {...props} />)} />
+        <Route path="/signedin" component={SignedIn} />
+        <Route path="/newsfeed" render = {(props)=>(<Newsfeed {...props} />)} onEnter={requireAuth} />
+        <Route path="/newsfeed" component = {Newsfeed} onEnter={requireAuth} />
+      </div>
+      </ConnectedRouter> */}
 
 
       <UserPanel/>
@@ -240,7 +254,7 @@ function mapDispatchToProps(dispatch){
     mainApp,
     fetchUserInfo,
     push,
-    getProfile,
+    saveProfile,
     createNewUser,
     fetchAllUsers,
     doAuthentication,

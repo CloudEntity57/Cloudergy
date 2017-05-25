@@ -20,7 +20,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { mainApp, fetchPosts, fetchAllUsers,
 fetchUserInfo,
-getProfile
+saveProfile
 } from '../actions/index';
 
 
@@ -58,52 +58,104 @@ class Newsfeed extends Component{
     // });
   }
   componentWillMount(){
-    let profile=this.props.profile;
-    this.props.fetchUserInfo(profile.clientID);
-    //save user's third party info to store:
-    this.props.getProfile(profile);
-    //find and store all users and posts currently in the API database:
-    this.props.fetchAllUsers('');
-    this.props.fetchPosts('');
+    // let profile=this.props.profile;
+    // this.props.fetchUserInfo(profile.clientID);
+    // //save user's third party info to store:
+    // this.props.getProfile(profile);
+    // // //find and store all users and posts currently in the API database:
+    // this.props.fetchAllUsers('');
+    // this.props.fetchPosts('');
   // }
+  console.log('mounting newsfeed');
+  const profile = this.props.auth.getProfile();
+  console.log('newsfeed profile: ',profile);
+  this.props.fetchUserInfo(profile.clientID);
+  //save user's third party info to store:
+  this.props.saveProfile(profile);
+  // //find and store all users and posts currently in the API database:
+  this.props.fetchAllUsers('');
+  this.props.fetchPosts('');
   // componentWillReceiveProps(){
-    console.log('newsfeed receive props');
-    let user = this.props.user;
-    console.log('user in cdm newsfeed: ',user);
-    this.setState({
-      user:user
-    });
-    this.setState({
-      editing:false
-    });
-    console.log('api key: ',nytkey);
-    let affiliation = user.affiliation;
-    console.log('affiliation in newsfeed: ',affiliation);
-    let fullfeed=[];
-    let result;
-    this.props.fetchPosts();
-    this.filterPosts();
-
-    let callback = (stories)=>{
-      console.log('stories in callback: ',stories);
-      fullfeed=fullfeed.concat(stories);
+    // console.log('newsfeed receive props');
+    // let user = this.props.user;
+    // console.log('user in cdm newsfeed: ',user);
+    // this.setState({
+    //   user:user
+    // });
+    // this.setState({
+    //   editing:false
+    // });
+    // console.log('api key: ',nytkey);
+    // let affiliation = user.affiliation;
+    // console.log('affiliation in newsfeed: ',affiliation);
+    // let fullfeed=[];
+    // let result;
+    // // this.props.fetchPosts('');
+    // // this.filterPosts();
+    //
+    // let callback = (stories)=>{
+    //   console.log('stories in callback: ',stories);
+    //   fullfeed=fullfeed.concat(stories);
+    //   this.setState({
+    //     stories:fullfeed
+    //   });
+    // }
+    //   this.getNews(callback);
+  }
+  componentWillReceiveProps(nextProps){
+    console.log('receiving newsfeed');
+    const profile = this.props.auth.getProfile();
+    console.log('newsfeed profile: ',profile);
+    // componentWillReceiveProps(){
+      console.log('newsfeed receive props');
+      let user = nextProps.user;
+      console.log('user in cdm newsfeed: ',user);
       this.setState({
-        stories:fullfeed
+        user:user
       });
-    }
-      this.getNews(callback);
+      this.setState({
+        editing:false
+      });
+      console.log('api key: ',nytkey);
+      let affiliation = user.affiliation;
+      console.log('affiliation in newsfeed: ',affiliation);
+      let fullfeed=[];
+      let result;
+      // this.props.fetchPosts('');
+      // this.filterPosts();
+
+      let callback = (stories)=>{
+        console.log('stories in callback: ',stories);
+        fullfeed=fullfeed.concat(stories);
+        this.setState({
+          stories:fullfeed
+        });
+      }
+        this.getNews(callback);
   }
   updatePosts(){
-    this.filterPosts();
+    let posts=this.props.posts;
+
     console.log('updating!!!');
   }
   componentDidMount(){
+    console.log('news did mount');
     // let user = this.props.user;
     // console.log('user in cdm newsfeed: ',user);
     // this.setState({
     //   user:this.props.user
     // });
-
+    // this.props.fetchPosts();
+  }
+  // componentWillReceiveProps(){
+  //   let x = this.props.rand;
+  //   console.log('x: ',x);
+  //   this.setState({
+  //     x
+  //   });
+  // }
+  componentWillUpdate(){
+    console.log('news will update');
   }
   getNews(callback){
     console.log('getting news');
@@ -142,7 +194,6 @@ class Newsfeed extends Component{
     console.log('hiding user baby');
   }
   render(){
-
     const profile = this.props.auth.getProfile();
     if(profile !== {}){
       console.log('render profile: ', profile);
@@ -200,11 +251,15 @@ function mapStateToProps(state){
   let auth = state.allReducers.mainApp.auth;
   let posts = state.allReducers.mainApp.posts;
   let profile = state.allReducers.mainApp.profile;
+  let rand = state.allReducers.mainApp.rand;
+  let router=state.router;
   return{
     user,
     auth,
     posts,
-    profile
+    profile,
+    rand,
+    router
   }
 }
 
@@ -214,7 +269,7 @@ function mapDispatchToProps(dispatch){
     fetchPosts,
     fetchAllUsers,
     fetchUserInfo,
-    getProfile
+    saveProfile
   },dispatch);
 }
 

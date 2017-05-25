@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
 import { Route, Switch, Miss } from 'react-router-dom';
 import dotenv from 'dotenv';
 import { makeMainRoutes } from './routes.js';
@@ -16,6 +15,9 @@ import { createLogger } from 'redux-logger';
 const logger = createLogger();
 
 //import components
+import App from './App';
+import {withRouter} from 'react-router';
+const NonBlockApp = withRouter(App)
 import Header from './components/Header';
 import UserPanel from './components/UserPanel';
 import Login from './components/Login';
@@ -61,12 +63,24 @@ console.log('state: ',store.getState());
 console.log('state: ',store.getState());
 
 // const routes = makeMainRoutes();
-
+let rand = Math.random();
+let props={
+  rand
+}
 ReactDOM.render(
 
   <Provider store={ store }>
     <ConnectedRouter history={ history }>
-      <Route path="/" component={ App } />
+      <NonBlockApp >
+        <Route exact path="/" render = {(props)=>(<LandingPage />)} />
+        <Route path="/account" component={Account} />
+        {/* <Route path="/user" render = {(props)=>(<UserPage {...props} />)} /> */}
+        <Route path="/user" component = {UserPage} />
+        <Route path="/signedin" component={SignedIn} />
+        {/* <Route path="/newsfeed" render = {(props)=>(<Newsfeed {...props} />)} /> */}
+        <Route path="/newsfeed" component = {Newsfeed}/>
+        <Route path="/login" component={Login} />
+      </NonBlockApp>
     </ConnectedRouter>
   </Provider>
   ,

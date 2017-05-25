@@ -38,6 +38,8 @@ class PostHeader extends Component{
       postId:postId
     });
     // let user = (nextProps.id) ? nextProps.id : '';
+    let user = this.props.user;
+    console.log('mystery user: ',user);
     let userid = this.props.user[0].userid;
     // console.log(currentUserId,' vs ',user);
     // Functions.getUser(uid).then((val)=>{
@@ -65,7 +67,7 @@ class PostHeader extends Component{
       });
     }
     // Functions.allyCheck(userid,currentUserId,callback);
-    let user = this.props.user;
+    // let user = this.props.user;
     let friends = user[0].allies;
     let isFriend = false;
     // console.log('current friends: ',friends);

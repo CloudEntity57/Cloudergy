@@ -110,7 +110,7 @@ class Post extends Component{
     return(
       <div className="user-post">
       <div onMouseLeave={()=>this.hideUser()} onMouseEnter={()=>this.displayUser()} id={id} className="post-panel">
-        <PostHeader {...props} id={user.userid}  user={thisuser}/>
+        <PostHeader {...props} />
 
         <div className="post-text">{text}</div>
         <div className="like-bar">

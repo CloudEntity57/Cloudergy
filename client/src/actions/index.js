@@ -2,7 +2,7 @@ import fetch from 'isomorphic-fetch';
 
 export const SET_INITIAL_STATE = "SET_INITIAL_STATE";
 export const SET_AUTH = "SET_AUTH";
-export const GET_PROFILE = "GET_USER";
+export const GET_PROFILE = "GET_PROFILE";
 
 export const socialApp = (state) => ({
   type:SET_INITIAL_STATE,
@@ -14,7 +14,7 @@ export const setAuth = (auth) => ({
   auth
 })
 
-export const getProfile = (profile) =>({
+export const saveProfile = (profile) =>({
   type:GET_PROFILE,
   profile:profile
 })

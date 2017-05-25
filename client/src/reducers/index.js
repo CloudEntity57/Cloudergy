@@ -37,7 +37,7 @@ const mainApp = (state = initialState, action) => {
     case SET_ACTIVE_POST:
       return setActivePost(state,action);
     case CLEAR_ACTIVE_POST:
-      return showLock(state,action);
+      return clearActivePost(state,action);
     case SHOW_LOCK:
       return showLock(state,action);
     case LOCK_SUCCESS:
@@ -132,7 +132,7 @@ const clearActivePost = (state={
     case CLEAR_ACTIVE_POST:
       return{
         ...state,
-        activePost:action.post
+        activePost:''
       }
     default:
       return state;

@@ -8,8 +8,9 @@ const requireAuth = (nextState, replace) => {
     replace({ pathname: '/' })
   }
 }
-
+let rand=Math.random();
 const initialState = {
+  rand:rand,
   activePost:'',
   userPageId:'',
   //auth:
