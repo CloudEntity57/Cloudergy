@@ -236,6 +236,10 @@ body {
   font-weight: bold;
 }
 
+.user-link {
+  cursor: pointer;
+}
+
 .post-header-text {
   display: inline-block;
   position: absolute;

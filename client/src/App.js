@@ -186,8 +186,7 @@ class App extends React.Component{
      profile,
      username,
      affiliation,
-     update,
-     user
+     update
    }
 
    let x = this.props.user;
@@ -195,8 +194,21 @@ class App extends React.Component{
    console.log('props in app are: ',props);
    return (
     <div>
-      <Header uid={user.uid} affiliation={affiliation} toggle_affiliation={this.toggle_affiliation.bind(this)} logOut={this.logOut.bind(this)}/>
-      {children || <LandingPage />}
+      <Header uid={user.uid} affiliation={affiliation} logOut={this.logOut.bind(this)}/>
+      {/* {children || <LandingPage />} */}
+
+      {/* <Switch> */}
+      <Route exact path="/" render = {(props)=>(<LandingPage />)} />
+      <Route path="/account" component={Account} />
+      {/* <Route path="/user" render = {(props)=>(<UserPage {...props} />)} /> */}
+      <Route path="/user/:userid" render = {(props)=>(<UserPage {...props} />)} />
+      {/* <Route path="/user" component = {UserPage} /> */}
+      <Route path="/signedin" component={SignedIn} />
+      {/* <Route path="/newsfeed" render = {(props)=>(<Newsfeed {...props} />)} /> */}
+      <Route path="/newsfeed" component = {Newsfeed}/>
+      <Route path="/login" component={Login} />
+    {/* </Switch> */}
+      <UserPanel/>
     {/* <Switch> */}
         {/* <Route exact path="/" render = {(props)=>(<LandingPage />)} />
         <Route path="/account" component={Account} />
@@ -229,8 +241,6 @@ class App extends React.Component{
       </div>
       </ConnectedRouter> */}
 
-
-      <UserPanel/>
     </div>
   )
 }

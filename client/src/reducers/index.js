@@ -8,7 +8,7 @@ import initialState from './app/initialState.js';
 
 
 //import actions:
-import { SET_INITIAL_STATE, REQUEST_USER_INFO, RECEIVE_USER_INFO, GET_PROFILE, REQUEST_ALL_USERS, RECEIVE_ALL_USERS, REQUESTING_POSTS, RECEIVING_POSTS, DISPLAY_USER_PREVIEW, HIDE_USER_PREVIEW, SET_ACTIVE_POST, CLEAR_ACTIVE_POST, SET_USERPAGE_ID, SHOW_LOCK, LOCK_SUCCESS, LOCK_ERROR} from '../actions/index';
+import { SET_INITIAL_STATE, REQUEST_USER_INFO, RECEIVE_USER_INFO, GET_PROFILE, REQUEST_ALL_USERS, RECEIVE_ALL_USERS, REQUESTING_POSTS, RECEIVING_POSTS, DISPLAY_USER_PREVIEW, HIDE_USER_PREVIEW, SET_ACTIVE_POST, CLEAR_ACTIVE_POST, SET_USERPAGE_ID, SHOW_LOCK, LOCK_SUCCESS, LOCK_ERROR,TOGGLE_AFFILIATION} from '../actions/index';
 
 const mainApp = (state = initialState, action) => {
   switch(action.type){
@@ -44,10 +44,27 @@ const mainApp = (state = initialState, action) => {
       return lockSuccess(state,action);
     case LOCK_ERROR:
       return lockError(state,action);
+    case TOGGLE_AFFILIATION:
+      return toggleAffiliation(state,action);
     default:
       return state;
   }
 }
+
+//toggle affiliation:
+const toggleAffiliation = (state={
+  affiliation:''
+},action)=>{
+  switch(action.type){
+    case TOGGLE_AFFILIATION:
+      return{
+        ...state,
+        affiliation:action.affiliation
+      }
+    default:
+      return state;
+  }
+};
 
 //auth0-lock
 const showLock = (state={lockShowing:false},action) =>{

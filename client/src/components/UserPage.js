@@ -10,41 +10,67 @@ let Functions = new functionsModule();
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { mainApp } from '../actions/index';
+import { mainApp,fetchPosts, fetchAllUsers,
+fetchUserInfo,
+saveProfile } from '../actions/index';
 
 
 class UserPage extends Component{
   constructor(props){
     super(props);
-    // this.state={
-    //   updated:false,
-    //   posts:[]
-    // }
+    const profile = this.props.auth.getProfile();
+    // this.props.fetchUserInfo(profile.clientID);
+    // //save user's third party info to store:
+    // this.props.saveProfile(profile);
+    // // //find and store all users and posts currently in the API database:
+    // this.props.fetchAllUsers('');
+    // this.props.fetchPosts('');
+    this.state={
+      updated:false,
+      posts:[]
+    }
   }
   componentWillMount(){
     //filter user's posts:
     console.log('user page mounting');
-    console.log('users in user page: ',this.props.userObject);
-    let userid=this.props.userPageId;
-    console.log('userpage id: ',userid);
-    if(this.props.userPageId){
-    let posts = this.props.posts;
-          posts = posts.reverse();
-          console.log('userpage posts: ',posts);
-          let results = [];
-          for(let i=0; i<posts.length; i++){
-            if(posts[i].uid || posts[i].postedon == userid){
-              console.log('userpage uid: ',userid);
-              console.log('compared to: ',posts[i].uid);
-              results.push(posts[i]);
-              console.log('posts is now: ',results);
-              this.setState({
-                posts:[]
-              });
+    const profile = this.props.auth.getProfile();
+    this.props.fetchUserInfo(profile.clientID);
+    //save user's third party info to store:
+    this.props.saveProfile(profile);
+    // //find and store all users and posts currently in the API database:
+    this.props.fetchAllUsers('');
+    this.props.fetchPosts('');
 
-            }
-          }
-        }
+    let user;
+    let auth = this.props.auth;
+    let userid=this.props.userPageId;
+    console.log('app js auth: ',auth);
+    let clientID = (userid !== '') ? userid : profile.clientID;
+    this.setState({
+      user:this.props.currentUserId
+    });
+    this.configureUser(clientID,userid);
+    // console.log('users in user page: ',this.props.usersObject);
+    // let userid=this.props.userPageId;
+    // console.log('userpage id: ',userid);
+    // if(this.props.userPageId){
+    // let posts = this.props.posts;
+    //       posts = posts.reverse();
+    //       console.log('userpage posts: ',posts);
+    //       let results = [];
+    //       for(let i=0; i<posts.length; i++){
+    //         if(posts[i].uid || posts[i].postedon == userid){
+    //           console.log('userpage uid: ',userid);
+    //           console.log('compared to: ',posts[i].uid);
+    //           results.push(posts[i]);
+    //           console.log('posts is now: ',results);
+    //           this.setState({
+    //             posts:[]
+    //           });
+    //
+    //         }
+    //       }
+    //     }
   }
   componentDidMount(){
     console.log('remounting');
@@ -55,39 +81,38 @@ class UserPage extends Component{
     const profile = auth.getProfile();
     let clientID = (userid !== '') ? userid : profile.clientID;
     this.setState({
-      user:this.props.users[userid]
+      user:this.props.currentUserId
     });
     this.configureUser(clientID,userid);
   }
 
-//   componentWillReceiveProps(nextProps) {
-//     let auth = this.props.auth;
-//     const profile = auth.getProfile();
-//     let userid=this.props.userPageId;
-//     console.log('userpage uid: ',userid);
-//     let posts = this.props.posts.reverse;
-//     console.log('userpage posts: ',posts);
-//      let results = [];
-//      for(let i=0; i<posts.length; i++){
-//        if(posts[i].uid || posts[i].postedon == userid){
-//          console.log('userpage uid: ',userid);
-//          console.log('compared to: ',posts[i].uid);
-//          results.push(posts[i]);
-//          console.log('posts is now: ',results);
-//          this.setState({
-//            posts:[]
-//          });
-//
-//        }
-//      }
-//
-//
-//     console.log('current user in userpage: ',userid);
-//     let targetURL = "http://localhost:3001/user/";
-//     let nextAccountId = this.props.userPageId
-//     this.configureUser(nextAccountId,targetURL,userid);
-//
-// }
+  componentWillReceiveProps(nextProps) {
+    let auth = this.props.auth;
+    const profile = auth.getProfile();
+    let userPageid=this.props.userPageId;
+    console.log('userpage uid: ',userPageid);
+    let posts = nextProps.posts.reverse;
+    console.log('userpage posts: ',posts);
+     let results = [];
+     for(let i=0; i<posts.length; i++){
+       if(posts[i].uid || posts[i].postedon == userPageid){
+         console.log('userpage uid: ',userPageid);
+         console.log('compared to: ',posts[i].uid);
+         results.push(posts[i]);
+         console.log('posts is now: ',results);
+         this.setState({
+           posts:[]
+         });
+
+       }
+     }
+    console.log('current user in userpage: ',userPageid);
+    let targetURL = "http://localhost:3001/user/";
+    let nextAccountId = this.props.user[0].userid;
+    this.configureUser(userPageid,nextAccountId);
+
+}
+
 configureUser(postUserId,currentuser){
 
   this.setState({
@@ -98,7 +123,7 @@ configureUser(postUserId,currentuser){
   });
 
   //replaced jquery user query with user from store:
-  let user = this.props.userObject[postUserId];
+  let user = this.props.usersObject[postUserId];
     console.log('the query is finished!',user);
     let allies=[];
     this.setState({
@@ -110,7 +135,7 @@ configureUser(postUserId,currentuser){
     let len = allyList.length;
     console.log('len: ',len);
     for(let i=0; i<len; i++){
-      let ally = this.props.userObject[allyList[i]];
+      let ally = this.props.usersObject[allyList[i]];
         console.log('adding ',ally,' to the allies array');
         allies.push(ally);
           console.log('final list of allies: ',allies);
@@ -150,6 +175,7 @@ configureUser(postUserId,currentuser){
       }
   }
   render(){
+    console.log('rendering userpage');
     // const profile = this.props.auth.getProfile();
     let posts = (this.state.posts) ? this.state.posts : '';
     console.log('posts in userpage: ',posts);
@@ -196,8 +222,8 @@ configureUser(postUserId,currentuser){
                 {allies}
             </div>
             <div className="user-posts-container">
-              <PostsUser posts={posts} userid={userid} user={user} currentUser={currentUser}/>
-              {/* <Posts update={this.updatePosts.bind(this)} posts={posts} userid={this.props.userid} user={user}/> */}
+              {/* <PostsUser posts={posts} userid={userid} user={user} currentUser={currentUser}/> */}
+              <Posts posts={posts} userid={this.props.userid} user={user}/>
             </div>
           </div>
         </div>
@@ -213,12 +239,12 @@ function mapStateToProps(state){
   let posts = state.posts;
   let users = state.users;
   let userPageId = state.userPageId;
-  let userObject = state.userObject;
+  let usersObject = state.usersObject;
   let auth = state.auth;
   return{
     user,
     users,
-    userObject,
+    usersObject,
     posts,
     userPageId,
     auth
@@ -227,7 +253,9 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
-    mainApp
+    mainApp,fetchPosts, fetchAllUsers,
+    fetchUserInfo,
+    saveProfile
   },dispatch);
 }
 

@@ -102,7 +102,8 @@ class Posts extends Component{
 
 
   render(){
-    let user = (this.state.user) ? this.state.user : '';
+    // let user = (this.state.user) ? this.state.user : '';
+    let user = this.props.user;
     let opaqueBackground = (this.state.editing) ?
     (
       <div onClick={this.emphasizeForm.bind(this)} className="opaqueBackground"></div>
@@ -128,10 +129,11 @@ class Posts extends Component{
               <div onClick={this.submitPost.bind(this)} className="btn btn-primary">Post</div>
         </div>
     );
-    let posts = (this.state.posts.length>0) ? this.state.posts.map((post)=>{
+    // let posts = (this.state.posts.length>0) ? this.state.posts.map((post)=>{
+    let posts = (this.props.posts.length>0) ? this.props.posts.map((post)=>{
       // console.log('post in posts: ',post);
       return(
-        <Post updatePosts={this.updatePosts.bind(this)} uid={post.uid} user={user} post={post} />
+        <Post updatePosts={this.updatePosts.bind(this)} uid={post.uid} post={post} />
       );
     }) : '';
     return(
@@ -151,8 +153,10 @@ class Posts extends Component{
 
 function mapStateToProps(state){
   let user = state.allReducers.mainApp.user;
+  let posts = state.allReducers.mainApp.posts;
   return{
-    user
+    user,
+    posts
   }
 }
 

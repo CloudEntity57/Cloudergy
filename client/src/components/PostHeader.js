@@ -33,12 +33,12 @@ class PostHeader extends Component{
     // let currentUserId = this.state.currentUserId;
     let currentUserId = nextProps.currentId;
     let postId = nextProps.postId;
-    // console.log('postID: ',postId, 'user: ',currentUserId);
+    console.log('postID: ',postId, 'user: ',currentUserId);
     this.setState({
       postId:postId
     });
     // let user = (nextProps.id) ? nextProps.id : '';
-    let user = this.props.user;
+    let user = this.props.user[0];
     console.log('mystery user: ',user);
     let userid = this.props.user[0].userid;
     // console.log(currentUserId,' vs ',user);
@@ -62,13 +62,13 @@ class PostHeader extends Component{
     let callback = (isFriend)=>{
       // console.log('this person is my friend - ',isFriend);
       this.setState({
-        isFriend:isFriend,
-        currentUserId:currentUserId
+        isFriend,
+        currentUserId
       });
     }
     // Functions.allyCheck(userid,currentUserId,callback);
     // let user = this.props.user;
-    let friends = user[0].allies;
+    let friends = user.allies;
     let isFriend = false;
     // console.log('current friends: ',friends);
     for(let i=0; i<friends.length; i++){
@@ -76,13 +76,13 @@ class PostHeader extends Component{
         isFriend = true;
         callback(isFriend);
       }else{
-        let reqsList = user[0].ally_requests_sent;
+        let reqsList = user.ally_requests_sent;
         for(let i=0; i<reqsList.length; i++){
           if(userid == reqsList[i]){
             isFriend="invited";
             callback(isFriend);
             return;
-          }else{
+          }else if(i==reqsList.length-1){
             callback(false);
           }
         }
@@ -145,25 +145,35 @@ class PostHeader extends Component{
       });
     // },250);
   }
+  setUserPageId(userid){
+    this.props.setUserPageId(userid)
+  }
+  goToUser(userid){
+    this.props.push('/user/'+userid);
+    console.log('going to user');
+  //   jquery.when(this.props.setUserPageId(userid)).done(
+  //   ()=>{this.context.history.push('/user');}
+  // )
+  }
   render(){
 
     // console.log('user object: ',userObj);
     let friendrequest = (this.state.friendrequest) ? this.state.friendrequest : '';
-    let currentUserId = (this.state.currentUserId) ? this.state.currentUserId : '';
+    let currentUserId = this.props.currentId;
     let postId = (this.state.postId) ? this.state.postId : '';
-    let user = {
-      photo:'',
-      affiliation:'',
-      allies:'',
-      userid:'',
-      username:''
-    };
-    let userpic,teamcolor,largephoto;
-    let userObj = this.props.userObject;
-    if(this.props.userObject !== undefined ){
-      user = this.props.userObject[currentUserId];
+
+    let user=this.props.user[0];
+    console.log('user in postheader render: ',user);
+
+    let userpic,
+    teamcolor,
+    largephoto;
+
+    let userObj = this.props.usersObject;
+    if(this.props.usersObject !== undefined ){
+      user = this.props.usersObject[currentUserId];
     }
-    largephoto = user.largephoto
+    largephoto = user.largephoto;
     embedded_pic = (<img className="img-responsive user-preview-pic" src={largephoto} alt="user photo" />);
     teamcolor = user.affiliation + " user-stripe";
     userpic = (
@@ -212,25 +222,24 @@ class PostHeader extends Component{
     let embedded_pic = (<img className="img-responsive user-preview-pic" src={largephoto} alt="user photo" />);
     let userlink = "/user";
 // User Dropdown div:
-    let userinfo = (postId==this.props.activePost && this.state.userpreview) ? (
+    let userdropdown = (postId==this.props.activePost && this.state.userpreview) ? (
       <div className="user-preview-box">
-        <NavLink onClick={()=>this.props.setUserPageId(user.userid)} to={userlink}>
+        {/* <NavLink onClick={()=>this.props.setUserPageId(user.userid)} to={userlink}>
         <div className="user-preview-header">
           <div className="user-preview-pointer"></div>
           <div className="opaque-connector"></div>
           <a href="#"><span>{ user.username }</span></a>
         </div>
-        </NavLink>
-        {/* <div>
+        </NavLink> */}
+
         <div className="user-preview-header">
-          <div className="user-preview-pointer"></div>
-          <div className="opaque-connector"></div>
-          <a onClick={()=>{
-            this.props.setUserPageId(user.userid)
-            this.props.push('/user')
-          }}><span>{ user.username }</span></a>
+          <div onMouseEnter={this.setUserPageId(user.userid)} onClick={()=>this.goToUser(user.userid)} className="user-preview-header">
+            <div className="user-preview-pointer"></div>
+            <div className="opaque-connector"></div>
+            <a className="user-link"><span>{ user.username }</span></a>
+          </div>
         </div>
-      </div> */}
+
           { embedded_pic }
         <div className="user-preview-footer">
           <a href="#"><div id={user.userid} onClick={offerAllegiance}>{ally_status}</div></a>
@@ -255,14 +264,14 @@ class PostHeader extends Component{
         </div>
         <div className="post-header-text">
           <span className="post-username">
-            <FilterLink filter={userlink}><a href="#" onMouseEnter={this.displayUser.bind(this)} onMouseLeave={this.hideUser.bind(this)}>
+            {/* <FilterLink onClick={()=>this.goToUser()} filter={userlink}><a href="#" onMouseEnter={this.displayUser.bind(this)} onMouseLeave={this.hideUser.bind(this)}>
               { user.username }
               {userinfo}
-            </a></FilterLink>
-          {/* <a onClick={()=>this.props.push('/user')} onMouseEnter={this.displayUser.bind(this)} onMouseLeave={this.hideUser.bind(this)}>
+            </a></FilterLink> */}
+          <a className="user-link"  onMouseEnter={this.displayUser.bind(this)} onMouseLeave={this.hideUser.bind(this)}>
               { user.username }
-              {userinfo}
-            </a> */}
+              {userdropdown}
+            </a>
 
           </span>
           <div className="post-date">{date}</div>
@@ -277,13 +286,13 @@ class PostHeader extends Component{
 function mapStateToProps(state){
   let user = state.allReducers.mainApp.user;
   let users = state.allReducers.mainApp.users;
-  let userObject = state.allReducers.mainApp.userObject;
+  let usersObject = state.allReducers.mainApp.usersObject;
   let user_preview_showing = state.allReducers.mainApp.user_preview_showing;
   let activePost = state.allReducers.mainApp.activePost;
   return{
     user,
     users,
-    userObject,
+    usersObject,
     user_preview_showing,
     activePost
   }

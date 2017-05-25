@@ -27,6 +27,13 @@ saveProfile
 class Newsfeed extends Component{
   constructor(props){
     super(props);
+    const profile = this.props.auth.getProfile();
+    this.props.fetchUserInfo(profile.clientID);
+    //save user's third party info to store:
+    this.props.saveProfile(profile);
+    // //find and store all users and posts currently in the API database:
+    this.props.fetchAllUsers('');
+    this.props.fetchPosts('');
     this.state={
       rand:this.props.rand,
       test:'',
@@ -67,40 +74,40 @@ class Newsfeed extends Component{
     // this.props.fetchPosts('');
   // }
   console.log('mounting newsfeed');
-  const profile = this.props.auth.getProfile();
-  console.log('newsfeed profile: ',profile);
-  this.props.fetchUserInfo(profile.clientID);
-  //save user's third party info to store:
-  this.props.saveProfile(profile);
-  // //find and store all users and posts currently in the API database:
-  this.props.fetchAllUsers('');
-  this.props.fetchPosts('');
+  // const profile = this.props.auth.getProfile();
+  // console.log('newsfeed profile: ',profile);
+  // this.props.fetchUserInfo(profile.clientID);
+  // //save user's third party info to store:
+  // this.props.saveProfile(profile);
+  // // //find and store all users and posts currently in the API database:
+  // this.props.fetchAllUsers('');
+  // this.props.fetchPosts('');
   // componentWillReceiveProps(){
-    // console.log('newsfeed receive props');
-    // let user = this.props.user;
-    // console.log('user in cdm newsfeed: ',user);
-    // this.setState({
-    //   user:user
-    // });
-    // this.setState({
-    //   editing:false
-    // });
-    // console.log('api key: ',nytkey);
-    // let affiliation = user.affiliation;
-    // console.log('affiliation in newsfeed: ',affiliation);
-    // let fullfeed=[];
-    // let result;
-    // // this.props.fetchPosts('');
+    console.log('newsfeed receive props');
+    let user = this.props.user;
+    console.log('user in cdm newsfeed: ',user);
+    this.setState({
+      user:user
+    });
+    this.setState({
+      editing:false
+    });
+    console.log('api key: ',nytkey);
+    let affiliation = user.affiliation;
+    console.log('affiliation in newsfeed: ',affiliation);
+    let fullfeed=[];
+    let result;
+    // this.props.fetchPosts('');
     // // this.filterPosts();
     //
-    // let callback = (stories)=>{
-    //   console.log('stories in callback: ',stories);
-    //   fullfeed=fullfeed.concat(stories);
-    //   this.setState({
-    //     stories:fullfeed
-    //   });
-    // }
-    //   this.getNews(callback);
+    let callback = (stories)=>{
+      console.log('stories in callback: ',stories);
+      fullfeed=fullfeed.concat(stories);
+      this.setState({
+        stories:fullfeed
+      });
+    }
+      this.getNews(callback);
   }
   componentWillReceiveProps(nextProps){
     console.log('receiving newsfeed');
@@ -124,14 +131,14 @@ class Newsfeed extends Component{
       // this.props.fetchPosts('');
       // this.filterPosts();
 
-      let callback = (stories)=>{
-        console.log('stories in callback: ',stories);
-        fullfeed=fullfeed.concat(stories);
-        this.setState({
-          stories:fullfeed
-        });
-      }
-        this.getNews(callback);
+      // let callback = (stories)=>{
+      //   console.log('stories in callback: ',stories);
+      //   fullfeed=fullfeed.concat(stories);
+      //   this.setState({
+      //     stories:fullfeed
+      //   });
+      // }
+      //   this.getNews(callback);
   }
   updatePosts(){
     let posts=this.props.posts;
@@ -194,6 +201,7 @@ class Newsfeed extends Component{
     console.log('hiding user baby');
   }
   render(){
+    console.log('rendering newsfeed');
     const profile = this.props.auth.getProfile();
     if(profile !== {}){
       console.log('render profile: ', profile);
@@ -230,7 +238,7 @@ class Newsfeed extends Component{
                   <div className="panel panel-default">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis nam sed odit maiores corporis accusantium dignissimos quis consequatur, accusamus et. Sapiente aperiam excepturi, perferendis aliquam cumque amet praesentium quasi adipisci.</div>
                 </div>
                 <div className="posts-wrapper">
-                  <Posts update={this.updatePosts.bind(this)} posts={posts} userid={this.props.userid} user={user}/>
+                  <Posts update={this.updatePosts.bind(this)}/>
                 </div>
                   <StoryLinks stories={stories}/>
 
@@ -252,6 +260,7 @@ function mapStateToProps(state){
   let posts = state.allReducers.mainApp.posts;
   let profile = state.allReducers.mainApp.profile;
   let rand = state.allReducers.mainApp.rand;
+  let affiliation = state.allReducers.mainApp.affiliation;
   let router=state.router;
   return{
     user,
@@ -259,7 +268,8 @@ function mapStateToProps(state){
     posts,
     profile,
     rand,
-    router
+    router,
+    affiliation
   }
 }
 

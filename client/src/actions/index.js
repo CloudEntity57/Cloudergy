@@ -46,6 +46,12 @@ export const setUserPageId = (id) =>({
   id
 })
 
+export const TOGGLE_AFFILIATION = "TOGGLE_AFFILIATION"
+export const toggleAffiliation = (affiliation) => ({
+  type:TOGGLE_AFFILIATION,
+  affiliation
+})
+
 
 //fetch API call to get user info:
 let apiCall = (reqType, recType, url1,url2) => {

@@ -71,19 +71,32 @@ ReactDOM.render(
 
   <Provider store={ store }>
     <ConnectedRouter history={ history }>
-      <NonBlockApp >
-        <Route exact path="/" render = {(props)=>(<LandingPage />)} />
-        <Route path="/account" component={Account} />
-        {/* <Route path="/user" render = {(props)=>(<UserPage {...props} />)} /> */}
-        <Route path="/user" component = {UserPage} />
-        <Route path="/signedin" component={SignedIn} />
-        {/* <Route path="/newsfeed" render = {(props)=>(<Newsfeed {...props} />)} /> */}
-        <Route path="/newsfeed" component = {Newsfeed}/>
-        <Route path="/login" component={Login} />
-      </NonBlockApp>
+      <NonBlockApp />
     </ConnectedRouter>
   </Provider>
   ,
     document.getElementById('root')
 
   );
+
+
+// ReactDOM.render(
+//
+//   <Provider store={ store }>
+//     <ConnectedRouter history={ history }>
+//       <NonBlockApp >
+//         <Route exact path="/" render = {(props)=>(<LandingPage />)} />
+//         <Route path="/account" component={Account} />
+//         <Route path="/user" render = {(props)=>(<UserPage {...props} />)} />
+//         {/* <Route path="/user" component = {UserPage} /> */}
+//         <Route path="/signedin" component={SignedIn} />
+//         {/* <Route path="/newsfeed" render = {(props)=>(<Newsfeed {...props} />)} /> */}
+//         <Route path="/newsfeed" component = {Newsfeed}/>
+//         <Route path="/login" component={Login} />
+//       </NonBlockApp>
+//     </ConnectedRouter>
+//   </Provider>
+//   ,
+//     document.getElementById('root')
+//
+//   );

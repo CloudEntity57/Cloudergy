@@ -9,7 +9,7 @@ import jquery from 'jquery';
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { mainApp } from '../actions/index';
+import { mainApp, toggleAffiliation } from '../actions/index';
 
 class Header extends Component{
   constructor(props){
@@ -60,7 +60,10 @@ class Header extends Component{
     this.setState({
       affiliation:affiliation
     });
-    this.props.toggle_affiliation(affiliation);
+    this.props.toggleAffiliation(affiliation);
+    // this.props.toggle_affiliation(affiliation);
+    //create redux for ^^^^
+
   }
   toggleAllyRequest(e){
     e.preventDefault();
@@ -193,7 +196,7 @@ class Header extends Component{
     console.log('user pic: ',userpic);
     let userlink = "/user/"+uid;
     return(
-      <header className={affiliation}>
+      <header className={this.props.affiliation}>
 
         <div className="outer-nav-wrapper">
           <div className="nav">
@@ -203,7 +206,7 @@ class Header extends Component{
             <div className="navbar-nav nav-right">
               <div><a className="log-out" onClick={this.props.logOut} href="#">Logout</a></div>
               <span>
-                <select onChange={this.toggle_affiliation.bind(this)} value={affiliation} className="header-toggle" name="user-affiliation" id="">
+                <select onChange={this.toggle_affiliation.bind(this)} value={this.props.affiliation} className="header-toggle" name="user-affiliation" id="">
                   <optgroup value="Choose">
                     <option value="conservative">Conservative</option>
                     <option value="liberal">Liberal</option>
@@ -262,7 +265,8 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
-    mainApp
+    mainApp,
+    toggleAffiliation
   },dispatch);
 }
 

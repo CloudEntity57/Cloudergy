@@ -1,6 +1,6 @@
 import { REQUEST_USER_INFO, RECEIVE_USER_INFO } from '../../actions/index.js';
 
-const getUser = (state={user:{},isFetching:false,lastUpdated:''},action) => {
+const getUser = (state={user:{},isFetching:false,lastUpdated:'',affiliation:''},action) => {
   console.log('userSubmitted run');
   switch(action.type) {
     case REQUEST_USER_INFO:
@@ -15,7 +15,8 @@ const getUser = (state={user:{},isFetching:false,lastUpdated:''},action) => {
         user:action.results,
         first:action.results[0].first_name,
         last:action.results[0].last_name,
-        lastUpdated:action.receivedAt
+        lastUpdated:action.receivedAt,
+        affiliation:action.results[0].affiliation
         // invitations_received:action.results[0].,
         // invitations_sent:action.results[0].,
         // userphoto:action.results[0].,

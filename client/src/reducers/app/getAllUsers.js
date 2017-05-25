@@ -8,17 +8,17 @@ const getAllUsers = (state={users:{}},action) => {
         isFetching:true
       }
     case RECEIVE_ALL_USERS:
-      let userObject = {};
+      let usersObject = {};
       for(let i=0; i<action.results.length; i++){
         let uid = action.results[i].userid;
         console.log('adding ',action.results[i].userid, ' to array');
-        userObject[uid]=action.results[i];
+        usersObject[uid]=action.results[i];
       };
       return {
         ...state,
         isFetching: false,
         users:action.results,
-        userObject
+        usersObject
       }
       default:
       return state;

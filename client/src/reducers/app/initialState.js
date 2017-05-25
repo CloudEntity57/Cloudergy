@@ -18,7 +18,6 @@ const initialState = {
   //app.js:
   profile:{},
   updated:false,
-  affiliation:'',
   //newsfeed:
   test:'',
   stories:[],
