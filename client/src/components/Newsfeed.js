@@ -20,7 +20,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { mainApp, fetchPosts, fetchAllUsers,
 fetchUserInfo,
-saveProfile
+saveProfile, clearUserPageId, setWallState
 } from '../actions/index';
 
 
@@ -33,7 +33,7 @@ class Newsfeed extends Component{
     this.props.saveProfile(profile);
     // //find and store all users and posts currently in the API database:
     this.props.fetchAllUsers('');
-    this.props.fetchPosts('');
+    // this.props.fetchPosts('');
     this.state={
       rand:this.props.rand,
       test:'',
@@ -65,6 +65,7 @@ class Newsfeed extends Component{
     // });
   }
   componentWillMount(){
+    this.props.setWallState('public');
     // let profile=this.props.profile;
     // this.props.fetchUserInfo(profile.clientID);
     // //save user's third party info to store:
@@ -83,6 +84,8 @@ class Newsfeed extends Component{
   // this.props.fetchAllUsers('');
   // this.props.fetchPosts('');
   // componentWillReceiveProps(){
+
+    this.props.clearUserPageId();
     console.log('newsfeed receive props');
     let user = this.props.user;
     console.log('user in cdm newsfeed: ',user);
@@ -142,8 +145,9 @@ class Newsfeed extends Component{
   }
   updatePosts(){
     let posts=this.props.posts;
-
     console.log('updating!!!');
+    this.props.fetchPosts('');
+    // this.forceUpdate();
   }
   componentDidMount(){
     console.log('news did mount');
@@ -265,7 +269,6 @@ function mapStateToProps(state){
   return{
     user,
     auth,
-    posts,
     profile,
     rand,
     router,
@@ -279,7 +282,9 @@ function mapDispatchToProps(dispatch){
     fetchPosts,
     fetchAllUsers,
     fetchUserInfo,
-    saveProfile
+    saveProfile,
+    clearUserPageId,
+    setWallState
   },dispatch);
 }
 

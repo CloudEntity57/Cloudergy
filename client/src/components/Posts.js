@@ -8,26 +8,45 @@ let Functions = new newModule();
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { mainApp } from '../actions/index';
+import { mainApp,submitPost,fetchPosts } from '../actions/index';
 
 class Posts extends Component{
   constructor(props){
     super(props);
+    this.props.fetchPosts('');
     this.state={
       editing:false,
       user:{},
-      posts:this.props.posts
+      posts:'',
+      updated:false
     }
   }
   componentWillMount(){
-    this.setState({
-      editing:false,
-      posts:this.props.posts
-    });
+    // let posts = this.props.posts.reverse();
+    // let posts=this.props.posts;
+    // // posts = posts.reverse();
+    //
+    // this.setState({
+    //   editing:false,
+    //   posts:posts
+    // });
   }
   componentWillReceiveProps(nextProps){
     let user = nextProps.user;
-    let posts = nextProps.posts;
+    let posts;
+    // if(!this.props.postsUpdated){
+    //   posts = nextProps.posts;
+    //   // this.setState({
+    //   //   updated:true
+    //   // });
+    // }else{
+    //   posts = nextProps.posts.reverse();
+    // }
+    posts=nextProps.posts;
+    posts = posts.filter((val)=>{
+      return val.postedon=='NA';
+    });
+    console.log('now the posts are: ',posts);
     this.setState({
       user:user,
       posts:posts
@@ -54,13 +73,14 @@ class Posts extends Component{
     this.emphasizeForm();
     let comment = this.refs.comment.value;
     console.log('comment: ',comment);
-    let user = this.props.user;
+    let user = this.props.user[0];
     console.log('user: ',user);
     //create date information for post:
     var today = Functions.createDate();
     console.log('today: ',today);
     //create remaining variables for post:
     let userid = user.userid;
+    console.log('userid: ',userid);
     let affiliation = user.affiliation;
     //create post for POST request
     let post = {
@@ -71,37 +91,20 @@ class Posts extends Component{
       postedon:'NA'
     }
     console.log('post: ',post);
-    let queryString = "http://localhost:3001/post/"
-    let postsquery = jquery.ajax({
-      url:queryString,
-      type:'POST',
-      data:post,
-      success:(val)=>{'success!! ',val}
-    });
+    this.props.submitPost(post);
     this.refs.comment.value = '';
-    this.setState({
-      posts:[]
-    });
-    this.props.update();
-    // postsquery.done((posts)=>{
-    //   console.log('success!! posts: ',posts);
-    //   posts = posts.reverse();
-    //   this.refs.comment.value = '';
-    //   this.setState({
-    //     posts:posts
-    //   });
-    // });
   }
-  updatePosts(){
-    console.log('updating in posts');
-    this.setState({
-      posts:[]
-    });
-    this.props.update();
-  }
+  // updatePosts(){
+  //   console.log('updating in posts');
+  //   this.setState({
+  //     posts:[]
+  //   });
+  //   this.props.update();
+  // }
 
 
   render(){
+    console.log('wall state: ',this.props.wall);
     // let user = (this.state.user) ? this.state.user : '';
     let user = this.props.user;
     let opaqueBackground = (this.state.editing) ?
@@ -129,20 +132,46 @@ class Posts extends Component{
               <div onClick={this.submitPost.bind(this)} className="btn btn-primary">Post</div>
         </div>
     );
-    // let posts = (this.state.posts.length>0) ? this.state.posts.map((post)=>{
-    let posts = (this.props.posts.length>0) ? this.props.posts.map((post)=>{
-      // console.log('post in posts: ',post);
+
+    let posts = (this.props.posts.length>0) ? this.props.posts : [];
+
+
+    //filter for different post component locations:
+    if(this.props.wall === 'public'){
+
+    //case public wall:
+      posts = posts.filter((val)=>{
+        return val.postedon=='NA' || val.postedon==this.props.user[0].userid;
+      });
+    }else{
+
+    //case user wall:
+      let results = [];
+      for(let i=0; i<posts.length; i++){
+        if(
+          (posts[i].uid === this.props.wall && posts[i].postedon==='NA')
+         ||
+          (posts[i].postedon === this.props.wall)
+        )
+          {
+            results.push(posts[i]);
+          }
+      }
+      posts = results;
+    }
+    let finalposts = posts.map((post)=>{
       return(
-        <Post updatePosts={this.updatePosts.bind(this)} uid={post.uid} post={post} />
+        <Post uid={post.uid} post={post} />
       );
-    }) : '';
+    });
+
     return(
       <div className="live-posts-panel">
         LIVE POSTS
         {opaqueBackground}
         <div className="scroller">
           {postEntry}
-          {posts}
+          {finalposts}
           {/* <div className="tall panel panel-default">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste optio, veniam consequatur sed molestias. Corporis temporibus accusamus nesciunt perspiciatis quaerat vel cum omnis modi dolores fugit ex impedit, ullam libero.</div> */}
         </div>
 
@@ -154,15 +183,23 @@ class Posts extends Component{
 function mapStateToProps(state){
   let user = state.allReducers.mainApp.user;
   let posts = state.allReducers.mainApp.posts;
+  let isSubmitting = state.allReducers.mainApp.isSubmitting;
+  let postsUpdated = state.allReducers.mainApp.postsUpdated;
+  let wall = state.allReducers.mainApp.wall;
   return{
     user,
-    posts
+    posts,
+    isSubmitting,
+    postsUpdated,
+    wall
   }
 }
 
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
-    mainApp
+    mainApp,
+    submitPost,
+    fetchPosts
   },dispatch);
 }
 

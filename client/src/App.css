@@ -121,6 +121,8 @@ body {
 }
 
 .ally-request-dropdown {
+  min-height: 50px;
+  color: black;
   box-shadow: 5px 5px 5px gray;
   position: absolute;
   top: 30px;

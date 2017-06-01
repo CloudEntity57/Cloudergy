@@ -7,7 +7,7 @@ import jquery from 'jquery';
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { mainApp, doAuthentication, login,fetchUserInfo,
+import { socialApp, doAuthentication, login,fetchUserInfo,
 fetchPosts,
 fetchAllUsers,
 saveProfile,} from '../actions/index';
@@ -19,6 +19,9 @@ class LandingPage extends Component{
     this.state = {
       loggedIn:false
     }
+  }
+  componentWillMount(){
+    this.props.socialApp();
   }
   componentWillReceiveProps(){
     console.log('auth in landing page: ',this.props.auth);
@@ -88,7 +91,7 @@ function mapDispatchToProps(dispatch){
     fetchPosts,
     fetchAllUsers,
     saveProfile,
-    mainApp,
+    socialApp,
     doAuthentication,
     login,
     push

@@ -10,7 +10,7 @@ import { push } from 'connected-react-router';
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { mainApp,hideUserPreview,displayUserPreview,setActivePost, clearActivePost, setUserPageId } from '../actions/index';
+import { mainApp,hideUserPreview,displayUserPreview,setActivePost, clearActivePost, setUserPageId, deletePost } from '../actions/index';
 
 class PostHeader extends Component{
   constructor(props){
@@ -39,7 +39,7 @@ class PostHeader extends Component{
     });
     // let user = (nextProps.id) ? nextProps.id : '';
     let user = this.props.user[0];
-    console.log('mystery user: ',user);
+    // console.log('mystery user: ',user);
     let userid = this.props.user[0].userid;
     // console.log(currentUserId,' vs ',user);
     // Functions.getUser(uid).then((val)=>{
@@ -112,25 +112,27 @@ class PostHeader extends Component{
   }
   deletePost(e){
     e.preventDefault();
-    let targetURL = "http://localhost:3001/deletepost";
+    // let targetURL = "http://localhost:3001/deletepost";
     console.log('deleting post');
     console.log('post is: ',e.target.id);
     let postId = e.target.id;
-    jquery.ajax({
-      url:targetURL,
-      type:'POST',
-      data:{
-        post:postId
-      },
-      success:()=>{
-        console.log('success! ');
-        this.props.updatePosts();
-      }
-    });
+    // jquery.ajax({
+    //   url:targetURL,
+    //   type:'POST',
+    //   data:{
+    //     post:postId
+    //   },
+    //   success:()=>{
+    //     console.log('success! ');
+    //     this.props.updatePosts();
+    //   }
+    // });
+    //create redux action
+    this.props.deletePost(postId);
   }
   displayUser(e){
     console.log('displaying!');
-    // this.props.setActivePost(this.props.id)
+    this.props.setActivePost(this.props.id)
     // setTimeout(()=>{
       this.setState({
         userpreview:true
@@ -139,17 +141,20 @@ class PostHeader extends Component{
   }
   hideUser(e){
     // setTimeout(()=>{
-      // this.props.hideUserPreview(this.props.id)
+      this.props.hideUserPreview(this.props.id)
       this.setState({
         userpreview:false
       });
     // },250);
   }
   setUserPageId(userid){
-    this.props.setUserPageId(userid)
+    // this.props.setUserPageId(userid)
+    this.setState({
+      userPageId:userid
+    });
   }
   goToUser(userid){
-    this.props.push('/user/'+userid);
+    this.props.push('/user/'+this.state.userPageId);
     console.log('going to user');
   //   jquery.when(this.props.setUserPageId(userid)).done(
   //   ()=>{this.context.history.push('/user');}
@@ -163,7 +168,7 @@ class PostHeader extends Component{
     let postId = (this.state.postId) ? this.state.postId : '';
 
     let user=this.props.user[0];
-    console.log('user in postheader render: ',user);
+    // console.log('user in postheader render: ',user);
 
     let userpic,
     teamcolor,
@@ -197,7 +202,22 @@ class PostHeader extends Component{
     // console.log('user we are dealing with: ',user);
     let date = this.props.date;
     let allies = (user !==undefined) ? user.allies : [];
-    let friendStatus= (this.state.isFriend=="invited" || this.state.isFriend==true || this.state.isFriend==false) ? this.state.isFriend : '';
+    // let friendStatus= (this.state.isFriend=="invited" || this.state.isFriend==true || this.state.isFriend==false) ? this.state.isFriend : '';
+    let isFriend;
+    for(let i=0; i<user.allies.length; i++){
+      if(user.allies[i]==user.userid){
+        isFriend = true;
+      }else{
+        let reqsList = user.ally_requests_sent;
+        for(let i=0; i<reqsList.length; i++){
+          if(user.userid == reqsList[i]){
+            isFriend="invited";
+          }else if(i==reqsList.length-1){
+            isFriend = false;
+          }
+        }
+      }
+    }
     // for(let i=0; i<allies.length; i++){
     //   if(allies[i]===currentUserId){
     //     currentfriend=true;
@@ -205,7 +225,7 @@ class PostHeader extends Component{
     // }
     let offerAllegiance;
     let ally_status;
-    switch (friendStatus){
+    switch (isFriend){
       case true:
         offerAllegiance = this.doNothing.bind(this);
         ally_status = ('Allies');
@@ -233,7 +253,7 @@ class PostHeader extends Component{
         </NavLink> */}
 
         <div className="user-preview-header">
-          <div onMouseEnter={this.setUserPageId(user.userid)} onClick={()=>this.goToUser(user.userid)} className="user-preview-header">
+          <div onMouseEnter={()=>this.setUserPageId(user.userid)} onClick={()=>this.goToUser(user.userid)} className="user-preview-header">
             <div className="user-preview-pointer"></div>
             <div className="opaque-connector"></div>
             <a className="user-link"><span>{ user.username }</span></a>
@@ -263,12 +283,12 @@ class PostHeader extends Component{
           { userpic }
         </div>
         <div className="post-header-text">
-          <span className="post-username">
+          <span onClick={()=>this.goToUser(user.userid)} className="post-username">
             {/* <FilterLink onClick={()=>this.goToUser()} filter={userlink}><a href="#" onMouseEnter={this.displayUser.bind(this)} onMouseLeave={this.hideUser.bind(this)}>
               { user.username }
               {userinfo}
             </a></FilterLink> */}
-          <a className="user-link"  onMouseEnter={this.displayUser.bind(this)} onMouseLeave={this.hideUser.bind(this)}>
+          <a className="user-link" onMouseEnter={()=>{this.displayUser(); this.setUserPageId(user.userid);}} onMouseLeave={this.hideUser.bind(this)}>
               { user.username }
               {userdropdown}
             </a>
@@ -306,7 +326,8 @@ function mapDispatchToProps(dispatch){
     setActivePost,
     clearActivePost,
     setUserPageId,
-    push
+    push,
+    deletePost
   },dispatch);
 }
 

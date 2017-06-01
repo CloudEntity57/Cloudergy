@@ -189,9 +189,6 @@ class App extends React.Component{
      update
    }
 
-   let x = this.props.user;
-   console.log('appyj user: ',x);
-   console.log('props in app are: ',props);
    return (
     <div>
       <Header uid={user.uid} affiliation={affiliation} logOut={this.logOut.bind(this)}/>
@@ -205,7 +202,7 @@ class App extends React.Component{
       {/* <Route path="/user" component = {UserPage} /> */}
       <Route path="/signedin" component={SignedIn} />
       {/* <Route path="/newsfeed" render = {(props)=>(<Newsfeed {...props} />)} /> */}
-      <Route path="/newsfeed" component = {Newsfeed}/>
+      <Route path="/newsfeed" component = {Newsfeed} onEnter={requireAuth} />
       <Route path="/login" component={Login} />
     {/* </Switch> */}
       <UserPanel/>

@@ -8,7 +8,7 @@ let Functions = new functionsModule();
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { mainApp, displayUserPreview, hideUserPreview,setActivePost,clearActivePost } from '../actions/index';
+import { mainApp, displayUserPreview, hideUserPreview,setActivePost,clearActivePost,fetchPosts } from '../actions/index';
 
 class Post extends Component{
   constructor(props){
@@ -45,14 +45,14 @@ class Post extends Component{
     console.log('displaying');
     setTimeout(
       ()=>{
-        this.props.setActivePost(postid);
+        // this.props.setActivePost(postid);
       },1000);
   }
   hideUser(){
     console.log('hiding');
     // setTimeout(
       // ()=>{
-        this.props.clearActivePost();
+        // this.props.clearActivePost();
       // },1000);
   }
   updatePosts(){
@@ -71,8 +71,10 @@ class Post extends Component{
       },
       success:(val)=>{
         console.log('success! ',val);
+        this.props.fetchPosts('');
       }
     });
+
   }
   render(){
     let user = (this.state.user) ? this.state.user : '';
@@ -109,7 +111,7 @@ class Post extends Component{
     }
     return(
       <div className="user-post">
-      <div onMouseLeave={()=>this.hideUser()} onMouseEnter={()=>this.displayUser()} id={id} className="post-panel">
+      <div id={id} className="post-panel">
         <PostHeader {...props} />
 
         <div className="post-text">{text}</div>
@@ -154,7 +156,8 @@ function mapDispatchToProps(dispatch){
     displayUserPreview,
     hideUserPreview,
     setActivePost,
-    clearActivePost
+    clearActivePost,
+    fetchPosts
   },dispatch);
 }
 

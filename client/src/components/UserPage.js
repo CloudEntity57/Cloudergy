@@ -12,7 +12,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { mainApp,fetchPosts, fetchAllUsers,
 fetchUserInfo,
-saveProfile } from '../actions/index';
+saveProfile, clearUserPageId, setWallState } from '../actions/index';
 
 
 class UserPage extends Component{
@@ -44,6 +44,8 @@ class UserPage extends Component{
     let user;
     let auth = this.props.auth;
     let userid=this.props.userPageId;
+
+    // let userid=(this.props.params.userid) ? this.props.params.userid.toString() : '';
     console.log('app js auth: ',auth);
     let clientID = (userid !== '') ? userid : profile.clientID;
     this.setState({
@@ -77,6 +79,7 @@ class UserPage extends Component{
     let user;
     let auth = this.props.auth;
     let userid=this.props.userPageId;
+    // let userid=(this.props.params.userid) ? this.props.params.userid.toString() : '';
     console.log('app js auth: ',auth);
     const profile = auth.getProfile();
     let clientID = (userid !== '') ? userid : profile.clientID;
@@ -89,30 +92,32 @@ class UserPage extends Component{
   componentWillReceiveProps(nextProps) {
     let auth = this.props.auth;
     const profile = auth.getProfile();
-    let userPageid=this.props.userPageId;
+    let userPageid=nextProps.userPageId;
+    //redux action to change global 'wall' state to this user's id:
+    this.props.setWallState(userPageid);
+    // let userPageid=(this.props.params.userid) ? this.props.params.userid.toString() : '';
     console.log('userpage uid: ',userPageid);
-    let posts = nextProps.posts.reverse;
-    console.log('userpage posts: ',posts);
-     let results = [];
-     for(let i=0; i<posts.length; i++){
-       if(posts[i].uid || posts[i].postedon == userPageid){
-         console.log('userpage uid: ',userPageid);
-         console.log('compared to: ',posts[i].uid);
-         results.push(posts[i]);
-         console.log('posts is now: ',results);
-         this.setState({
-           posts:[]
-         });
-
-       }
-     }
+    // let posts = nextProps.posts.reverse;
+    // console.log('userpage posts: ',posts);
+    //  let results = [];
+    //  for(let i=0; i<posts.length; i++){
+    //    if(posts[i].uid || posts[i].postedon == userPageid){
+    //      console.log('userpage uid: ',userPageid);
+    //      console.log('compared to: ',posts[i].uid);
+    //      results.push(posts[i]);
+    //      console.log('posts is now: ',results);
+    //      this.setState({
+    //        posts:[]
+    //      });
+    //
+    //    }
+    //  }
     console.log('current user in userpage: ',userPageid);
     let targetURL = "http://localhost:3001/user/";
-    let nextAccountId = this.props.user[0].userid;
+    let nextAccountId = (this.props.user.length > 0) ? this.props.user[0].userid : '';
     this.configureUser(userPageid,nextAccountId);
-
+    //remove currentUserId
 }
-
 configureUser(postUserId,currentuser){
 
   this.setState({
@@ -123,7 +128,7 @@ configureUser(postUserId,currentuser){
   });
 
   //replaced jquery user query with user from store:
-  let user = this.props.usersObject[postUserId];
+  let user = (this.props.usersObject !== undefined) ? this.props.usersObject[postUserId] : {allies: [],username:'',userpic:'',user:''};
     console.log('the query is finished!',user);
     let allies=[];
     this.setState({
@@ -147,7 +152,7 @@ configureUser(postUserId,currentuser){
     let querystring = "http://localhost:3001/posts";
     //replace api query for all posts with posts in store:
 
-        let posts = this.props.posts;
+        let posts = (this.props.posts.length>0) ? this.props.posts : [];
         posts = posts.reverse();
         console.log('userpage posts: ',posts);
         console.log('currentID: ',currentuser);
@@ -175,6 +180,7 @@ configureUser(postUserId,currentuser){
       }
   }
   render(){
+    console.log('wall state: ',this.props.wall);
     console.log('rendering userpage');
     // const profile = this.props.auth.getProfile();
     let posts = (this.state.posts) ? this.state.posts : '';
@@ -233,21 +239,24 @@ configureUser(postUserId,currentuser){
   }
 }
 
-function mapStateToProps(state){
+function mapStateToProps(state,ownProps){
+  console.log('ownProps: ',ownProps.match.params.userid);
   state = state.allReducers.mainApp;
   let user = state.user;
   let posts = state.posts;
   let users = state.users;
-  let userPageId = state.userPageId;
+  // let userPageId = state.userPageId;
   let usersObject = state.usersObject;
+  let wall = state.wall;
   let auth = state.auth;
   return{
     user,
     users,
     usersObject,
     posts,
-    userPageId,
-    auth
+    userPageId:ownProps.match.params.userid,
+    auth,
+    wall
   }
 }
 
@@ -255,7 +264,9 @@ function mapDispatchToProps(dispatch){
   return bindActionCreators({
     mainApp,fetchPosts, fetchAllUsers,
     fetchUserInfo,
-    saveProfile
+    saveProfile,
+    clearUserPageId,
+    setWallState
   },dispatch);
 }
 

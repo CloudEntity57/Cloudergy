@@ -1,4 +1,5 @@
 import fetch from 'isomorphic-fetch';
+import axios from 'axios';
 
 export const SET_INITIAL_STATE = "SET_INITIAL_STATE";
 export const SET_AUTH = "SET_AUTH";
@@ -46,11 +47,41 @@ export const setUserPageId = (id) =>({
   id
 })
 
+export const CLEAR_USERPAGE_ID = "CLEAR_USERPAGE_ID";
+export const clearUserPageId = () =>({
+  type:CLEAR_USERPAGE_ID,
+  id:''
+})
+
 export const TOGGLE_AFFILIATION = "TOGGLE_AFFILIATION"
 export const toggleAffiliation = (affiliation) => ({
   type:TOGGLE_AFFILIATION,
   affiliation
 })
+
+export const SET_WALL_STATE = "SET_WALL_STATE"
+export const setWallState = (uid) => ({
+  type:SET_WALL_STATE,
+  uid
+})
+
+// this.acceptAlly = (allyid,userid,resFunction)=>{
+//   let targetURL = 'http://localhost:3001/acceptally';
+//   jquery.ajax({
+//     url:targetURL,
+//     type:'POST',
+//     data:{
+//       userid:userid,
+//       allyid:allyid
+//     },
+//     success:()=>{
+//       // console.log('ally accepted!');
+//     }
+//   }).then(()=>{
+//     resFunction();
+//   });
+// }
+
 
 
 //fetch API call to get user info:
@@ -77,32 +108,41 @@ let apiCall = (reqType, recType, url1,url2) => {
     return fetchFunc;
 }
 let data;
-let postApiCall = (reqType, recType, data, url1,url2) => {
+let postApiCall = (reqType, recType, url1,url2) => {
     const reqFunc = (arg) => ({
         type: reqType,
         arg
     })
 
-    const recFunc = (arg, json) => ({
+    const recFunc = (arg, data) => ({
         type: recType,
         arg,
-        results:json,
+        results:data,
         receivedAt:Date.now()
     })
 
     const postFunc = arg => dispatch =>{
-      console.log('action creator go');
-        dispatch(reqFunc(arg))
-        return fetch(url1+arg+url2,
+      console.log('action creator go: ',arg);
+        dispatch(reqFunc(arg,data))
+        return axios.post(url1,
         {
           method:'POST',
-          data:data
+          payload:arg
         })
-        .then(response => response.json())
-        .then((json) => {console.log('post json: ',json); dispatch(recFunc(arg,json))})
+        .then(response => response.data)
+        .then((data) => {console.log('post data: ',data); dispatch(recFunc(arg,data))})
     }
     return postFunc;
 }
+
+export const REQUEST_DELETE_POST = "REQUEST_DELETE_POST"
+export const RETRIEVE_DELETE_POST = "RETRIEVE_DELETE_POST"
+export const deletePost = postApiCall(REQUEST_DELETE_POST, RETRIEVE_DELETE_POST,'http://localhost:3001/deletepost');
+
+export const REQUEST_ACCEPT_ALLY = "REQUEST_ACCEPT_ALLY"
+export const RETRIEVE_ACCEPT_ALLY = "RETRIEVE_ACCEPT_ALLY"
+export const acceptAlly = postApiCall(REQUEST_ACCEPT_ALLY, RETRIEVE_ACCEPT_ALLY,'http://localhost:3001/acceptally');
+
 export const REQUEST_USER_INFO = "REQUEST_USER_INFO";
 export const RECEIVE_USER_INFO = "RECEIVE_USER_INFO";
 
@@ -124,7 +164,14 @@ export const RECEIVING_POSTS = "RECEIVING_POSTS";
 export const fetchPosts = apiCall(REQUESTING_POSTS, RECEIVING_POSTS,'http://localhost:3001/posts','');
 
 //create user
-export const createNewUser = postApiCall(REQUESTING_T0_POST_PROFILE_INFO,RECEIVING_POST_CONFIRMATION,data=null,'http://localhost:3001/user/','');
+export const createNewUser = postApiCall(REQUESTING_T0_POST_PROFILE_INFO,RECEIVING_POST_CONFIRMATION,'http://localhost:3001/user/','');
+
+//submit post:
+export const REQUEST_SUBMIT_POST = 'REQUEST_SUBMIT_POST';
+export const SUBMIT_POST_CONFIRMATION = 'SUBMIT_POST_CONFIRMATION';
+
+export const submitPost =
+postApiCall(REQUEST_SUBMIT_POST,SUBMIT_POST_CONFIRMATION,"http://localhost:3001/post/","");
 
 //auth0 actions:
 export const SHOW_LOCK = 'SHOW_LOCK'

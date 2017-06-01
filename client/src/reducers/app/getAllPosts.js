@@ -1,5 +1,5 @@
 import {REQUESTING_POSTS, RECEIVING_POSTS} from '../../actions/index.js';
-const getAllPosts = (state={posts:{}},action) => {
+const getAllPosts = (state={posts:{},postsUpdated:false},action) => {
   switch(action.type) {
     case REQUESTING_POSTS:
       return {
@@ -9,13 +9,14 @@ const getAllPosts = (state={posts:{}},action) => {
     case RECEIVING_POSTS:
       console.log('reducks');
       let posts = action.results.reverse();
-      posts = posts.filter((val)=>{
-        return val.postedon=='NA';
-      });
+      // posts = posts.filter((val)=>{
+      //   return val.postedon=='NA';
+      // });
       return{
         ...state,
         isFetching: false,
-        posts:posts
+        posts:posts,
+        postsUpdated:true
       }
       default:
         return state;

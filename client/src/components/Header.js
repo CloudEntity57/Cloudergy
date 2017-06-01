@@ -9,7 +9,7 @@ import jquery from 'jquery';
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { mainApp, toggleAffiliation } from '../actions/index';
+import { mainApp, toggleAffiliation, fetchUserInfo, acceptAlly } from '../actions/index';
 
 class Header extends Component{
   constructor(props){
@@ -23,8 +23,10 @@ class Header extends Component{
     let user = Functions.getCurrentUser();
     // console.log('user in header: ',user);
     let affiliation = this.props.affiliation;
+    let potential_allies = this.getPotentialAllies();
     this.setState({
-      affiliation:this.props.affiliation
+      affiliation:this.props.affiliation,
+      potential_allies
     });
 
   }
@@ -52,6 +54,28 @@ class Header extends Component{
         ally_invitations_received:user[0].ally_invitations_received
       });
     });
+  }
+  getPotentialAllies(){
+    let user, uid, userpic, ally_invitations_received, allyRequestNumber,username, affiliation,allyReqs,potential_allies;
+    user = (this.props.user !=='') ? this.props.user : [{userid:'',ally_invitations_received:[], allyRequestNumber,username, affiliation,allyReqs,potential_allies}];
+    uid = user[0].userid;
+    userpic = user[0].photo;
+    username = user[0].username;
+    affiliation = user[0].affiliation;
+    ally_invitations_received = user[0].ally_invitations_received;
+    console.log('invites: ',ally_invitations_received);
+    allyRequestNumber = (<div className="invites">{ally_invitations_received.length}</div>);
+    potential_allies = [];
+    if (ally_invitations_received.length>0){
+      ally_invitations_received.map((ally)=>{
+        this.props.fetchUserInfo(ally).then((val)=>{
+          potential_allies.push(val);
+        });
+      });
+      return potential_allies;
+    }else{
+      return [];
+    }
   }
   toggle_affiliation(e){
     console.log('working in Header.js!');
@@ -84,13 +108,17 @@ class Header extends Component{
     let callback=function(invites_list){
       invitations_list = invites_list;
     };
-    Functions.acceptAlly(allyId,userId,callback);
+
+    this.props.acceptAlly({allyId,userId});
+    // Functions.acceptAlly(allyId,userId,callback);
     this.updateInvitesList(invitations_list);
+
     let allyLink = "#"+allyId;
     console.log('ally element: ',allyLink);
     jquery('#'+allyId).slideUp();
     jquery('.invites').remove();
   }
+
   updateInvitesList(invitations_list){
     console.log('calling updateInvitesList');
     console.log('invites: ',invitations_list);
@@ -106,22 +134,17 @@ class Header extends Component{
   }
   render(){
     // let user = (this.state.user) ? this.state.user : '';
-    let user, uid, userpic, ally_invitations_received, allyRequestNumber,username, affiliation,allyReqs,potential_allies;
-    if(this.props.user !==''){
-      user = this.props.user;
-      uid = this.props.user[0].userid;
-      userpic = this.props.user[0].photo;
-      ally_invitations_received = this.props.user[0].ally_invitations_received;
-      allyRequestNumber = (<div className="invites">{ally_invitations_received.length}</div>);
-      username = this.props.user[0].username;
-      affiliation = this.props.user[0].affiliation;
-      potential_allies = [];
-      if (ally_invitations_received.length>0){
-        ally_invitations_received.map((ally)=>{
-          Functions.getUser(ally).then((val)=>{
-            potential_allies.push(val);
-          });
-        });
+    // if(this.props.user !==''){
+      let user, uid, userpic, ally_invitations_received, allyRequestNumber,username, affiliation,allyReqs;
+      user = (this.props.user !=='') ? this.props.user : [{userid:'',ally_invitations_received:[], allyRequestNumber,username, affiliation,allyReqs,potential_allies}];
+      ally_invitations_received = user[0].ally_invitations_received;
+      uid = user[0].userid;
+      userpic = user[0].photo;
+      username = user[0].username;
+      affiliation = user[0].affiliation;
+      console.log('user in header render: ',this.props.user);
+      let potential_allies = this.state.potential_allies;
+        console.log('potential allies render: ',potential_allies);
         allyReqs = potential_allies.map((val)=>{
           console.log('user val: ',val);
             return (
@@ -147,9 +170,10 @@ class Header extends Component{
             </div>
             );
         });
-      }
+        console.log('allyreqs: ',allyReqs);
 
-    }
+
+    // }
       // potential_allies = this.props.user[0].potential_allies;
       console.log('potential allies: ',potential_allies);
   //Build individual Ally Request tab HTML:
@@ -185,10 +209,11 @@ class Header extends Component{
 //         );
 //     });
   //Build ally requests dropdown HTML
+    let previewText = (ally_invitations_received.length>0) ? 'Ally Requests' : 'No New Updates';
     let allyPreview = (this.state.previewingAlly) ?
     (
       <div key="./Header" className="ally-request-dropdown">
-        Ally Requests
+        {previewText}
         {allyReqs}
       </div>
     ) : '';
@@ -266,7 +291,9 @@ function mapStateToProps(state){
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
     mainApp,
-    toggleAffiliation
+    toggleAffiliation,
+    fetchUserInfo,
+    acceptAlly
   },dispatch);
 }
 

@@ -13,6 +13,8 @@ const initialState = {
   rand:rand,
   activePost:'',
   userPageId:'',
+  postsUpdated:false,
+  wall:'public',
   //auth:
   auth:auth,
   //app.js:
