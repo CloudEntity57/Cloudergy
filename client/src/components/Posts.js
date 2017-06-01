@@ -94,16 +94,47 @@ class Posts extends Component{
     this.props.submitPost(post);
     this.refs.comment.value = '';
   }
-  // updatePosts(){
-  //   console.log('updating in posts');
-  //   this.setState({
-  //     posts:[]
-  //   });
-  //   this.props.update();
-  // }
 
+  submitUserPost(e){
+    console.log('submitting user post');
+    this.emphasizeForm();
+    let postText = this.refs.comment.value;
+    //user whose wall this is:
+    let user = this.props.usersObject[this.props.wall];
+    //user looking at page:
+    let currentUser = this.props.user[0];
+    console.log('user: ',user);
+    console.log('currentUser: ',currentUser);
+    //create date information for post:
+    var today = Functions.createDate();
+    console.log('today: ',today);
+    //create remaining variables for post:
+    let uid = currentUser.userid;
+    let affiliation = user.affiliation;
+    //make user's post on his own page have 'NA' for postedon
+    let postedon;
+    if(currentUser.userid==user.userid){
+      postedon='NA';
+    }else{
+      postedon=user.userid
+    }
+    //create post for POST request
+    let post = {
+      text:postText,
+      uid:uid,
+      affiliation:affiliation,
+      date:today,
+      postedon:postedon
+    }
+    console.log('post: ',post);
+
+    this.props.submitPost(post);
+    this.refs.comment.value = "";
+  }
 
   render(){
+
+    let submitFunction = (this.props.wall=='public') ? (()=>{this.submitPost()}) : (()=>{this.submitUserPost()});
     console.log('wall state: ',this.props.wall);
     // let user = (this.state.user) ? this.state.user : '';
     let user = this.props.user;
@@ -120,7 +151,7 @@ class Posts extends Component{
           <form className="" action="index.html" method="post">
             <textarea ref="comment" name="comment" rows="8" cols="40"></textarea>
           </form>
-            <div onClick={this.submitPost.bind(this)} className="btn btn-primary">Post</div>
+            <div onClick={submitFunction} className="btn btn-primary">Post</div>
       </div>
     )
     :
@@ -129,7 +160,7 @@ class Posts extends Component{
             <form className="" action="index.html" method="post">
               <textarea ref="comment" name="comment" rows="8" cols="20"></textarea>
             </form>
-              <div onClick={this.submitPost.bind(this)} className="btn btn-primary">Post</div>
+              <div onClick={submitFunction} className="btn btn-primary">Post</div>
         </div>
     );
 
@@ -186,12 +217,14 @@ function mapStateToProps(state){
   let isSubmitting = state.allReducers.mainApp.isSubmitting;
   let postsUpdated = state.allReducers.mainApp.postsUpdated;
   let wall = state.allReducers.mainApp.wall;
+  let usersObject = state.allReducers.mainApp.usersObject;
   return{
     user,
     posts,
     isSubmitting,
     postsUpdated,
-    wall
+    wall,
+    usersObject
   }
 }
 
