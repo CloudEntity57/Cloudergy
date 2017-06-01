@@ -253,8 +253,8 @@ class PostHeader extends Component{
         </NavLink> */}
 
         <div className="user-preview-header">
-          <div onMouseEnter={()=>this.setUserPageId(user.userid)} onClick={()=>this.goToUser(user.userid)} className="user-preview-header">
-            <div className="user-preview-pointer"></div>
+          <div onMouseEnter={()=>this.setUserPageId(user.userid)} className="user-preview-header">
+            <div  onClick={()=>this.goToUser(user.userid)} className="user-preview-pointer"></div>
             <div className="opaque-connector"></div>
             <a className="user-link"><span>{ user.username }</span></a>
           </div>
