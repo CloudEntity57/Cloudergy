@@ -73,19 +73,19 @@ router.post('/user/:userid',function(req,res,next){
       res.json(user);
     }
   );
-
 });
 
 //save a post:
 
 router.post('/post',function(req,res,next){
-  let post = req.body;
-  console.log('post: ',post);
+  let post = req.body.payload;
+  console.log('the freaking post: ',post);
   let newPost = new Post(post);
   newPost.save(function(err,success){
     if(err) console.log('error: ',err);
     let posts=Post.find({},'',function(err,posts){
       if(err) console.log('error: ',err);
+      posts = posts.reverse();
       res.json(posts);
     });
   });
@@ -96,8 +96,26 @@ router.post('/post',function(req,res,next){
 router.get('/posts',function(req,res,next){
   let posts = Post.find({},'',function(err,profile){
     if(err) console.log('error: ',err);
+    // profile=profile.reverse();
     res.json(profile);
   });
+});
+
+//======================route for deleting a post:
+
+router.post('/deletepost',function(req,res,next){
+  console.log('post to delete: ', req.body.payload);
+  Post.findByIdAndRemove(req.body.payload,(e)=>{
+    if(e){console.log('error! ',e);}
+    let results = Post.find({},'',function(err,posts){
+      if(err) console.log('error: ',err);
+      posts=posts.reverse();
+      console.log('returning: ',posts.length);
+      res.json(posts);
+    });
+  })
+
+
 });
 
 //post comment:
@@ -146,8 +164,9 @@ User.findOneAndUpdate(
 //=================================Route for accepting an alliance invitation:
 
 router.post('/acceptally',function(req,res,next){
-  let newAlly = req.body.allyid;
-  let userId = req.body.userid;
+  console.log('req: ',req.body);
+  let newAlly = req.body.payload.allyId;
+  let userId = req.body.payload.userId;
   let result;
   console.log('new ally: ',newAlly);
   console.log('current user: ',userId);
@@ -189,11 +208,12 @@ router.post('/acceptally',function(req,res,next){
       if(invitations[i] === newAlly){
         invitations.splice(i,1);
         console.log('after removal: ',invitations);
-        result = invitations;
+        // result = invitations;
         //update the invitations list in your database:
         User.findOneAndUpdate({"userid":userId},{"ally_invitations_received":invitations},function(err,user){
              if(err) {console.log('error! ',err);}
              console.log('updated ally invitations received: ',user.ally_invitations_received);
+             result=user;
            });
         //add ally's id to your friends list:
         User.findOneAndUpdate({"userid":userId},{"$push":{"allies":newAlly}},{"new": true, "upsert": true },function(err,user){
@@ -205,15 +225,7 @@ router.post('/acceptally',function(req,res,next){
     res.json(result);
 });
 
-//======================route for deleting a post:
 
-router.post('/deletepost',function(req,res,next){
-  console.log('post to delete: ', req.body.post);
-  Post.findByIdAndRemove(req.body.post,(e)=>{
-    if(e){console.log('error! ',e);}
-  });
-  res.send('success!');
-});
 
 
 
