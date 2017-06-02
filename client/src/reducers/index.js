@@ -8,7 +8,7 @@ import initialState from './app/initialState.js';
 
 
 //import actions:
-import { SET_INITIAL_STATE, REQUEST_USER_INFO, RECEIVE_USER_INFO, GET_PROFILE, REQUEST_ALL_USERS, RECEIVE_ALL_USERS, REQUESTING_POSTS, RECEIVING_POSTS, DISPLAY_USER_PREVIEW, HIDE_USER_PREVIEW, SET_ACTIVE_POST, CLEAR_ACTIVE_POST, SET_USERPAGE_ID, SHOW_LOCK, LOCK_SUCCESS, LOCK_ERROR,TOGGLE_AFFILIATION,REQUEST_SUBMIT_POST,SUBMIT_POST_CONFIRMATION, CLEAR_USERPAGE_ID,REQUEST_ACCEPT_ALLY,RETRIEVE_ACCEPT_ALLY,REQUEST_DELETE_POST, RETRIEVE_DELETE_POST,SET_WALL_STATE} from '../actions/index';
+import { SET_INITIAL_STATE, REQUEST_USER_INFO, RECEIVE_USER_INFO, GET_PROFILE, REQUEST_ALL_USERS, RECEIVE_ALL_USERS, REQUESTING_POSTS, RECEIVING_POSTS, DISPLAY_USER_PREVIEW, HIDE_USER_PREVIEW, SET_ACTIVE_POST, CLEAR_ACTIVE_POST, SET_USERPAGE_ID, SHOW_LOCK, LOCK_SUCCESS, LOCK_ERROR,TOGGLE_AFFILIATION,REQUEST_SUBMIT_POST,SUBMIT_POST_CONFIRMATION, CLEAR_USERPAGE_ID,REQUEST_ACCEPT_ALLY,RETRIEVE_ACCEPT_ALLY,REQUEST_DELETE_POST, RETRIEVE_DELETE_POST,SET_WALL_STATE,REQUEST_POST_COMMENT,RETRIEVE_POST_COMMENT} from '../actions/index';
 
 const mainApp = (state = initialState, action) => {
   switch(action.type){
@@ -56,12 +56,36 @@ const mainApp = (state = initialState, action) => {
       return deletePost(state,action);
     case SUBMIT_POST_CONFIRMATION:
       return submitPost(state,action);
+    case REQUEST_POST_COMMENT:
+      return submitComment(state,action);
+    case RETRIEVE_POST_COMMENT:
+      return submitComment(state,action);
     case REQUEST_ACCEPT_ALLY:
       return acceptAlly(state,action);
     case RETRIEVE_ACCEPT_ALLY:
       return acceptAlly(state,action);
     case SET_WALL_STATE:
       return setWallState(state,action);
+    default:
+      return state;
+  }
+}
+
+//post user comment on a post:
+const submitComment = (state={isPosting:false,postsUpdated:false,comments:[]},action) =>{
+  switch(action.type){
+    case REQUEST_POST_COMMENT:
+      return {
+        ...state,
+        isPosting:true
+      }
+    case RETRIEVE_POST_COMMENT:
+      return {
+        ...state,
+        isPosting:false,
+        postsUpdated:true,
+        comments:action.results
+      }
     default:
       return state;
   }

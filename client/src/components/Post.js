@@ -8,7 +8,7 @@ let Functions = new functionsModule();
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { mainApp, displayUserPreview, hideUserPreview,setActivePost,clearActivePost,fetchPosts } from '../actions/index';
+import { mainApp, displayUserPreview, hideUserPreview,setActivePost,clearActivePost,fetchPosts,submitComment } from '../actions/index';
 
 class Post extends Component{
   constructor(props){
@@ -61,19 +61,28 @@ class Post extends Component{
   postComment(e){
     e.preventDefault();
     console.log('posting comment:',this.refs.comment.value);
-    console.log('data: ',this.refs.comment);
-    jquery.ajax({
-      url:"http://localhost:3001/postcomment",
-      type:"POST",
-      data:{
-        comment:this.refs.comment.value,
-        id:this.refs.comment.id
+    console.log('data: ',this.refs.comment.value);
+    let data = {
+      comment:{
+        text:this.refs.comment.value,
+        userid:'my user id'
       },
-      success:(val)=>{
-        console.log('success! ',val);
-        this.props.fetchPosts('');
-      }
-    });
+      id:this.refs.comment.id
+    }
+    // jquery.ajax({
+    //   url:"http://localhost:3001/postcomment",
+    //   type:"POST",
+    //   data:{
+    //     comment:this.refs.comment.value,
+    //     id:this.refs.comment.id
+    //   },
+    //   success:(val)=>{
+    //     console.log('success! ',val);
+    //     this.props.fetchPosts('');
+    //   }
+    // });
+
+    this.props.submitComment(data);
 
   }
   render(){
@@ -157,7 +166,8 @@ function mapDispatchToProps(dispatch){
     hideUserPreview,
     setActivePost,
     clearActivePost,
-    fetchPosts
+    fetchPosts,
+    submitComment
   },dispatch);
 }
 

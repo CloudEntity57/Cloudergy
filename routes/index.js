@@ -121,15 +121,22 @@ router.post('/deletepost',function(req,res,next){
 //post comment:
 
 router.post('/postcomment',function(req,res,next){
-  let comment = req.body.comment;
+  console.log('req body: ',req.body);
+  let comment = req.body.payload.comment;
+
   // comment = {"comment":comment};
-  let commentId = req.body.id
-  console.log('comment: ',comment,' ',commentId);
-  Post.findByIdAndUpdate(req.body.id,'comments',{"$push":{"comment":comment}},{"new": true, "upsert": true },(err,comment)=>{
+  let commentId = req.body.payload.id
+  console.log('comment: ',comment,', ',commentId);
+  Post.findByIdAndUpdate(commentId,{"$push":{comments:comment}},{"new": true, "upsert": true },(err,result)=>{
     if(err){console.log('error! ',err);}
-    console.log('success! ',comment);
+    // console.log('success! ',result);
+    Post.find({_id:commentId},'',(err,result)=>{
+      console.log('new post: ',result[0].comments);
+      res.json(result);
+    });
   });
-  res.send('baby');
+
+  // res.send();
 });
 //======================route for requesting an alliance with another member:
 

@@ -135,6 +135,10 @@ let postApiCall = (reqType, recType, url1,url2) => {
     return postFunc;
 }
 
+export const REQUEST_POST_COMMENT = "REQUEST_POST_COMMENT"
+export const RETRIEVE_POST_COMMENT = "RETRIEVE_POST_COMMENT"
+export const submitComment = postApiCall(REQUEST_POST_COMMENT,RETRIEVE_POST_COMMENT,"http://localhost:3001/postcomment");
+
 export const REQUEST_DELETE_POST = "REQUEST_DELETE_POST"
 export const RETRIEVE_DELETE_POST = "RETRIEVE_DELETE_POST"
 export const deletePost = postApiCall(REQUEST_DELETE_POST, RETRIEVE_DELETE_POST,'http://localhost:3001/deletepost');
