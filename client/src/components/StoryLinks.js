@@ -22,7 +22,6 @@ class StoryLinks extends Component{
 
     return(
       <div className="ads-panel">
-        ADS
         <div className="panel panel-default">
           <ul>
             <li>Nisi veniam deleniti, maxime consequuntur at nesciunt nobis.</li>

@@ -13,7 +13,7 @@ import { SET_INITIAL_STATE, REQUEST_USER_INFO, RECEIVE_USER_INFO, GET_PROFILE, R
 const mainApp = (state = initialState, action) => {
   switch(action.type){
     case SET_INITIAL_STATE:
-      return state;
+      return initialState;
     case REQUEST_USER_INFO:
       return getUser(state,action);
     case SET_USERPAGE_ID:
@@ -72,7 +72,7 @@ const mainApp = (state = initialState, action) => {
 }
 
 //post user comment on a post:
-const submitComment = (state={isPosting:false,postsUpdated:false,comments:[]},action) =>{
+const submitComment = (state={isPosting:false,postsUpdated:false,posts:[]},action) =>{
   switch(action.type){
     case REQUEST_POST_COMMENT:
       return {
@@ -84,7 +84,7 @@ const submitComment = (state={isPosting:false,postsUpdated:false,comments:[]},ac
         ...state,
         isPosting:false,
         postsUpdated:true,
-        comments:action.results
+        posts:action.results.reverse()
       }
     default:
       return state;

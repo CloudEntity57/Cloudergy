@@ -77,6 +77,15 @@ body {
   position: relative;
 }
 
+.ally-request-holder a:hover {
+  color: black;
+}
+
+.ally-request-holder a:focus {
+  text-decoration: none;
+  color: black;
+}
+
 .user-post {
   margin-bottom: 15px;
 }
@@ -356,6 +365,7 @@ body {
 
 .ads-panel a:hover, .friends-panel a:hover {
   text-decoration: none;
+  text-decoration: none;
   color: grey;
 }
 
@@ -439,7 +449,6 @@ body {
 .userpic-tab {
   position: relative;
   height: 35px;
-  margin-bottom: 5px;
   border-bottom: 1px solid gray;
   padding: 5px 5px 38px 5px;
   color: black;
@@ -555,6 +564,33 @@ body {
   font-size: inherit;
 }
 
+.comment-panel form input {
+  height: 25px;
+}
+
+.comment-panel .user-pic-container {
+  height: 35px;
+}
+
+.comment-panel .user-pic-container * {
+  height: 75%;
+}
+
+.comment-panel .user-pic-container div {
+  position: absolute;
+  left: -5px;
+  width: 5px;
+}
+
+.comment-container {
+  position: relative;
+  margin-bottom: 5px;
+}
+
+.userpic-comment-col {
+  position: absolute;
+}
+
 .comment-form textarea {
   height: 2em;
   border: none;
@@ -569,6 +605,24 @@ body {
 
 .comment-form .btn {
   float: right;
+}
+
+.comment-header-text {
+  display: inline-block;
+  width: 75%;
+  margin-left: 10%;
+}
+
+.user-comment {
+  font-size: .85em;
+}
+
+.link_normalize:hover, .link_normalize:focus {
+  text-decoration: none;
+}
+
+.comment-username {
+  margin-right: .25em;
 }
 
 .tall-comment-form {

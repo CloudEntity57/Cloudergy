@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import UserPic from './UserPic';
 import PostHeader from './PostHeader';
+// import { comments } from './Comments';
 import jquery from 'jquery';
 let functionsModule = require('./Functions');
 let Functions = new functionsModule();
@@ -62,28 +63,20 @@ class Post extends Component{
     e.preventDefault();
     console.log('posting comment:',this.refs.comment.value);
     console.log('data: ',this.refs.comment.value);
+    let userid = this.props.user[0].userid;
     let data = {
       comment:{
         text:this.refs.comment.value,
-        userid:'my user id'
+        userid:userid
       },
       id:this.refs.comment.id
     }
-    // jquery.ajax({
-    //   url:"http://localhost:3001/postcomment",
-    //   type:"POST",
-    //   data:{
-    //     comment:this.refs.comment.value,
-    //     id:this.refs.comment.id
-    //   },
-    //   success:(val)=>{
-    //     console.log('success! ',val);
-    //     this.props.fetchPosts('');
-    //   }
-    // });
-
+    this.refs.comment.value='';
     this.props.submitComment(data);
 
+  }
+  goToUser(e){
+    e.preventDefault();
   }
   render(){
     let user = (this.state.user) ? this.state.user : '';
@@ -97,23 +90,50 @@ class Post extends Component{
           <img id={user.userid} className='post-header-pic' src={user.photo} alt='pic' />
         </div>
       );
-    let post = (this.props.post) ? this.props.post : '';
-    // console.log('Post post: ',post);
-    let text = post.text;
-    let date = post.date;
-    let id = post._id;
-    let postId = post._id;
+    let x = (this.props.post !=='') ? this.props.post : '';
+    let post = (this.props.posts.length>0) ?
+    this.props.posts.filter((val)=>{
+      return val._id === x;
+    }) : '';
+    console.log('Post post: ',post[0]);
+    post = post[0];
+    let text = (post.hasOwnProperty('text')) ? post.text : '';
+    let date = (post.hasOwnProperty('text')) ? post.date : '';
+    let id = (post.hasOwnProperty('text')) ? post._id : '';
+    let postId = (post.hasOwnProperty('text')) ? post._id : '';
     console.log('post id: ',postId);
-    let currentId = post.uid;
+    let currentId = (post.hasOwnProperty('text')) ? post.uid : '';
+    //create comments:
+    let comments = (post.hasOwnProperty('text')) ? post.comments:'';
+    let userid = (post.hasOwnProperty('text')) ? post.userid:'';
+    let users = (this.props.usersObject) ? this.props.usersObject : [];
+    console.log('users in post: ',users);
+    console.log('this posts comments are: ',comments);
+    let commentSection = (post.hasOwnProperty('comments')) ? comments.map((val)=>{
+      let username = users[val.userid].username;
+      return(
+        <div className="comment-container clearfix">
+          <span className='userpic-comment-col'><UserPic userid={val.userid} /></span>
+          <div className="comment-header-text">
+          <div className="user-comment"><span className="comment-username"><a id={userid} href="#" onClick={()=>this.goToUser()}>{username}</a></span><span className="user-comment-text">{val.text}</span></div>
+          <div className="user-comment"><a href="#">Like</a> <a href="#">Reply</a></div>
+        </div>
+        </div>
+      );
+    }) : '';
+    // let commentSection = (post.hasOwnProperty('comments')) ?
+    //   comments(post,users,this.goToUser)
+    //  : '';
+
     //to avoid props confusion:
     let thisuser=user;
     const props = {
-      post : (this.props.post) ? this.props.post : '',
+      post : post,
       // console.log('Post post: ',post);
-      text : post.text,
-      date : post.date,
-      id : post._id,
-      postId : post._id,
+      text : text,
+      date : date,
+      id : id,
+      postId : id,
       currentId: currentId,
       pic:userpic,
       updatePosts:this.updatePosts.bind(this)
@@ -140,6 +160,7 @@ class Post extends Component{
         </div>
       </div>
       <div className="comment-panel">
+        {commentSection}
         <UserPic userid={myId} />
         <form info={postId} onSubmit={this.postComment.bind(this)}>
           <input ref="comment" id={postId} placeholder=" Comment here..." />
@@ -153,9 +174,13 @@ class Post extends Component{
 function mapStateToProps(state){
   let user = state.allReducers.mainApp.user;
   let user_preview_showing = state.allReducers.mainApp.user_preview_showing;
+  let posts = state.allReducers.mainApp.posts;
+  let usersObject = state.allReducers.mainApp.usersObject;
   return{
     user,
-    user_preview_showing
+    user_preview_showing,
+    posts,
+    usersObject
   }
 }
 

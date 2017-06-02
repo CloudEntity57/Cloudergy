@@ -26,11 +26,12 @@ class UserPic extends Component{
   }
   render(){
     let user = (this.state.user[0]) ? this.state.user[0] : '';
+    let userphoto = (this.state.user[0]) ? (<img id={user.id} className='userpic-pic' src={user.photo} alt='user image' />) : '';
     let teamcolor = user.affiliation + "stripe user-pic-stripe";
     return(
       <div className='user-pic-container'>
         <div className={teamcolor}></div>
-        <img id={user.id} className='userpic-pic' src={user.photo} alt='user image' />
+        { userphoto }
       </div>
     );
   }

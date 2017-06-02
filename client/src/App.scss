@@ -66,6 +66,15 @@ body{
 }
 .ally-request-holder{
   position: relative;
+  a{
+    &:hover{
+      color:black;
+    }
+    &:focus{
+      text-decoration:none;
+      color:black;
+    }
+  }
 }
 .user-post{
   margin-bottom:15px;
@@ -309,6 +318,7 @@ body{
     }
     color:black;
     &:hover{
+      text-decoration: none;
       text-decoration:none;
       color:grey;
     }
@@ -385,7 +395,7 @@ body{
 .userpic-tab{
   position: relative;
   height:35px;
-  margin-bottom: 5px;
+  // margin-bottom: 5px;
   border-bottom: 1px solid gray;
   padding:5px 5px 38px 5px;
   color:black;
@@ -503,6 +513,39 @@ body{
   font-family: Arial,Helvetica,sans-serif !important;
   font-size: inherit;
 }
+.comment-panel{
+  form{
+    input{
+      height:25px;
+      &:focus{
+      }
+    }
+  }
+  .user-pic-container{
+    height:35px;
+
+    *{
+      // margin-top:15px;
+      height:75%;
+    }
+    div{
+      position: absolute;
+      left:-5px;
+      width:5px;
+    }
+    .userpic-pic{
+      // margin-bottom:14px;
+    }
+  }
+}
+.comment-container{
+  position: relative;
+  // padding:5px 0px;
+  margin-bottom:5px;
+}
+.userpic-comment-col{
+  position: absolute;
+}
 .comment-form{
   textarea{
     height:2em;
@@ -517,6 +560,24 @@ body{
   .btn{
     float:right;
   }
+}
+.comment-header-text{
+  display:inline-block;
+  width:75%;
+  margin-left:10%;
+}
+.user-comment{
+  font-size: .85em;
+}
+.link_normalize{
+  &:hover,&:focus{
+    text-decoration: none;
+  }
+
+}
+.comment-username{
+  // font-size:.85em;
+  margin-right:.25em;
 }
 .tall-comment-form{
   position:relative;

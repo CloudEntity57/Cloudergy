@@ -127,12 +127,12 @@ router.post('/postcomment',function(req,res,next){
   // comment = {"comment":comment};
   let commentId = req.body.payload.id
   console.log('comment: ',comment,', ',commentId);
-  Post.findByIdAndUpdate(commentId,{"$push":{comments:comment}},{"new": true, "upsert": true },(err,result)=>{
+  Post.findByIdAndUpdate(commentId,{"$push":{comments:comment}},{"new": true},(err,result)=>{
     if(err){console.log('error! ',err);}
-    // console.log('success! ',result);
-    Post.find({_id:commentId},'',(err,result)=>{
-      console.log('new post: ',result[0].comments);
-      res.json(result);
+    Post.find({},'',(err,posts)=>{
+      if(err){console.log('error! ', err);}
+      console.log('updated posts: ',posts);
+      res.json(posts);
     });
   });
 

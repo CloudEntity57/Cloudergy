@@ -17,6 +17,7 @@ const initialState = {
   wall:'public',
   //auth:
   auth:auth,
+  token:'',
   //app.js:
   profile:{},
   updated:false,

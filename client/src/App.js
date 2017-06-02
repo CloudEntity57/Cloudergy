@@ -25,7 +25,7 @@ console.log('auth : ', auth);
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { mainApp, fetchUserInfo, fetchPosts, saveProfile,createNewUser, fetchAllUsers,doAuthentication } from './actions/index';
+import { socialApp, fetchUserInfo, fetchPosts, saveProfile,createNewUser, fetchAllUsers,doAuthentication } from './actions/index';
 import { push } from 'connected-react-router';
 
 // validate authentication for private routes
@@ -42,11 +42,13 @@ const requireAuth = (nextState, replace) => {
 
 }
 
+
 // authorize(e){
 //   e.preventDefault();
 // }
 
 class App extends React.Component{
+
 
   constructor(props){
     super(props);
@@ -140,6 +142,7 @@ class App extends React.Component{
   logOut(){
     this.props.push('/');
     console.log('logging out');
+    this.props.socialApp();
     auth.logout();
   }
   toggle_affiliation(affiliation){
@@ -202,7 +205,7 @@ class App extends React.Component{
       {/* <Route path="/user" component = {UserPage} /> */}
       <Route path="/signedin" component={SignedIn} />
       {/* <Route path="/newsfeed" render = {(props)=>(<Newsfeed {...props} />)} /> */}
-      <Route path="/newsfeed" component = {Newsfeed} onEnter={requireAuth} />
+      <Route path="/newsfeed" component = {Newsfeed} onEnter={()=>this.requireAuth()} />
       <Route path="/login" component={Login} />
     {/* </Switch> */}
       <UserPanel/>
@@ -258,7 +261,7 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
-    mainApp,
+    socialApp,
     fetchUserInfo,
     push,
     saveProfile,

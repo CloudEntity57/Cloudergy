@@ -8,7 +8,7 @@ let Functions = new newModule();
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { mainApp,submitPost,fetchPosts } from '../actions/index';
+import { mainApp,submitPost,fetchPosts,fetchAllUsers } from '../actions/index';
 
 class Posts extends Component{
   constructor(props){
@@ -32,8 +32,8 @@ class Posts extends Component{
     // });
   }
   componentWillReceiveProps(nextProps){
-    let user = nextProps.user;
-    let posts;
+    // let user = nextProps.user;
+    // let posts;
     // if(!this.props.postsUpdated){
     //   posts = nextProps.posts;
     //   // this.setState({
@@ -42,15 +42,15 @@ class Posts extends Component{
     // }else{
     //   posts = nextProps.posts.reverse();
     // }
-    posts=nextProps.posts;
-    posts = posts.filter((val)=>{
-      return val.postedon=='NA';
-    });
-    console.log('now the posts are: ',posts);
-    this.setState({
-      user:user,
-      posts:posts
-    });
+    // posts=nextProps.posts;
+    // posts = posts.filter((val)=>{
+    //   return val.postedon=='NA';
+    // });
+    // console.log('now the posts are: ',posts);
+    // this.setState({
+    //   user:user,
+    //   posts:posts
+    // });
   }
 
   emphasizeForm(){
@@ -192,13 +192,12 @@ class Posts extends Component{
     }
     let finalposts = posts.map((post)=>{
       return(
-        <Post uid={post.uid} post={post} />
+        <Post uid={post.uid} post={post._id} />
       );
     });
 
     return(
       <div className="live-posts-panel">
-        LIVE POSTS
         {opaqueBackground}
         <div className="scroller">
           {postEntry}
@@ -232,7 +231,8 @@ function mapDispatchToProps(dispatch){
   return bindActionCreators({
     mainApp,
     submitPost,
-    fetchPosts
+    fetchPosts,
+    fetchAllUsers
   },dispatch);
 }
 

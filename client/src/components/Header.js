@@ -9,7 +9,7 @@ import jquery from 'jquery';
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { mainApp, toggleAffiliation, fetchUserInfo, acceptAlly } from '../actions/index';
+import { socialApp, toggleAffiliation, fetchUserInfo, acceptAlly } from '../actions/index';
 
 class Header extends Component{
   constructor(props){
@@ -220,6 +220,7 @@ class Header extends Component{
     console.log('aff in render: ',affiliation);
     console.log('user pic: ',userpic);
     let userlink = "/user/"+uid;
+    let userimg = (this.props.profile.hasOwnProperty('name')) ? ( <img className="user-pic" src={userpic} alt="user pic" /> ) : '';
     return(
       <header className={this.props.affiliation}>
 
@@ -242,7 +243,7 @@ class Header extends Component{
 
               <NavLink to={userlink}>
                 <a className="header-navlink" href="#">
-                  <img className="user-pic" src={userpic} alt="user pic" />
+                  {userimg}
                   {username}&nbsp;
                 </a>
               </NavLink>
@@ -279,18 +280,20 @@ function mapStateToProps(state){
   let auth = state.allReducers.mainApp.auth;
   let profile = state.allReducers.mainApp.profile;
   let user = state.allReducers.mainApp.user;
+  let loggedIn = state.allReducers.mainApp.loggedIn;
   return{
     previewingAlly,
     affiliation,
     auth,
     user,
-    profile
+    profile,
+    loggedIn
   }
 }
 
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
-    mainApp,
+    socialApp,
     toggleAffiliation,
     fetchUserInfo,
     acceptAlly

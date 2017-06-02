@@ -6,6 +6,7 @@ import NavLink from './NavLink';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { mainApp } from '../actions/index';
+import { push } from 'react-router-redux';
 
 class UserPanel extends Component{
   constructor(props){
@@ -58,8 +59,8 @@ class UserPanel extends Component{
 
       //Remove NavLink and add user chat functionality here:
       return(
-        <NavLink to={userLink}>
-          <a className="link_normalize" href="#">
+        // <NavLink to={userLink}>
+          <a onClick={()=>this.props.push(userLink)} className="link_normalize" href="#">
             <div className="userpic-tab">
             {/* <div className="user-tab"> */}
               {user.first_name}&nbsp;{user.last_name}
@@ -68,7 +69,7 @@ class UserPanel extends Component{
               <div><UserPic userid={userid} /></div>
             </div>
           </a>
-        </NavLink>
+        // </NavLink>
 
       );
     }) : '';
@@ -95,7 +96,8 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
-    mainApp
+    mainApp,
+    push
   },dispatch);
 }
 
