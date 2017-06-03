@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import jquery from 'jquery';
 import UserHeader from './UserHeader';
 import NavLink from './NavLink';
-import PostsUser from './PostsUser';
+// import PostsUser from './PostsUser';
 import Posts from './Posts';
 let functionsModule = require('./Functions');
 let Functions = new functionsModule();

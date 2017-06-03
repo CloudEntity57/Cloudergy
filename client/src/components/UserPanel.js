@@ -44,11 +44,11 @@ class UserPanel extends Component{
     })
     : '';
 
-    let memberToggle = (<a className="member-toggle" href="#"><div onClick={this.expandColumn.bind(this)} className="userToggle">&middot; Members</div></a>);
+    let memberToggleBar = (<a className="member-toggle" href="#"><div onClick={this.expandColumn.bind(this)} className="userToggle">&middot; Members</div></a>);
 
-    let expandedContainer = (this.state.expanded) ? (
+    let expandingUserColumn = (this.state.expanded) ? (
       <div className="expanded-user-column">
-        {memberToggle}
+        {memberToggleBar}
         {expandedColumn}
       </div>
     ) : '';
@@ -75,8 +75,8 @@ class UserPanel extends Component{
     }) : '';
     return(
       <div className="users">
-        {memberToggle}
-        {expandedContainer}
+        {memberToggleBar}
+        {expandingUserColumn}
 
         <h4>Members</h4>
         {users}

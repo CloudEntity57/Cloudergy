@@ -98,6 +98,18 @@ body {
   background-color: white;
 }
 
+.like-panel {
+  font-size: .75em;
+  margin-bottom: 10px;
+  padding: 5px 0px;
+  border-bottom: 1px solid gray;
+}
+
+.post-likes {
+  color: #337ab7;
+  margin-right: 2px;
+}
+
 .comment-panel {
   border-top: 1px solid lightgrey;
   border-bottom-right-radius: 3px;
@@ -200,7 +212,7 @@ body {
   position: absolute;
   right: 0px;
   bottom: 10px;
-  padding: 0px !important;
+  padding: 5px 0px !important;
   width: 200px;
   background-color: white;
   font-family: helvetica,arial,sans-serif !important;
@@ -449,15 +461,13 @@ body {
 .userpic-tab {
   position: relative;
   height: 35px;
-  border-bottom: 1px solid gray;
   padding: 5px 5px 38px 5px;
   color: black;
 }
 
 .userpic-tab:hover {
   opacity: .7;
-  color: white;
-  background-color: gray;
+  background-color: #dad7d7;
 }
 
 .userpic-tab div {
@@ -585,6 +595,16 @@ body {
 .comment-container {
   position: relative;
   margin-bottom: 5px;
+}
+
+.comment-container .comment-edit {
+  display: inline-block;
+  padding: 0px 10px;
+}
+
+.comment-container .comment-edit a {
+  position: absolute;
+  top: -5px;
 }
 
 .userpic-comment-col {
@@ -783,7 +803,7 @@ body {
   height: 25px;
   background-color: lightgray;
   border-left: 1px solid #b7b5b5;
-  padding: 10px;
+  padding: 0px;
   border: 1px solid #b7b5b5;
 }
 

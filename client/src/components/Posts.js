@@ -88,7 +88,9 @@ class Posts extends Component{
       uid:userid,
       affiliation:affiliation,
       date:today,
-      postedon:'NA'
+      postedon:'NA',
+      likes:0,
+      likers:[]
     }
     console.log('post: ',post);
     this.props.submitPost(post);
@@ -124,7 +126,9 @@ class Posts extends Component{
       uid:uid,
       affiliation:affiliation,
       date:today,
-      postedon:postedon
+      postedon:postedon,
+      likes:0,
+      likers:[]
     }
     console.log('post: ',post);
 

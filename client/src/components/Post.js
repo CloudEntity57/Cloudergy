@@ -9,13 +9,14 @@ let Functions = new functionsModule();
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { mainApp, displayUserPreview, hideUserPreview,setActivePost,clearActivePost,fetchPosts,submitComment } from '../actions/index';
+import { mainApp, displayUserPreview, hideUserPreview,setActivePost,clearActivePost,fetchPosts,likePost,submitComment,deleteComment } from '../actions/index';
 
 class Post extends Component{
   constructor(props){
     super(props);
     this.state={
-      user:{}
+      user:{},
+      displayedit:false
     }
   }
   componentWillMount(){
@@ -64,10 +65,13 @@ class Post extends Component{
     console.log('posting comment:',this.refs.comment.value);
     console.log('data: ',this.refs.comment.value);
     let userid = this.props.user[0].userid;
+    let postId = Math.random();
     let data = {
       comment:{
+        id:postId,
         text:this.refs.comment.value,
-        userid:userid
+        userid:userid,
+        likes:0
       },
       id:this.refs.comment.id
     }
@@ -77,6 +81,50 @@ class Post extends Component{
   }
   goToUser(e){
     e.preventDefault();
+  }
+  displayEdit(){
+    console.log('displaying');
+    this.setState({
+      displayedit:true
+    })
+  }
+  hideEdit(){
+    console.log('hiding');
+    this.setState({
+      displayedit:false
+    })
+  }
+  deleteComment(e){
+    e.preventDefault();
+    let commentid = e.target.id;
+    console.log('deleting! ',e.target);
+    let post = this.props.post;
+    console.log('post deleted: ',post);
+    let data={
+      id:commentid,
+      post
+    }
+    this.props.deleteComment(data);
+  }
+  // likePost(e){
+  //   e.preventDefault();
+  //   console.log('liking ',e.target.id);
+  //   let post = e.target.id;
+  //   let data = {
+  //     post,
+  //     liker:this.props.user[0].userid
+  //   }
+  //   this.props.likePost(post);
+  // }
+  likePost(e){
+    e.preventDefault();
+    console.log('liking ',e.target.id);
+    let post = e.target.id;
+    let data = {
+      post,
+      liker:this.props.user[0].userid
+    }
+    this.props.likePost(data);
   }
   render(){
     let user = (this.state.user) ? this.state.user : '';
@@ -109,15 +157,20 @@ class Post extends Component{
     let users = (this.props.usersObject) ? this.props.usersObject : [];
     console.log('users in post: ',users);
     console.log('this posts comments are: ',comments);
+
+
     let commentSection = (post.hasOwnProperty('comments')) ? comments.map((val)=>{
       let username = users[val.userid].username;
+      let editOption = (<a id={val.id} onClick={this.deleteComment.bind(this)} href="#">x</a>);
+      let edit = (this.state.displayedit) ? editOption : '';
       return(
-        <div className="comment-container clearfix">
+        <div onMouseEnter={()=>this.displayEdit()} onMouseLeave={()=>this.hideEdit()} className="comment-container clearfix">
           <span className='userpic-comment-col'><UserPic userid={val.userid} /></span>
           <div className="comment-header-text">
           <div className="user-comment"><span className="comment-username"><a id={userid} href="#" onClick={()=>this.goToUser()}>{username}</a></span><span className="user-comment-text">{val.text}</span></div>
-          <div className="user-comment"><a href="#">Like</a> <a href="#">Reply</a></div>
+          <div className="user-comment"><a href="#">Like</a><a href="#">Reply</a></div>
         </div>
+          <div className="comment-edit">{edit}</div>
         </div>
       );
     }) : '';
@@ -138,16 +191,22 @@ class Post extends Component{
       pic:userpic,
       updatePosts:this.updatePosts.bind(this)
     }
+
+    // let likes = (post.hasOwnProperty('likes') && post.likes > 0) ? (<div className="like-panel"><div><span className='post-likes fa fa-thumbs-o-up'></span>{post.likes}</div></div>) : '';
+
+    let likes = (post.hasOwnProperty('likers') && post.likers.length > 0) ? (<div className="like-panel"><div><span className='post-likes fa fa-thumbs-o-up'></span>{post.likers.length}</div></div>) : '';
+
     return(
       <div className="user-post">
       <div id={id} className="post-panel">
         <PostHeader {...props} />
 
         <div className="post-text">{text}</div>
+        {/* <div className="like-panel">{likes}</div> */}
         <div className="like-bar">
-          <a href="#">
-            <span className="fa fa-thumbs-up"></span>
-            <span>Like</span>
+          <a id={id} href="#">
+            <span id={id} className="fa fa-thumbs-up"></span>
+            <span id={id} onClick={this.likePost.bind(this)}>Like</span>
           </a>
           <a href="#">
             <span className="fa fa-comment"></span>
@@ -160,6 +219,7 @@ class Post extends Component{
         </div>
       </div>
       <div className="comment-panel">
+        {likes}
         {commentSection}
         <UserPic userid={myId} />
         <form info={postId} onSubmit={this.postComment.bind(this)}>
@@ -192,7 +252,9 @@ function mapDispatchToProps(dispatch){
     setActivePost,
     clearActivePost,
     fetchPosts,
-    submitComment
+    likePost,
+    submitComment,
+    deleteComment
   },dispatch);
 }
 

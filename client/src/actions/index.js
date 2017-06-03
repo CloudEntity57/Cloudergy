@@ -65,24 +65,6 @@ export const setWallState = (uid) => ({
   uid
 })
 
-// this.acceptAlly = (allyid,userid,resFunction)=>{
-//   let targetURL = 'http://localhost:3001/acceptally';
-//   jquery.ajax({
-//     url:targetURL,
-//     type:'POST',
-//     data:{
-//       userid:userid,
-//       allyid:allyid
-//     },
-//     success:()=>{
-//       // console.log('ally accepted!');
-//     }
-//   }).then(()=>{
-//     resFunction();
-//   });
-// }
-
-
 
 //fetch API call to get user info:
 let apiCall = (reqType, recType, url1,url2) => {
@@ -134,6 +116,23 @@ let postApiCall = (reqType, recType, url1,url2) => {
     }
     return postFunc;
 }
+
+//replies
+
+//like post
+export const REQUEST_LIKE_POST = 'REQUEST_LIKE_POST';
+export const RECEIVE_LIKE_POST = 'RECEIVE_LIKE_POST';
+
+export const likePost = postApiCall(REQUEST_LIKE_POST,RECEIVE_LIKE_POST,"http://localhost:3001/likepost/","");
+
+//cancel alliance
+
+//send ally request
+
+//delete comment
+export const REQUEST_DELETE_COMMENT = "REQUEST_DELETE_COMMENT"
+export const RETRIEVE_DELETE_COMMENT = "RETRIEVE_DELETE_COMMENT"
+export const deleteComment = postApiCall(REQUEST_DELETE_COMMENT,RETRIEVE_DELETE_COMMENT,"http://localhost:3001/deletecomment");
 
 export const REQUEST_POST_COMMENT = "REQUEST_POST_COMMENT"
 export const RETRIEVE_POST_COMMENT = "RETRIEVE_POST_COMMENT"

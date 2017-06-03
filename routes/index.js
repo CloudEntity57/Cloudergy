@@ -34,7 +34,7 @@ router.get('/user/:userid',function(req,res,next){
   // console.log('userid: ',userid);
   User.find({userid:userid},'', function(err,profile){
     if(err)console.log('error: ',err);
-    console.log('current user profile: ',profile);
+    // console.log('current user profile: ',profile);
     res.json(profile);
   });
   // User.find({req.},''
@@ -75,7 +75,7 @@ router.post('/user/:userid',function(req,res,next){
   );
 });
 
-//save a post:
+//submit a post:
 
 router.post('/post',function(req,res,next){
   let post = req.body.payload;
@@ -127,7 +127,7 @@ router.post('/postcomment',function(req,res,next){
   // comment = {"comment":comment};
   let commentId = req.body.payload.id
   console.log('comment: ',comment,', ',commentId);
-  Post.findByIdAndUpdate(commentId,{"$push":{comments:comment}},{"new": true},(err,result)=>{
+  Post.findByIdAndUpdate(commentId,{$push:{comments:comment}},(err,result)=>{
     if(err){console.log('error! ',err);}
     Post.find({},'',(err,posts)=>{
       if(err){console.log('error! ', err);}
@@ -138,6 +138,77 @@ router.post('/postcomment',function(req,res,next){
 
   // res.send();
 });
+
+//deleteComment
+router.post('/deletecomment',function(req,res,next){
+  // Post.findByIdAndRemove
+  let comment = req.body.payload;
+  console.log('comment: ',comment);
+  console.log('id: ',parseFloat(comment.id));
+  let commentid = parseFloat(comment.id);
+  Post.findOneAndUpdate({_id:comment.post},{$pull:{comments:{id:commentid}}},(err,post)=>{
+    if(err) console.log('error! ',err);
+    // console.log('found post: ',post);
+    Post.find({},'',(err,posts)=>{
+      if(err) console.log('error: ',err);
+      console.log('returing posts: ',posts);
+      res.json(posts);
+    });
+  });
+});
+
+//like post:
+// router.post('/likepost',function(req,res,next){
+//   let post = req.body.payload;
+//   console.log('post: ',post);
+//   Post.findOneAndUpdate({_id:post},{$inc:{likes:1}},(err,post)=>{
+//     console.log('post is now: ',post);
+//     Post.find({},'',(err,posts)=>{
+//       if(err) console.log('err: ',err);
+//       res.json(posts);
+//     });
+//   });
+// });
+
+//like post:
+router.post('/likepost',function(req,res,next){
+  let post = req.body.payload;
+  console.log('post: ',post.post,', ',post.liker);
+  let liker = post.liker;
+  //find post, check if user already likes post and either add user to 'likers' array or remove user; thus toggling the like.
+  Post.find({_id:post.post},'',(err,entry)=>{
+    if(err) console.log('error: ',err);
+    let likers = entry[0].likers;
+    let index=likers.indexOf(liker);
+    console.log('liker: ',index);
+    if(index === -1){
+      Post.findOneAndUpdate({_id:post.post},{$push:{likers:post.liker}},(err,post)=>{
+        console.log('post is now: ',post);
+        Post.find({},'',(err,posts)=>{
+          if(err) console.log('err: ',err);
+          res.json(posts);
+        });
+      });
+    }else{
+      Post.findOneAndUpdate({_id:post.post},{$pull:{likers:post.liker}},(err,post)=>{
+        console.log('post is now: ',post);
+        Post.find({},'',(err,posts)=>{
+          if(err) console.log('err: ',err);
+          res.json(posts);
+        });
+      });
+    }
+  });
+});
+
+
+//like comment:
+router.post('/likecomment',function(req,res,next){
+});
+//reply to comment:
+router.post('/replycomment',function(req,res,next){
+});
+
 //======================route for requesting an alliance with another member:
 
 router.post('/ally/request/:id',function(req,res,next){
