@@ -90,10 +90,15 @@ class Posts extends Component{
       affiliation:affiliation,
       date:today,
       time:time,
-      comments:[''],
       postedon:'NA',
       likes:0,
-      likers:['']
+      likers:["12345"],
+      comments:[{
+        "id":"12345",
+        "text":"hi",
+        "userid":userid,
+        "likes":0
+      }]
     }
     console.log('post: ',post);
     this.props.submitPost(post);
@@ -131,10 +136,15 @@ class Posts extends Component{
       affiliation:affiliation,
       date:today,
       time:time,
-      comments:[''],
       postedon:postedon,
       likes:0,
-      likers:['']
+      likers:["12345"],
+      comments:[{
+        "id":"12345",
+        "text":"hi",
+        "userid":uid,
+        "likes":0
+      }]
     }
     console.log('post: ',post);
 

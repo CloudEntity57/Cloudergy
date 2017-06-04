@@ -158,8 +158,9 @@ class Post extends Component{
     console.log('users in post: ',users);
     console.log('this posts comments are: ',comments);
 
+    let commentSection = (post.hasOwnProperty('comments')) ?
 
-    let commentSection = (post.hasOwnProperty('comments')) ? comments.map((val)=>{
+    comments.slice(1,comments.length).map((val)=>{
       let username = users[val.userid].username;
       let editOption = (<a id={val.id} onClick={this.deleteComment.bind(this)} href="#">x</a>);
       let edit = (this.state.displayedit) ? editOption : '';
@@ -173,7 +174,9 @@ class Post extends Component{
           <div className="comment-edit">{edit}</div>
         </div>
       );
-    }) : '';
+    })
+
+    : '';
     // let commentSection = (post.hasOwnProperty('comments')) ?
     //   comments(post,users,this.goToUser)
     //  : '';
@@ -194,7 +197,7 @@ class Post extends Component{
 
     // let likes = (post.hasOwnProperty('likes') && post.likes > 0) ? (<div className="like-panel"><div><span className='post-likes fa fa-thumbs-o-up'></span>{post.likes}</div></div>) : '';
 
-    let likes = (post.hasOwnProperty('likers') && post.likers.length > 0) ? (<div className="like-panel"><div><span className='post-likes fa fa-thumbs-o-up'></span>{post.likers.length}</div></div>) : '';
+    let likes = (post.hasOwnProperty('likers') && post.likers.length > 1) ? (<div className="like-panel"><div><span className='post-likes fa fa-thumbs-o-up'></span>{post.likers.length-1}</div></div>) : '';
 
     return(
       <div className="user-post">
