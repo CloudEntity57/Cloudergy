@@ -118,6 +118,10 @@ let postApiCall = (reqType, recType, url1,url2) => {
 }
 
 //replies
+export const REQUEST_REPLY_COMMENT = 'REQUEST_REPLY_COMMENT';
+export const RECEIVE_REPLY_COMMENT = 'RECEIVE_REPLY_COMMENT';
+
+export const replyComment= postApiCall(REQUEST_REPLY_COMMENT,RECEIVE_REPLY_COMMENT,"http://localhost:3001/replycomment/","");
 
 //like post
 export const REQUEST_LIKE_POST = 'REQUEST_LIKE_POST';
@@ -125,9 +129,23 @@ export const RECEIVE_LIKE_POST = 'RECEIVE_LIKE_POST';
 
 export const likePost = postApiCall(REQUEST_LIKE_POST,RECEIVE_LIKE_POST,"http://localhost:3001/likepost/","");
 
+//like comment
+export const REQUEST_LIKE_COMMENT = 'REQUEST_LIKE_COMMENT';
+export const RECEIVE_LIKE_COMMENT = 'RECEIVE_LIKE_COMMENT';
+
+export const likeComment = postApiCall(REQUEST_LIKE_COMMENT,RECEIVE_LIKE_COMMENT,"http://localhost:3001/likecomment/","");
+
 //cancel alliance
+export const REQUEST_CANCEL_ALLIANCE = 'REQUEST_CANCEL_ALLIANCE';
+export const RECEIVE_CANCEL_ALLIANCE = 'RECEIVE_CANCEL_ALLIANCE';
+
+export const cancelAlliance= postApiCall(REQUEST_CANCEL_ALLIANCE,RECEIVE_CANCEL_ALLIANCE,"http://localhost:3001/cancelalliance/","");
 
 //send ally request
+export const REQUEST_ALLY_REQ = 'REQUEST_ALLY_REQ';
+export const RECEIVE_ALLY_REQ = 'RECEIVE_ALLY_REQ';
+
+export const requestAlly= postApiCall(REQUEST_ALLY_REQ,RECEIVE_ALLY_REQ,"http://localhost:3001/allyrequest/","");
 
 //delete comment
 export const REQUEST_DELETE_COMMENT = "REQUEST_DELETE_COMMENT"

@@ -9,7 +9,7 @@ let Functions = new functionsModule();
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { mainApp, displayUserPreview, hideUserPreview,setActivePost,clearActivePost,fetchPosts,likePost,submitComment,deleteComment } from '../actions/index';
+import { mainApp, displayUserPreview, hideUserPreview,setActivePost,clearActivePost,fetchPosts,likePost,likeComment,submitComment,deleteComment } from '../actions/index';
 
 class Post extends Component{
   constructor(props){
@@ -126,6 +126,22 @@ class Post extends Component{
     }
     this.props.likePost(data);
   }
+  likeComment(e){
+    e.preventDefault();
+    let comment = e.target;
+    let data = {
+      comment,
+      liker:this.props.user[0].userid
+    }
+    // this.props.likeComment(data);
+  }
+  replyComment(e){
+    e.preventDefault();
+    let comment = e.target;
+    console.log('target: ',comment);
+    this.refs.comment.value='@'+comment.id+' ';
+    this.refs.comment.focus();
+  }
   render(){
     let user = (this.state.user) ? this.state.user : '';
     let myId = (this.state.myId) ? this.state.myId : '';
@@ -169,7 +185,7 @@ class Post extends Component{
           <span className='userpic-comment-col'><UserPic userid={val.userid} /></span>
           <div className="comment-header-text">
           <div className="user-comment"><span className="comment-username"><a id={userid} href="#" onClick={()=>this.goToUser()}>{username}</a></span><span className="user-comment-text">{val.text}</span></div>
-          <div className="user-comment"><a href="#">Like</a><a href="#">Reply</a></div>
+          <div className="user-comment"><a id={val.id} onClick={this.likeComment.bind(this)} href="#">Like</a><a id={username} onClick={this.replyComment.bind(this)} href="#">Reply</a></div>
         </div>
           <div className="comment-edit">{edit}</div>
         </div>
@@ -256,6 +272,7 @@ function mapDispatchToProps(dispatch){
     clearActivePost,
     fetchPosts,
     likePost,
+    likeComment,
     submitComment,
     deleteComment
   },dispatch);
