@@ -77,6 +77,7 @@ class Posts extends Component{
     console.log('user: ',user);
     //create date information for post:
     var today = Functions.createDate();
+    let time = new Date().getTime();
     console.log('today: ',today);
     //create remaining variables for post:
     let userid = user.userid;
@@ -88,9 +89,11 @@ class Posts extends Component{
       uid:userid,
       affiliation:affiliation,
       date:today,
+      time:time,
+      comments:[''],
       postedon:'NA',
       likes:0,
-      likers:[]
+      likers:['']
     }
     console.log('post: ',post);
     this.props.submitPost(post);
@@ -105,6 +108,7 @@ class Posts extends Component{
     let user = this.props.usersObject[this.props.wall];
     //user looking at page:
     let currentUser = this.props.user[0];
+    let time = new Date().getTime();
     console.log('user: ',user);
     console.log('currentUser: ',currentUser);
     //create date information for post:
@@ -126,9 +130,11 @@ class Posts extends Component{
       uid:uid,
       affiliation:affiliation,
       date:today,
+      time:time,
+      comments:[''],
       postedon:postedon,
       likes:0,
-      likers:[]
+      likers:['']
     }
     console.log('post: ',post);
 

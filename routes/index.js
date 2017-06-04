@@ -75,27 +75,14 @@ router.post('/user/:userid',function(req,res,next){
   );
 });
 
-//submit a post:
 
-router.post('/post',function(req,res,next){
-  let post = req.body.payload;
-  console.log('the freaking post: ',post);
-  let newPost = new Post(post);
-  newPost.save(function(err,success){
-    if(err) console.log('error: ',err);
-    let posts=Post.find({},'',function(err,posts){
-      if(err) console.log('error: ',err);
-      posts = posts.reverse();
-      res.json(posts);
-    });
-  });
-});
 
 //get posts:
 
 router.get('/posts',function(req,res,next){
   let posts = Post.find({},'',function(err,profile){
     if(err) console.log('error: ',err);
+    // profile=profile.sort({time:1});
     // profile=profile.reverse();
     res.json(profile);
   });
@@ -118,6 +105,24 @@ router.post('/deletepost',function(req,res,next){
 
 });
 
+//submit a post:
+
+router.post('/post',function(req,res,next){
+  let post = req.body.payload;
+  console.log('the freaking post: ',post);
+  let newPost = new Post(post);
+  newPost.save(function(err,success){
+    if(err) console.log('error: ',err);
+    let posts=Post.find({},'',function(err,posts){
+      if(err) console.log('error: ',err);
+      posts = posts.reverse();
+      res.json(posts);
+    });
+  });
+});
+
+
+
 //post comment:
 
 router.post('/postcomment',function(req,res,next){
@@ -127,8 +132,8 @@ router.post('/postcomment',function(req,res,next){
   // comment = {"comment":comment};
   let commentId = req.body.payload.id
   console.log('comment: ',comment,', ',commentId);
-  Post.findByIdAndUpdate(commentId,{$push:{comments:comment}},(err,result)=>{
-    if(err){console.log('error! ',err);}
+  Post.findOneAndUpdate({_id:commentId},{$push:{comments:comment}},(err,result)=>{
+    if(err) console.log('error! ',err);
     Post.find({},'',(err,posts)=>{
       if(err){console.log('error! ', err);}
       console.log('updated posts: ',posts);
@@ -138,6 +143,41 @@ router.post('/postcomment',function(req,res,next){
 
   // res.send();
 });
+
+
+
+//like post:
+router.post('/likepost',function(req,res,next){
+  let post = req.body.payload;
+  console.log('post: ',post.post,', ',post.liker);
+  let liker = post.liker;
+  //find post, check if user already likes post and either add user to 'likers' array or remove user; thus toggling the like.
+  Post.find({_id:post.post},'',(err,entry)=>{
+    if(err) console.log('error: ',err);
+    let likers = entry[0].likers;
+    let index=likers.indexOf(liker);
+    console.log('liker: ',index);
+    if(index === -1){
+      Post.findOneAndUpdate({_id:post.post},{$push:{likers:post.liker}},(err,post)=>{
+        console.log('post is now: ',post);
+        Post.find({},'',(err,posts)=>{
+          if(err) console.log('err: ',err);
+          res.json(posts);
+        });
+      });
+    }else{
+      Post.findOneAndUpdate({_id:post.post},{$pull:{likers:post.liker}},(err,post)=>{
+        console.log('post is now: ',post);
+        Post.find({},'',(err,posts)=>{
+          if(err) console.log('err: ',err);
+          res.json(posts);
+        });
+      });
+    }
+  });
+});
+
+
 
 //deleteComment
 router.post('/deletecomment',function(req,res,next){
@@ -170,36 +210,7 @@ router.post('/deletecomment',function(req,res,next){
 //   });
 // });
 
-//like post:
-router.post('/likepost',function(req,res,next){
-  let post = req.body.payload;
-  console.log('post: ',post.post,', ',post.liker);
-  let liker = post.liker;
-  //find post, check if user already likes post and either add user to 'likers' array or remove user; thus toggling the like.
-  Post.find({_id:post.post},'',(err,entry)=>{
-    if(err) console.log('error: ',err);
-    let likers = entry[0].likers;
-    let index=likers.indexOf(liker);
-    console.log('liker: ',index);
-    if(index === -1){
-      Post.findOneAndUpdate({_id:post.post},{$push:{likers:post.liker}},(err,post)=>{
-        console.log('post is now: ',post);
-        Post.find({},'',(err,posts)=>{
-          if(err) console.log('err: ',err);
-          res.json(posts);
-        });
-      });
-    }else{
-      Post.findOneAndUpdate({_id:post.post},{$pull:{likers:post.liker}},(err,post)=>{
-        console.log('post is now: ',post);
-        Post.find({},'',(err,posts)=>{
-          if(err) console.log('err: ',err);
-          res.json(posts);
-        });
-      });
-    }
-  });
-});
+
 
 
 //like comment:

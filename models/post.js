@@ -24,13 +24,12 @@ var schema = new mongoose.Schema({
   },
   comments:{ type : Object, ref:'Comments' },
   postedon:{type:String},
-  commentfor:{type:String},
   affiliation:{type: String},
   date:{type: String},
+  time:{type: Number},
   parentId:{type: String},
   likes:{type: Number},
-  likers:{type:Array},
-  dislikes:{type: Number}
+  likers:{type:Array}
 
 });
 
