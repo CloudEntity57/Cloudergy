@@ -6,7 +6,7 @@ import UserHeader from './UserHeader';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { mainApp } from '../actions/index';
-
+import { push } from 'react-router-redux';
 
 class Account extends Component{
   constructor(props){
@@ -19,8 +19,21 @@ class Account extends Component{
   //   let profile = this.props.profile;
   //   console.log('user on account page: ',profile);
   // }
+  componentDidMount(){
+    let profile = this.props.profile;
+    console.log('my profile: ',profile);
+    let user = (this.props.user) ? this.props.user[0] : '';
+    console.log('my account info: ',user);
+    this.refs.username.value=user.username || profile.name;
+    this.refs.ideology.value=user.affiliation || 'none';
+    this.refs.education.value=user.education || 'High School/GED';
+    this.refs.work.value=user.work || '';
+    this.refs.location.value=user.location || '';
+    this.refs.bio.value=user.user_story || '';
+  }
   submit(e){
     e.preventDefault();
+    let userid = this.props.user[0].userid;
     let update = this.props.update;
     let profile = this.props.profile;
     let username = this.refs.username.value;
@@ -30,7 +43,7 @@ class Account extends Component{
       return;
     }
     let ideology = this.refs.ideology.value;
-    this.props.update(ideology);
+    // this.props.update(ideology);
     let location = this.refs.location.value;
     let education = this.refs.education.value;
     let work = this.refs.work.value;
@@ -54,12 +67,15 @@ class Account extends Component{
     });
     userquery.done((val)=>{
       console.log('yeah!',val);
-      update(data);
+      this.props.push('/user/'+userid);
     });
   }
   render(){
-    const profile = this.props.profile;
-    const username = profile.username || this.props.user.name;
+    let profile = this.props.profile;
+    console.log('my profile: ',profile);
+    let user = (this.props.user) ? this.props.user[0] : '';
+    console.log('my account info: ',user);
+    const username = profile.username || user.name;
     const userpic = profile.picture;
     console.log('user pic: ',userpic);
     return(
@@ -69,7 +85,7 @@ class Account extends Component{
       </div>
       <div className="wrapper">
         <div className="user-panel">
-        <UserHeader username={username} />
+        {/* <UserHeader username={username}  /> */}
           <div className="user-details">
             <div className="user-details-header">
               <span className="fa fa-user-circle-o" aria-hidden="true"></span>
@@ -123,7 +139,8 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
-    mainApp
+    mainApp,
+    push
   },dispatch);
 }
 

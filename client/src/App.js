@@ -183,14 +183,14 @@ class App extends React.Component{
   //      user:user
   //    })
   //  }
-   let props = {
-     //sends props to children
-     auth,
-     profile,
-     username,
-     affiliation,
-     update
-   }
+  //  let props = {
+  //    //sends props to children
+  //    auth,
+  //    profile,
+  //    username,
+  //    affiliation,
+  //    update
+  //  }
 
    return (
     <div>
@@ -198,7 +198,7 @@ class App extends React.Component{
 
       {/* <Route exact path="/" render = {(props)=>(<LandingPage />)} /> */}
       <Route exact path="/" render = {(props)=>(<Newsfeed />)} />
-      <Route path="/account" component={Account} />
+      <Route path="/account" render = {(props)=>(<Account />)} />
       {/* <Route path="/user" render = {(props)=>(<UserPage {...props} />)} /> */}
       <Route path="/user/:userid" render = {(props)=>(<UserPage {...props} />)} />
       {/* <Route path="/user" component = {UserPage} /> */}

@@ -14,7 +14,6 @@ import { mainApp,fetchPosts, fetchAllUsers,
 fetchUserInfo,
 saveProfile, clearUserPageId, setWallState } from '../actions/index';
 
-
 class UserPage extends Component{
   constructor(props){
     super(props);
@@ -194,6 +193,8 @@ configureUser(postUserId,currentuser){
     // console.log('user page user: ',user);
     const user = (this.state.user) ? this.state.user : '';
     const userid = (this.state.user) ? this.state.user.userid : '';
+    const me = (this.props.user.length>0) ? this.props.user : {};
+    console.log('me in userpage: ',me);
     console.log('user in userpage: ',user,' userid: ',userid);
     let allies = (this.state.allies) ? this.state.allies.map((ally)=>{
       let allyLink = '/user/'+ally.userid;
@@ -216,11 +217,10 @@ configureUser(postUserId,currentuser){
     return(
       <div>
       <div className="outer-wrapper">
-
       </div>
       <div className="wrapper">
         <div className="user-panel">
-          <UserHeader username={username} userpic={userpic} />
+          <UserHeader me={me} username={username} userid={userid} userpic={userpic} />
           <div className="user-page-container">
             <div className="panel panel-default friends-panel">
               <div className="friends-panel-header">

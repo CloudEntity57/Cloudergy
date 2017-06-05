@@ -182,7 +182,7 @@ class PostHeader extends Component{
 
 
     let userdropdown = (postId==this.props.activePost && this.state.userpreview) ? (
-      <UserDropdown postId={postId} user={user} userPageId={this.state.userPageId}/>
+      <UserDropdown postId={postId} this_user={user} userPageId={this.state.userPageId}/>
     ):'';
 
 

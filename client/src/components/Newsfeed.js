@@ -236,6 +236,7 @@ class Newsfeed extends Component{
         <div className="outer-wrapper">
             <div className="wrapper">
                 <div className="navigation-panel">
+                  <div className="panel panel-default">
                     <ul>
                       <li>
                         Live News Feed
@@ -247,8 +248,11 @@ class Newsfeed extends Component{
                         Account
                       </li>
                     </ul>
+                  </div>
+
 
                 </div>
+
                 <div className="posts-wrapper">
                   <Posts update={this.updatePosts.bind(this)}/>
                 </div>

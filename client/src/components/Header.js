@@ -39,6 +39,9 @@ class Header extends Component{
     let userid = Functions.getCurrentUserId();
     //put potential allies, invitations received into state
     let user = this.props.user;
+    this.setState({
+      user
+    });
     // let potential_allies = this.getPotentialAllies();
     // this.setState({
     //   affiliation:this.props.affiliation,
@@ -79,21 +82,25 @@ class Header extends Component{
     });
   }
   getPotentialAllies(){
-    let user, uid, userpic, ally_invitations_received, allyRequestNumber,username, affiliation,allyReqs,potential_allies;
+    let user, users, uid, userpic, ally_invitations_received, allyRequestNumber,username, affiliation,allyReqs,potential_allies;
     user = (this.props.user !=='') ? this.props.user : [{userid:'',ally_invitations_received:[], allyRequestNumber,username, affiliation,allyReqs,potential_allies}];
+    users = (this.props.users.length > 0) ? this.props.users : [];
     uid = user[0].userid;
     userpic = user[0].photo;
     username = user[0].username;
     affiliation = user[0].affiliation;
     ally_invitations_received = user[0].ally_invitations_received;
     console.log('invites: ',ally_invitations_received);
-    allyRequestNumber = (<div className="invites">{ally_invitations_received.length}</div>);
     potential_allies = [];
     if (ally_invitations_received.length>0){
       ally_invitations_received.map((ally)=>{
-        this.props.fetchUserInfo(ally).then((val)=>{
-          potential_allies.push(val);
-        });
+        // this.props.fetchUserInfo(ally).then((val)=>{
+        //   potential_allies.push(val);
+        // });
+        console.log('all their info: ',users);
+        let result = users.filter((val)=>{return val.userid==ally})[0]
+        console.log('and the answer: ',result);
+        potential_allies.push(result);
       });
       return potential_allies;
     }else{
@@ -113,6 +120,7 @@ class Header extends Component{
 
   }
   toggleAllyRequest(e){
+    console.log('toggling');
     e.preventDefault();
     let previewingAlly = (this.state.previewingAlly) ? false : true;
     this.setState({
@@ -128,18 +136,7 @@ class Header extends Component{
     const userId = this.state.user[0].userid;
     let invitations_list;
     console.log('ally accepted: ',allyId);
-    let callback=function(invites_list){
-      invitations_list = invites_list;
-    };
-
     this.props.acceptAlly({allyId,userId});
-    // Functions.acceptAlly(allyId,userId,callback);
-    this.updateInvitesList(invitations_list);
-
-    let allyLink = "#"+allyId;
-    console.log('ally element: ',allyLink);
-    jquery(allyLink).slideUp();
-    jquery('.invites').remove();
   }
 
   updateInvitesList(invitations_list){
@@ -167,44 +164,54 @@ class Header extends Component{
     console.log('handling click');
     this.props.login();
   }
+  clearDisplay(){
+
+  }
   render(){
     // let user = (this.state.user) ? this.state.user : '';
     // if(this.props.user !==''){
       let user, uid, userpic, ally_invitations_received, allyRequestNumber,username, affiliation,allyReqs;
       user = (this.props.user !=='') ? this.props.user : [{userid:'',ally_invitations_received:[], allyRequestNumber,username, affiliation,allyReqs,potential_allies}];
       ally_invitations_received = user[0].ally_invitations_received;
+      allyRequestNumber = (ally_invitations_received.length > 0) ? (<div className="invites">{ally_invitations_received.length}</div>) : '';
       uid = user[0].userid;
       userpic = user[0].photo;
       username = user[0].username;
       affiliation = user[0].affiliation;
       console.log('user in header render: ',this.props.user);
-      let potential_allies = this.state.potential_allies;
+      // let potential_allies = this.state.potential_allies;
+      let potential_allies = this.getPotentialAllies();
         console.log('potential allies render: ',potential_allies);
+
+//ally request dropdown
+        if(potential_allies.length>0 && potential_allies[0].hasOwnProperty('userid')){
         allyReqs = potential_allies.map((val)=>{
           console.log('user val: ',val);
+          if(!val) return '';
             return (
-              <div id={val[0].userid} className="ally-invitation-tab clearfix">
+              <div id={val.userid} className="ally-invitation-tab clearfix">
                 <div className="col-xs-12">
-                  {val[0].username} would like to be your ally!
+                  {val.username} would like to be your ally!
                 </div>
                 <div className="col-xs-12">
         {/* Accept button */}
                 <a onClick={this.acceptAlly.bind(this)} href="#">
-                  <span id={val[0].userid} className='accept-button'>
+                  <span id={val.userid} className='accept-button'>
                     Accept
                   </span>
                 </a>
         {/* Ignore button */}
                 <a onClick={this.ignoreRequest.bind(this)} href="#">
-                  <span id={val[0].userid} className='accept-button'>
+                  <span id={val.userid} className='accept-button'>
                     Ignore
                   </span>
                 </a>
-                <UserPic userid={val[0].userid} />
+                <UserPic userid={val.userid} />
               </div>
             </div>
             );
         });
+      }
         console.log('allyreqs: ',allyReqs);
 
 
@@ -263,7 +270,7 @@ class Header extends Component{
         <div className="fa fa-globe">
         </div>
         <div className="ally-request-holder">
-          <a href="#" onClick={this.toggleAllyRequest.bind(this)} className="fa fa-handshake-o">
+          <a onClick={this.toggleAllyRequest.bind(this)} href="#" className="fa fa-handshake-o">
           </a>
           {allyRequestNumber}
           {allyPreview}
@@ -271,7 +278,7 @@ class Header extends Component{
       </span>
     ) : '';
     return(
-      <header className={this.props.affiliation_display}>
+      <header onClick={()=>this.clearDisplay()} className={this.props.affiliation_display}>
 
         <div className="outer-nav-wrapper">
           <div className="nav">

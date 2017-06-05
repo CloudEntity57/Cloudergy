@@ -18,6 +18,7 @@ const initialState = {
   invites_sent:[],
   invites_received:[],
   affiliation_display:'none',
+  users:[],
   //auth:
   auth:auth,
   token:'',
