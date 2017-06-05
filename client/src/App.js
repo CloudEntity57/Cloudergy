@@ -195,51 +195,19 @@ class App extends React.Component{
    return (
     <div>
       <Header uid={user.uid} affiliation={affiliation} logOut={this.logOut.bind(this)}/>
-      {/* {children || <LandingPage />} */}
 
-      {/* <Switch> */}
-      <Route exact path="/" render = {(props)=>(<LandingPage />)} />
+      {/* <Route exact path="/" render = {(props)=>(<LandingPage />)} /> */}
+      <Route exact path="/" render = {(props)=>(<Newsfeed />)} />
       <Route path="/account" component={Account} />
       {/* <Route path="/user" render = {(props)=>(<UserPage {...props} />)} /> */}
       <Route path="/user/:userid" render = {(props)=>(<UserPage {...props} />)} />
       {/* <Route path="/user" component = {UserPage} /> */}
       <Route path="/signedin" component={SignedIn} />
       {/* <Route path="/newsfeed" render = {(props)=>(<Newsfeed {...props} />)} /> */}
-      <Route path="/newsfeed" component = {Newsfeed} onEnter={()=>this.requireAuth()} />
+      {/* <Route path="/newsfeed" component = {Newsfeed} onEnter={()=>this.requireAuth()} /> */}
       <Route path="/login" component={Login} />
-    {/* </Switch> */}
+
       <UserPanel/>
-    {/* <Switch> */}
-        {/* <Route exact path="/" render = {(props)=>(<LandingPage />)} />
-        <Route path="/account" component={Account} />
-        <Route path="/user" render = {(props)=>(<UserPage {...props} />)} />
-        <Route path="/user/:uid" render = {(props)=>(<UserPage {...props} />)} />
-        <Route path="/signedin" component={SignedIn} />
-        <Route path="/newsfeed" render = {(props)=>(<Newsfeed {...props} />)} onEnter={requireAuth} />
-        <Route path="/newsfeed" component = {Newsfeed} onEnter={requireAuth} />
-        <Route path="/login" component={Login} /> */}
-      {/* </Switch> */}
-
-
-        {/* <Route exact path="/" component={LandingPage} />
-        <Route path="/account" component={Account} />
-        <Route path="/user" component = {UserPage} />
-        <Route path="/signedin" component={SignedIn} />
-        <Route path="/newsfeed" component = {Newsfeed} onEnter={requireAuth} />
-        {/* <Route path="/newsfeed" component = {Newsfeed} onEnter={requireAuth} /> */}
-        {/* <Route path="/login" component={Login}  */}
-
-        {/* <ConnectedRouter history={history}>
-          <div>
-        <Route exact path="/" render = {(props)=>(<LandingPage />)} />
-        <Route path="/account" component={Account} />
-        <Route path="/user" render = {(props)=>(<UserPage {...props} />)} />
-        <Route path="/user/:uid" render = {(props)=>(<UserPage {...props} />)} />
-        <Route path="/signedin" component={SignedIn} />
-        <Route path="/newsfeed" render = {(props)=>(<Newsfeed {...props} />)} onEnter={requireAuth} />
-        <Route path="/newsfeed" component = {Newsfeed} onEnter={requireAuth} />
-      </div>
-      </ConnectedRouter> */}
 
     </div>
   )

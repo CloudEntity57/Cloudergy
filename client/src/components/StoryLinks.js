@@ -22,11 +22,12 @@ class StoryLinks extends Component{
 
     return(
       <div className="ads-panel">
-        <div className="panel panel-default">
+        <div className="features-panel panel panel-default">
+          <h4>Site Features</h4>
           <ul>
-            <li>Nisi veniam deleniti, maxime consequuntur at nesciunt nobis.</li>
-            <li>Nisi veniam deleniti, maxime consequuntur at nesciunt nobis.</li>
-            <li>Nisi veniam deleniti, maxime consequuntur at nesciunt nobis.</li>
+            <li>Toggle news feed by ideology above</li>
+            <li>Edit your user profile in the account section</li>
+            <li>Send ally requests to other members to build a team</li>
           </ul>
         </div>
         <div id="ads">

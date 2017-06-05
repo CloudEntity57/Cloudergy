@@ -173,11 +173,13 @@ configureUser(postUserId,currentuser){
             console.log('compared to: ',uidGlobalPost);
             results.push(posts[i]);
             console.log('posts is now: ',results);
-            this.setState({
-              posts:results
-            });
+            // results = results.reverse()
           }
       }
+      // results=results.reverse();
+      this.setState({
+        posts:results
+      });
   }
   render(){
     console.log('wall state: ',this.props.wall);

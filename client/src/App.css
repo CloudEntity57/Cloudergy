@@ -40,6 +40,13 @@ header select {
   color: grey;
 }
 
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+  outline: none;
+}
+
 .liberal {
   background-color: #5982ad;
 }
@@ -61,16 +68,62 @@ body {
   border-right: 1px solid #545252;
   padding-right: 5px;
   margin-right: 5px;
+  position: relative;
 }
 
 .header-navlink:hover {
   opacity: .8;
 }
 
+.usericon {
+  border-bottom: 35px solid transparent;
+}
+
+.loginlinks {
+  background-color: lightgrey;
+  color: black;
+  position: absolute;
+  width: 100px;
+  top: 30px;
+  right: -60px;
+}
+
+.loginlinks li {
+  list-style: none;
+}
+
 .header-toggle {
   width: 105px;
   height: 1.5em;
   margin-right: 5px;
+}
+
+.comment-edit {
+  display: inline-block;
+  padding: 0px 10px;
+  position: absolute;
+  top: -5px;
+  right: 0px;
+}
+
+.comment-editbox {
+  display: block;
+  font-size: .85em;
+  width: 100px;
+  padding: 5px;
+  background-color: lightgrey;
+  position: absolute;
+  right: 10px;
+  padding-left: 0px;
+  text-align: right;
+  top: 20px;
+}
+
+.comment-editbox a {
+  position: relative !important;
+  padding-left: 0px;
+  display: inline-block;
+  width: 100%;
 }
 
 .ally-request-holder {
@@ -204,6 +257,7 @@ body {
 
 .post-header-deleteicon {
   position: relative;
+  color: gray;
 }
 
 .post-header-deletebar {
@@ -367,6 +421,12 @@ body {
   width: 440px;
 }
 
+.sticky {
+  position: sticky;
+  position: -webkit-sticky;
+  top: 300px;
+}
+
 .ads-panel a, .friends-panel a {
   color: black;
 }
@@ -383,6 +443,11 @@ body {
 
 .ads-panel, .sticky {
   width: 300px;
+}
+
+.features-panel ul {
+  margin-right: 15px;
+  font-size: .85em;
 }
 
 .friends-panel-header {
@@ -597,16 +662,6 @@ body {
   margin-bottom: 5px;
 }
 
-.comment-container .comment-edit {
-  display: inline-block;
-  padding: 0px 10px;
-}
-
-.comment-container .comment-edit a {
-  position: absolute;
-  top: -5px;
-}
-
 .userpic-comment-col {
   position: absolute;
 }
@@ -635,6 +690,10 @@ body {
 
 .user-comment {
   font-size: .85em;
+}
+
+.user-comment a {
+  margin-right: 5px;
 }
 
 .link_normalize:hover, .link_normalize:focus {
@@ -805,6 +864,10 @@ body {
   border-left: 1px solid #b7b5b5;
   padding: 0px;
   border: 1px solid #b7b5b5;
+}
+
+.users h4 {
+  margin-left: 5px;
 }
 
 .expanded-user-column {

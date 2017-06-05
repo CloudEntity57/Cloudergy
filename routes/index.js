@@ -75,17 +75,22 @@ router.post('/user/:userid',function(req,res,next){
   );
 });
 
-
+const getPosts=(res)=>{
+  Post.find({},'',(err,posts)=>{
+    if(err){console.log('error! ', err);}
+    // console.log('updated posts: ',posts);
+    posts = posts.reverse();
+    res.json(posts);
+  });
+}
 
 //get posts:
 
 router.get('/posts',function(req,res,next){
-  let posts = Post.find({},'',function(err,profile){
-    if(err) console.log('error: ',err);
-    // profile=profile.sort({time:1});
+  getPosts(res);
+  // console.log('posts: ',posts);
     // profile=profile.reverse();
-    res.json(profile);
-  });
+    // res.json(posts);
 });
 
 //======================route for deleting a post:
@@ -113,11 +118,7 @@ router.post('/post',function(req,res,next){
   let newPost = new Post(post);
   newPost.save(function(err,success){
     if(err) console.log('error: ',err);
-    let posts=Post.find({},'',function(err,posts){
-      if(err) console.log('error: ',err);
-      posts = posts.reverse();
-      res.json(posts);
-    });
+    getPosts(res);
   });
 });
 
@@ -134,11 +135,7 @@ router.post('/postcomment',function(req,res,next){
   console.log('comment: ',comment,', ',commentId);
   Post.findOneAndUpdate({_id:commentId},{$push:{comments:comment}},(err,result)=>{
     if(err) console.log('error! ',err);
-    Post.find({},'',(err,posts)=>{
-      if(err){console.log('error! ', err);}
-      console.log('updated posts: ',posts);
-      res.json(posts);
-    });
+    getPosts(res);
   });
 
   // res.send();
@@ -160,18 +157,12 @@ router.post('/likepost',function(req,res,next){
     if(index === -1){
       Post.findOneAndUpdate({_id:post.post},{$push:{likers:post.liker}},(err,post)=>{
         console.log('post is now: ',post);
-        Post.find({},'',(err,posts)=>{
-          if(err) console.log('err: ',err);
-          res.json(posts);
-        });
+        getPosts(res);
       });
     }else{
       Post.findOneAndUpdate({_id:post.post},{$pull:{likers:post.liker}},(err,post)=>{
         console.log('post is now: ',post);
-        Post.find({},'',(err,posts)=>{
-          if(err) console.log('err: ',err);
-          res.json(posts);
-        });
+        getPosts(res);
       });
     }
   });
@@ -189,11 +180,7 @@ router.post('/deletecomment',function(req,res,next){
   Post.findOneAndUpdate({_id:comment.post},{$pull:{comments:{id:commentid}}},(err,post)=>{
     if(err) console.log('error! ',err);
     // console.log('found post: ',post);
-    Post.find({},'',(err,posts)=>{
-      if(err) console.log('error: ',err);
-      console.log('returing posts: ',posts);
-      res.json(posts);
-    });
+    getPosts(res);
   });
 });
 
@@ -246,6 +233,35 @@ User.findOneAndUpdate(
    });
   // res.send('success');
   res.json(results);
+});
+
+//redux route for ally request:
+router.post('/allyrequest', function(req,res,next){
+  console.log('request: ',req.body);
+  let target_ally=req.body.payload.ally_request;
+  let userId = req.body.payload.user;
+  let results;
+  console.log('userid: ',userId);
+  console.log('target_ally: ',target_ally);
+//record my id on the other person's invitations received list:
+ User.findOneAndUpdate(
+    {"userid":target_ally},{"$push":{ally_invitations_received:userId}},
+    { "new": true, "upsert": true },(err,friend)=>{
+      if(err) {console.log('error! ',err);}
+      console.log('userid requesting: ',userId);
+      // friend.ally_invitations_received.push({invitation:userId});
+      console.log('ally invitations: ',friend.ally_invitations_received);
+    });
+//record their id on my own requests sent list:
+User.findOneAndUpdate(
+   {"userid":userId},{"$push":{ally_requests_sent:target_ally}},
+   { "new": true, "upsert": true },(err,friend)=>{
+     if(err) {console.log('error! ',err);}
+     console.log('ally requests sent: ',friend.ally_requests_sent);
+     console.log('user: ',friend);
+     res.json([friend]);
+   });
+  // res.send('success');
 });
 
 
@@ -302,16 +318,17 @@ router.post('/acceptally',function(req,res,next){
         User.findOneAndUpdate({"userid":userId},{"ally_invitations_received":invitations},function(err,user){
              if(err) {console.log('error! ',err);}
              console.log('updated ally invitations received: ',user.ally_invitations_received);
-             result=user;
            });
         //add ally's id to your friends list:
         User.findOneAndUpdate({"userid":userId},{"$push":{"allies":newAlly}},{"new": true, "upsert": true },function(err,user){
             if(err) {console.log('error! ',err);}
+            console.log('user: ',user);
+            res.json([user]);
           });
       }
     }
   });
-    res.json(result);
+
 });
 
 

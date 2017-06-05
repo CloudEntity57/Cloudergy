@@ -37,6 +37,12 @@ header{
     color:grey;
   }
 }
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
+}
 .liberal{
   background-color: #5982ad;
 }
@@ -57,12 +63,53 @@ body{
   border-right:1px solid #545252;
   padding-right:5px;
   margin-right:5px;
+  position:relative;
 }
-
+.usericon{
+  border-bottom:35px solid rgba(0,0,0,0);
+}
+.loginlinks{
+  background-color:lightgrey;
+  color:black;
+  position:absolute;
+  width:100px;
+  top:30px;
+  right:-60px;
+  li{
+    list-style: none;
+  }
+}
 .header-toggle{
   width:105px;
   height:1.5em;
   margin-right:5px;
+}
+
+.comment-edit{
+  display:inline-block;
+  padding:0px 10px;
+  position: absolute;
+  top:-5px;
+  right:0px;
+}
+.comment-editbox{
+  display: block;
+  font-size: .85em;
+  width:100px;
+  padding: 5px;
+  background-color: lightgrey;
+  position:absolute;
+  // min-height:45px;
+  right:10px;
+  padding-left: 0px;
+  text-align: right;
+  top:20px;
+  a{
+    position: relative !important;
+    padding-left: 0px;
+    display: inline-block;
+    width: 100%;
+  }
 }
 .ally-request-holder{
   position: relative;
@@ -182,6 +229,7 @@ body{
 }
 .post-header-deleteicon{
   position: relative;
+  color:gray;
 }
 .post-header-deletebar{
 
@@ -321,6 +369,11 @@ body{
   // display:inline-block;
   // margin-left:190px;
 }
+.sticky{
+  position: sticky;
+  position:-webkit-sticky;
+  top:300px;
+}
 .ads-panel, .friends-panel{
   a{
     img{
@@ -338,6 +391,12 @@ body{
 }
 .ads-panel,.sticky{
   width:300px;
+}
+.features-panel{
+  ul{
+    margin-right:15px;
+    font-size: .85em;
+  }
 }
 .friends-panel-header{
     i{
@@ -553,14 +612,7 @@ body{
   position: relative;
   // padding:5px 0px;
   margin-bottom:5px;
-  .comment-edit{
-    display:inline-block;
-    padding:0px 10px;
-    a{
-      position: absolute;
-      top:-5px;
-    }
-  }
+
 }
 .userpic-comment-col{
   position: absolute;
@@ -587,6 +639,9 @@ body{
 }
 .user-comment{
   font-size: .85em;
+  a{
+    margin-right:5px;
+  }
 }
 .link_normalize{
   &:hover,&:focus{
@@ -731,6 +786,9 @@ body{
   top:45px;
 }*/
 .users{
+  h4{
+    margin-left:5px;
+  }
   width:200px;
   position: fixed;
   bottom:0;
@@ -779,6 +837,7 @@ body{
       left:7px;
       width:15px;
       height:15px;
+      // background-color:black;
       -webkit-transform: rotate(45deg); /* Safari */
       transform: rotate(45deg); /* Standard syntax */
     }

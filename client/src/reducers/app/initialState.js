@@ -15,6 +15,9 @@ const initialState = {
   userPageId:'',
   postsUpdated:false,
   wall:'public',
+  invites_sent:[],
+  invites_received:[],
+  affiliation_display:'none',
   //auth:
   auth:auth,
   token:'',

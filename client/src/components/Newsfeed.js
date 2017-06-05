@@ -38,7 +38,7 @@ class Newsfeed extends Component{
       rand:this.props.rand,
       test:'',
       stories:[],
-      affiliation:this.props.affiliation,
+      affiliation:this.props.affiliation_display,
       editing:false
     }
   }
@@ -96,7 +96,7 @@ class Newsfeed extends Component{
       editing:false
     });
     console.log('api key: ',nytkey);
-    let affiliation = user.affiliation;
+    let affiliation = this.props.affiliation_display;
     console.log('affiliation in newsfeed: ',affiliation);
     let fullfeed=[];
     let result;
@@ -212,7 +212,7 @@ class Newsfeed extends Component{
     }
     let posts = (this.props.posts) ? this.props.posts : '';
     console.log('posts in newsfeed: ',posts);
-    let affiliation = this.props.affiliation;
+    let affiliation = this.props.affiliation_display;
     console.log('affiliation in render: ',affiliation);
     let stories = this.state.stories;
     console.log('stories in newsfeed: ',stories);
@@ -236,9 +236,18 @@ class Newsfeed extends Component{
         <div className="outer-wrapper">
             <div className="wrapper">
                 <div className="navigation-panel">
-                  <div className="panel panel-default">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque corrupti quo voluptas est, incidunt repudiandae, facilis nisi quam possimus quae beatae blanditiis, repellendus, ducimus placeat totam. Aliquid maiores porro harum?</div>
-                  <div className="panel panel-default">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa nihil optio quae sunt possimus fugit doloribus quidem nisi inventore iusto aut, distinctio hic, maxime adipisci facilis illo sint laboriosam exercitationem.</div>
-                  <div className="panel panel-default">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis nam sed odit maiores corporis accusantium dignissimos quis consequatur, accusamus et. Sapiente aperiam excepturi, perferendis aliquam cumque amet praesentium quasi adipisci.</div>
+                    <ul>
+                      <li>
+                        Live News Feed
+                      </li>
+                      <li>
+                        Friends
+                      </li>
+                      <li>
+                        Account
+                      </li>
+                    </ul>
+
                 </div>
                 <div className="posts-wrapper">
                   <Posts update={this.updatePosts.bind(this)}/>
@@ -264,6 +273,7 @@ function mapStateToProps(state){
   let profile = state.allReducers.mainApp.profile;
   let rand = state.allReducers.mainApp.rand;
   let affiliation = state.allReducers.mainApp.affiliation;
+  let affiliation_display = state.allReducers.mainApp.affiliation_display;
   let router=state.router;
   return{
     user,
@@ -271,7 +281,8 @@ function mapStateToProps(state){
     profile,
     rand,
     router,
-    affiliation
+    affiliation,
+    affiliation_display
   }
 }
 

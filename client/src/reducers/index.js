@@ -8,7 +8,7 @@ import initialState from './app/initialState.js';
 
 
 //import actions:
-import { SET_INITIAL_STATE, REQUEST_USER_INFO, RECEIVE_USER_INFO, GET_PROFILE, REQUEST_ALL_USERS, RECEIVE_ALL_USERS, REQUESTING_POSTS, RECEIVING_POSTS, DISPLAY_USER_PREVIEW, HIDE_USER_PREVIEW, SET_ACTIVE_POST, CLEAR_ACTIVE_POST, SET_USERPAGE_ID, SHOW_LOCK, LOCK_SUCCESS, LOCK_ERROR,TOGGLE_AFFILIATION,REQUEST_SUBMIT_POST,SUBMIT_POST_CONFIRMATION, CLEAR_USERPAGE_ID,REQUEST_ACCEPT_ALLY,RETRIEVE_ACCEPT_ALLY,REQUEST_DELETE_POST, RETRIEVE_DELETE_POST,SET_WALL_STATE,REQUEST_POST_COMMENT,RETRIEVE_POST_COMMENT,REQUEST_DELETE_COMMENT,RETRIEVE_DELETE_COMMENT,REQUEST_LIKE_POST,RECEIVE_LIKE_POST} from '../actions/index';
+import { SET_INITIAL_STATE, REQUEST_USER_INFO, RECEIVE_USER_INFO, GET_PROFILE, REQUEST_ALL_USERS, RECEIVE_ALL_USERS, REQUESTING_POSTS, RECEIVING_POSTS, DISPLAY_USER_PREVIEW, HIDE_USER_PREVIEW, SET_ACTIVE_POST, CLEAR_ACTIVE_POST, SET_USERPAGE_ID, SHOW_LOCK, LOCK_SUCCESS, LOCK_ERROR,TOGGLE_AFFILIATION,REQUEST_SUBMIT_POST,SUBMIT_POST_CONFIRMATION, CLEAR_USERPAGE_ID,REQUEST_ACCEPT_ALLY,RETRIEVE_ACCEPT_ALLY,REQUEST_DELETE_POST, RETRIEVE_DELETE_POST,SET_WALL_STATE,REQUEST_POST_COMMENT,RETRIEVE_POST_COMMENT,REQUEST_DELETE_COMMENT,RETRIEVE_DELETE_COMMENT,REQUEST_LIKE_POST,RECEIVE_LIKE_POST,REQUEST_ALLY_REQ,RECEIVE_ALLY_REQ} from '../actions/index';
 
 const mainApp = (state = initialState, action) => {
   switch(action.type){
@@ -74,6 +74,30 @@ const mainApp = (state = initialState, action) => {
       return acceptAlly(state,action);
     case SET_WALL_STATE:
       return setWallState(state,action);
+    case REQUEST_ALLY_REQ:
+      return requestAlly(state,action);
+    case RECEIVE_ALLY_REQ:
+      return requestAlly(state,action);
+    default:
+      return state;
+  }
+}
+
+//request ally:
+const requestAlly = (state={isPosting:false,postsUpdated:false,user:[]},action) => {
+  switch(action.type){
+    case REQUEST_ALLY_REQ:
+      return {
+        ...state,
+        isPosting:true
+      }
+    case RECEIVE_ALLY_REQ:
+      return {
+        ...state,
+        isPosting:false,
+        postsUpdated:true,
+        user:action.results
+      }
     default:
       return state;
   }
@@ -92,7 +116,7 @@ const likePost = (state={isPosting:false,postsUpdated:false,posts:[]},action) =>
         ...state,
         isPosting:false,
         postsUpdated:true,
-        posts:action.results.reverse()
+        posts:action.results
       }
     default:
       return state;
@@ -112,7 +136,7 @@ const deleteComment = (state={isPosting:false,postsUpdated:false,posts:[]},actio
         ...state,
         isPosting:false,
         postsUpdated:true,
-        posts:action.results.reverse()
+        posts:action.results
       }
     default:
       return state;
@@ -132,7 +156,7 @@ const submitComment = (state={isPosting:false,postsUpdated:false,posts:[]},actio
         ...state,
         isPosting:false,
         postsUpdated:true,
-        posts:action.results.reverse()
+        posts:action.results
       }
     default:
       return state;
@@ -208,30 +232,28 @@ const acceptAlly = (state={user:''},action) => {
         isPosting:true
       }
     case RETRIEVE_ACCEPT_ALLY:
-      return
-        Object.assign({},state,{
-          isPosting: false,
-          user:action.results
-        })
-        // ...state,
-        // isPosting: false,
-        // user:action.results
+      return {
+        ...state,
+        isPosting:false,
+        user:action.results
+      }
+      // ...state,
+      // isPosting: false,
+      // user:action.results
       default:
         return state;
-  }
+      }
 }
-
-
 
 //toggle affiliation:
 const toggleAffiliation = (state={
-  affiliation:''
+  affiliation_display:''
 },action)=>{
   switch(action.type){
     case TOGGLE_AFFILIATION:
       return{
         ...state,
-        affiliation:action.affiliation
+        affiliation_display:action.affiliation
       }
     default:
       return state;

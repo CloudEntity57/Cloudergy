@@ -8,7 +8,7 @@ const getAllPosts = (state={posts:{},postsUpdated:false},action) => {
       }
     case RECEIVING_POSTS:
       console.log('reducks');
-      let posts = action.results.reverse();
+      let posts = action.results;
       // posts = posts.filter((val)=>{
       //   return val.postedon=='NA';
       // });

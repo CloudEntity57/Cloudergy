@@ -192,7 +192,11 @@ class Posts extends Component{
 
     //case public wall:
       posts = posts.filter((val)=>{
-        return val.postedon=='NA' || val.postedon==this.props.user[0].userid;
+        if(this.props.affiliation_display=="none"){
+          return val.postedon=='NA' || val.postedon==this.props.user[0].userid
+        }else{
+          return (val.postedon=='NA' || val.postedon==this.props.user[0].userid) && val.affiliation==this.props.affiliation_display;
+        }
       });
     }else{
 
@@ -237,13 +241,15 @@ function mapStateToProps(state){
   let postsUpdated = state.allReducers.mainApp.postsUpdated;
   let wall = state.allReducers.mainApp.wall;
   let usersObject = state.allReducers.mainApp.usersObject;
+  let affiliation_display = state.allReducers.mainApp.affiliation_display;
   return{
     user,
     posts,
     isSubmitting,
     postsUpdated,
     wall,
-    usersObject
+    usersObject,
+    affiliation_display
   }
 }
 

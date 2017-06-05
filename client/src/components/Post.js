@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import UserPic from './UserPic';
 import PostHeader from './PostHeader';
-// import { comments } from './Comments';
+import Comment from './Comment';
 import jquery from 'jquery';
 let functionsModule = require('./Functions');
 let Functions = new functionsModule();
@@ -36,12 +36,6 @@ class Post extends Component{
       user:user
     });
   }
-//   componentWillReceiveProps(nextProps) {
-//     let user = nextProps.user;
-//     this.setState({
-//       user:user
-//     });
-// }
   displayUser(){
     let postid = this.props.post._id
     console.log('displaying');
@@ -135,11 +129,16 @@ class Post extends Component{
     }
     // this.props.likeComment(data);
   }
-  replyComment(e){
-    e.preventDefault();
-    let comment = e.target;
-    console.log('target: ',comment);
-    this.refs.comment.value='@'+comment.id+' ';
+  replyComment(name){
+    // e.preventDefault();
+    // let comment = e.target;
+    console.log('target in post: ',name);
+    this.refs.comment.value='@'+name+' ';
+    // this.refs.comment.focus();
+    console.log('props: ',this.props);
+    // let input = document.getElementById(this.props.post);
+    // input.value='@'+comment.id+' ';
+    // let refs = this.refs.bind(this);
     this.refs.comment.focus();
   }
   render(){
@@ -171,26 +170,51 @@ class Post extends Component{
     let comments = (post.hasOwnProperty('text')) ? post.comments:'';
     let userid = (post.hasOwnProperty('text')) ? post.userid:'';
     let users = (this.props.usersObject) ? this.props.usersObject : [];
+    let displayededit = this.state.displayededit;
     console.log('users in post: ',users);
     console.log('this posts comments are: ',comments);
 
     let commentSection = (post.hasOwnProperty('comments')) ?
 
+    // comments.slice(1,comments.length).map((val)=>{
+    //   let username = users[val.userid].username;
+    //   let editOption = (<a id={val.id} onClick={this.deleteComment.bind(this)} href="#">x</a>);
+    //   let edit = (this.state.displayedit) ? editOption : '';
+    //   return(
+    //     <div onMouseEnter={()=>this.displayEdit()} onMouseLeave={()=>this.hideEdit()} className="comment-container clearfix">
+    //       <span className='userpic-comment-col'><UserPic userid={val.userid} /></span>
+    //       <div className="comment-header-text">
+    //       <div className="user-comment"><span className="comment-username"><a id={userid} href="#" onClick={()=>this.goToUser()}>{username}</a></span><span className="user-comment-text">{val.text}</span></div>
+    //       <div className="user-comment"><a id={val.id} onClick={this.likeComment.bind(this)} href="#">Like</a><a id={username} onClick={this.replyComment.bind(this)} href="#">Reply</a></div>
+    //     </div>
+    //       <div className="comment-edit">{edit}</div>
+    //     </div>
+    //   );
+    // })
+
     comments.slice(1,comments.length).map((val)=>{
+      let props = {
+        comments,
+        userid,
+        users,
+        user:user[0],
+        displayededit,
+        post:this.props.post,
+        comment:val,
+        deleteComment:this.props.deleteComment,
+        replyComment:this.replyComment
+      }
       let username = users[val.userid].username;
       let editOption = (<a id={val.id} onClick={this.deleteComment.bind(this)} href="#">x</a>);
       let edit = (this.state.displayedit) ? editOption : '';
       return(
-        <div onMouseEnter={()=>this.displayEdit()} onMouseLeave={()=>this.hideEdit()} className="comment-container clearfix">
-          <span className='userpic-comment-col'><UserPic userid={val.userid} /></span>
-          <div className="comment-header-text">
-          <div className="user-comment"><span className="comment-username"><a id={userid} href="#" onClick={()=>this.goToUser()}>{username}</a></span><span className="user-comment-text">{val.text}</span></div>
-          <div className="user-comment"><a id={val.id} onClick={this.likeComment.bind(this)} href="#">Like</a><a id={username} onClick={this.replyComment.bind(this)} href="#">Reply</a></div>
-        </div>
-          <div className="comment-edit">{edit}</div>
-        </div>
+        <Comment {...props} />
+
       );
     })
+
+
+
 
     : '';
     // let commentSection = (post.hasOwnProperty('comments')) ?
@@ -214,9 +238,9 @@ class Post extends Component{
     // let likes = (post.hasOwnProperty('likes') && post.likes > 0) ? (<div className="like-panel"><div><span className='post-likes fa fa-thumbs-o-up'></span>{post.likes}</div></div>) : '';
 
     let likes = (post.hasOwnProperty('likers') && post.likers.length > 1) ? (<div className="like-panel"><div><span className='post-likes fa fa-thumbs-o-up'></span>{post.likers.length-1}</div></div>) : '';
-
+    let sticky = (this.props.posts.indexOf(post)==this.props.posts.length-1) ? "user-post sticky" : "user-post";
     return(
-      <div className="user-post">
+      <div className={sticky}>
       <div id={id} className="post-panel">
         <PostHeader {...props} />
 

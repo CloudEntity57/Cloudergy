@@ -9,14 +9,16 @@ import jquery from 'jquery';
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { socialApp, toggleAffiliation, fetchUserInfo, acceptAlly } from '../actions/index';
+import { socialApp, toggleAffiliation, fetchUserInfo, acceptAlly,login } from '../actions/index';
 
 class Header extends Component{
   constructor(props){
     super(props);
+    // this.props.fetchUserInfo();
     this.state={
       affiliation:'',
-      previewingAlly:false
+      previewingAlly:false,
+      displaylogin:false
     }
   }
   componentWillMount(){
@@ -25,18 +27,39 @@ class Header extends Component{
     let affiliation = this.props.affiliation;
     let potential_allies = this.getPotentialAllies();
     this.setState({
-      affiliation:this.props.affiliation,
+      affiliation:this.props.affiliation_display,
       potential_allies
     });
 
   }
-  componentDidMount(){
+  componentWillReceiveProps(nextProps){
     let uid= this.props.uid;
     console.log('uid in header: ',uid);
-    let user;
+    // let user;
     let userid = Functions.getCurrentUserId();
+    //put potential allies, invitations received into state
+    let user = this.props.user;
+    // let potential_allies = this.getPotentialAllies();
+    // this.setState({
+    //   affiliation:this.props.affiliation,
+    //   potential_allies
+    // });
+  //   let user = (nextProps.user) ? nextProps.user : {};
+  //   console.log('user in header: ',user);
+  //   let potential_allies = [];
+  //   if(user[0].hasOwnProperty('userid')){user[0].ally_invitations_received.map((ally)=>{
+  //     let newally = nextProps.users[ally];
+  //     potential_allies.push(newally);
+  //   });
+  // }
+  //   this.setState({
+  //     user:user,
+  //     potential_allies:potential_allies,
+  //     ally_invitations_received:user[0].ally_invitations_received
+  //   });
+
     Functions.getUser(userid).then((val)=>{
-      let user = val;
+      let user = nextProps.user;
       console.log('user in header: ',user);
       let potential_allies = [];
       user[0].ally_invitations_received.map((ally)=>{
@@ -115,7 +138,7 @@ class Header extends Component{
 
     let allyLink = "#"+allyId;
     console.log('ally element: ',allyLink);
-    jquery('#'+allyId).slideUp();
+    jquery(allyLink).slideUp();
     jquery('.invites').remove();
   }
 
@@ -131,6 +154,18 @@ class Header extends Component{
   ignoreRequest(e){
     e.preventDefault();
     console.log('ignoring request');
+  }
+  toggleLogin(){
+    // e.preventDefault();
+    console.log('toggling');
+    let loginstate = this.state.displaylogin;
+    this.setState({
+      displaylogin:!loginstate
+    })
+  }
+  handleClick(e){
+    console.log('handling click');
+    this.props.login();
   }
   render(){
     // let user = (this.state.user) ? this.state.user : '';
@@ -173,42 +208,12 @@ class Header extends Component{
         console.log('allyreqs: ',allyReqs);
 
 
-    // }
-      // potential_allies = this.props.user[0].potential_allies;
+  // potential_allies = this.props.user[0].potential_allies;
       console.log('potential allies: ',potential_allies);
   //Build individual Ally Request tab HTML:
 
     console.log('userpic render: ',userpic);
 
-//     let potential_allies = (this.state.potential_allies) ? this.state.potential_allies : '';
-//     console.log('potential allies: ',potential_allies);
-// //Build individual Ally Request tab HTML:
-//     let allyReqs = (potential_allies.map((val)=>{
-//       console.log('user val: ',val);
-//         return (
-//           <div id={val[0].userid} className="ally-invitation-tab clearfix">
-//             <div className="col-xs-12">
-//               {val[0].username} would like to be your ally!
-//             </div>
-//             <div className="col-xs-12">
-//     {/* Accept button */}
-//             <a onClick={this.acceptAlly.bind(this)} href="#">
-//               <span id={val[0].userid} className='accept-button'>
-//                 Accept
-//               </span>
-//             </a>
-//     {/* Ignore button */}
-//             <a onClick={this.ignoreRequest.bind(this)} href="#">
-//               <span id={val[0].userid} className='accept-button'>
-//                 Ignore
-//               </span>
-//             </a>
-//             <UserPic userid={val[0].userid} />
-//           </div>
-//         </div>
-//         );
-//     });
-  //Build ally requests dropdown HTML
     let previewText = (ally_invitations_received.length>0) ? 'Ally Requests' : 'No New Updates';
     let allyPreview = (this.state.previewingAlly) ?
     (
@@ -220,9 +225,53 @@ class Header extends Component{
     console.log('aff in render: ',affiliation);
     console.log('user pic: ',userpic);
     let userlink = "/user/"+uid;
-    let userimg = (this.props.profile.hasOwnProperty('name')) ? ( <img className="user-pic" src={userpic} alt="user pic" /> ) : '';
+    // let userimg = (this.props.profile.hasOwnProperty('name')) ? ( <img className="user-pic" src={userpic} alt="user pic" /> ) : '';
+
+    let loginlinks = (this.state.displaylogin) ? (
+      <div onMouseLeave={()=>this.toggleLogin()} className="loginlinks">
+        <ul>
+          <a href="#"><li onClick={()=>this.handleClick()}>Log In</li></a>
+          <a href="#"><li onClick={()=>this.handleClick()}>Sign Up</li></a>
+        </ul>
+      </div>
+    ) : '';
+
+    let usericon = (this.props.profile.hasOwnProperty('name')) ? (
+      <span>
+        <NavLink to={userlink}>
+          <a className="header-navlink" href="#">
+            <img className="user-pic" src={userpic} alt="user pic" />
+            {username}&nbsp;
+          </a>
+        </NavLink>
+      </span>
+    ) : (
+      <span>
+        <a onClick={()=>this.toggleLogin()} className="header-navlink" href="#">
+          <div className="fa fa-user-o usericon"></div>
+          { loginlinks }
+        </a>
+      </span>
+    );
+
+    let userlogout = (this.props.profile.hasOwnProperty('name')) ? (
+      <div><a className="log-out" onClick={this.props.logOut} href="#">Logout</a></div>
+    ) : '';
+
+    let usercontrols = (this.props.profile.hasOwnProperty('name')) ? (
+      <span>
+        <div className="fa fa-globe">
+        </div>
+        <div className="ally-request-holder">
+          <a href="#" onClick={this.toggleAllyRequest.bind(this)} className="fa fa-handshake-o">
+          </a>
+          {allyRequestNumber}
+          {allyPreview}
+        </div>
+      </span>
+    ) : '';
     return(
-      <header className={this.props.affiliation}>
+      <header className={this.props.affiliation_display}>
 
         <div className="outer-nav-wrapper">
           <div className="nav">
@@ -230,9 +279,10 @@ class Header extends Component{
             <input type="text" name="search" placeholder="Search CouchPolitics" />
 
             <div className="navbar-nav nav-right">
-              <div><a className="log-out" onClick={this.props.logOut} href="#">Logout</a></div>
+              {userlogout}
+              {/* <div><a className="log-out" onClick={this.props.logOut} href="#">Logout</a></div> */}
               <span>
-                <select onChange={this.toggle_affiliation.bind(this)} value={this.props.affiliation} className="header-toggle" name="user-affiliation" id="">
+                <select onChange={this.toggle_affiliation.bind(this)} value={this.props.affiliation_display} className="header-toggle" name="user-affiliation" id="">
                   <optgroup value="Choose">
                     <option value="conservative">Conservative</option>
                     <option value="liberal">Liberal</option>
@@ -241,22 +291,24 @@ class Header extends Component{
                 </select>
               </span>
 
-              <NavLink to={userlink}>
+              {/* <NavLink to={userlink}>
                 <a className="header-navlink" href="#">
                   {userimg}
                   {username}&nbsp;
                 </a>
-              </NavLink>
+              </NavLink> */}
+              {usericon}
+              <NavLink to="/"><a href="#">Home</a></NavLink>&nbsp;
 
-              <NavLink to="/newsfeed"><a href="#">Home</a></NavLink>&nbsp;
-              <div className="fa fa-globe">
+              {/* <div className="fa fa-globe">
               </div>
               <div className="ally-request-holder">
                 <a href="#" onClick={this.toggleAllyRequest.bind(this)} className="fa fa-handshake-o">
                 </a>
                 {allyRequestNumber}
                 {allyPreview}
-              </div>
+              </div> */}
+              { usercontrols }
 
 
             </div>
@@ -277,17 +329,21 @@ class Header extends Component{
 function mapStateToProps(state){
   let previewingAlly = state.allReducers.mainApp.previewingAlly;
   let affiliation = state.allReducers.mainApp.affiliation;
+  let affiliation_display = state.allReducers.mainApp.affiliation_display;
   let auth = state.allReducers.mainApp.auth;
   let profile = state.allReducers.mainApp.profile;
   let user = state.allReducers.mainApp.user;
   let loggedIn = state.allReducers.mainApp.loggedIn;
+  let users = state.allReducers.mainApp.users;
   return{
     previewingAlly,
     affiliation,
+    affiliation_display,
     auth,
     user,
     profile,
-    loggedIn
+    loggedIn,
+    users
   }
 }
 
@@ -296,7 +352,8 @@ function mapDispatchToProps(dispatch){
     socialApp,
     toggleAffiliation,
     fetchUserInfo,
-    acceptAlly
+    acceptAlly,
+    login
   },dispatch);
 }
 
