@@ -33,19 +33,23 @@ class Header extends Component{
   }
   componentWillReceiveProps(nextProps){
     let uid= this.props.uid;
-    let user = (nextProps.user[0].hasOwnProperty('userid')) ? nextProps.user[0] : {};
-    let affiliation = user.affiliation;
-    console.log('props affiliation: ',affiliation);
+    let user;
+    if(nextProps.profile !=='nada'){
+      user = (nextProps.user[0].hasOwnProperty('userid')) ? nextProps.user[0] : {};
+    }
+    // let affiliation = user.affiliation;
+    // console.log('props affiliation: ',affiliation);
     // let affiliation = nextProps.affiliation;
-    this.refs.politics.value = affiliation;
+    // this.refs.politics.value = affiliation;
     console.log('uid in header: ',uid);
     // let user;
     let userid = Functions.getCurrentUserId();
     //put potential allies, invitations received into state
     // let user = this.props.user;
-    this.setState({
-      user
-    });
+      this.setState({
+        user
+      });
+
     // let potential_allies = this.getPotentialAllies();
     // this.setState({
     //   affiliation:this.props.affiliation,
@@ -258,7 +262,7 @@ class Header extends Component{
       </span>
     ) : (
       <span>
-        <a onClick={()=>this.toggleLogin()} className="header-navlink" href="#">
+        <a onClick={this.toggleLogin.bind(this)} className="header-navlink" href="#">
           <div className="fa fa-user-o usericon"></div>
           { loginlinks }
         </a>
