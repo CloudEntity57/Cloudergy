@@ -24,7 +24,6 @@ class Header extends Component{
   componentWillMount(){
     let user = Functions.getCurrentUser();
     // console.log('user in header: ',user);
-    let affiliation = this.props.affiliation;
     let potential_allies = this.getPotentialAllies();
     this.setState({
       affiliation:this.props.affiliation_display,
@@ -34,11 +33,16 @@ class Header extends Component{
   }
   componentWillReceiveProps(nextProps){
     let uid= this.props.uid;
+    let user = (nextProps.user[0].hasOwnProperty('userid')) ? nextProps.user[0] : {};
+    let affiliation = user.affiliation;
+    console.log('props affiliation: ',affiliation);
+    // let affiliation = nextProps.affiliation;
+    this.refs.politics.value = affiliation;
     console.log('uid in header: ',uid);
     // let user;
     let userid = Functions.getCurrentUserId();
     //put potential allies, invitations received into state
-    let user = this.props.user;
+    // let user = this.props.user;
     this.setState({
       user
     });
@@ -289,7 +293,7 @@ class Header extends Component{
               {userlogout}
               {/* <div><a className="log-out" onClick={this.props.logOut} href="#">Logout</a></div> */}
               <span>
-                <select onChange={this.toggle_affiliation.bind(this)} value={this.props.affiliation_display} className="header-toggle" name="user-affiliation" id="">
+                <select ref="politics" onChange={this.toggle_affiliation.bind(this)} value={this.props.affiliation_display} className="header-toggle" name="user-affiliation" id="">
                   <optgroup value="Choose">
                     <option value="conservative">Conservative</option>
                     <option value="liberal">Liberal</option>
