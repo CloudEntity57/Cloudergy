@@ -69,6 +69,11 @@ class App extends React.Component{
     // this.props.saveProfile(profile);
 
   }
+  componentDidMount(){
+    console.log('getting profile in app');
+    const profile = this.props.auth.getProfile();
+    this.props.fetchUserInfo(profile.clientID);
+  }
   componentWillReceiveProps(nextProps){
     let user = this.props.user;
     console.log('user in willreceive: ',user);
@@ -142,8 +147,9 @@ class App extends React.Component{
   logOut(){
     this.props.push('/');
     console.log('logging out');
-    this.props.socialApp();
+    // this.props.socialApp();
     auth.logout();
+    this.forceUpdate();
   }
   toggle_affiliation(affiliation){
     console.log('working in App.js! ',affiliation);

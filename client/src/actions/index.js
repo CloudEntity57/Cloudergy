@@ -208,7 +208,8 @@ function lockSuccess(profile, token) {
   return {
     type: LOCK_SUCCESS,
     profile,
-    token
+    token,
+    authenticated:true
   }
 }
 
@@ -233,9 +234,10 @@ export function login() {
 
 // Listen to authenticated event and get the profile of the user
 export function doAuthentication() {
-  console.log('doing auth');
+  console.log('doing authentication in actions');
     return dispatch => {
       lock.on("authenticated", function(authResult) {
+        console.log('youre authentic');
             lock.getProfile(authResult.idToken, function(error, profile) {
 
               if (error) {

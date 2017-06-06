@@ -47,14 +47,34 @@ const initialState = {
   toggleStatus:false,
   myPost:false,
   postId:'',
-  //post:
-  pst_user:{},
   //posts:
   editing:false,
-  user:'',
+  user:[{
+    "_id": {
+        "$oid": "58f66b22a53d2954c9f580fb"
+    },
+    "first_name": "Joe",
+    "last_name": "User",
+    "photo": "http://ijmhometutors.com/tutor/server/php/files/51b855e98abd7a5143c4d0176c119c0e/picture/avatar.png",
+    "largephoto": "http://ijmhometutors.com/tutor/server/php/files/51b855e98abd7a5143c4d0176c119c0e/picture/avatar.png",
+    "userid": "123456",
+    "__v": 0,
+    "username": "Guest",
+    "affiliation": "liberal",
+    "education": "Bachelor's",
+    "location": "Houston, TX",
+    "work": "Artist/Musician/Web Developer",
+    "user_story": "I'm an all-around renaissance man, living life to the fullest and doing the best I can. And I have a radical plan.",
+    "allies": [
+        "54321",
+        "J20zp56UZbPRlZ9eB1u41sBs9qXJxBVY",
+        "12345"
+    ],
+    "ally_requests_sent": [],
+    "ally_invitations_received": []
+}],
+  // user:'',
   posts:{},
-  //postheaderuser:
-  phu_user:{},
   //signedin:
   loggedIn:false,
   //landingpage:

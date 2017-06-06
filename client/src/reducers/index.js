@@ -275,6 +275,7 @@ const lockSuccess = (state={profile:{}},action) =>{
   switch(action.type){
     case LOCK_SUCCESS:
       console.log('the token is:: ',action.token);
+      console.log('the profile in auth0 lock: ',action.profile);
     return{
       ...state,
       profile:action.profile,

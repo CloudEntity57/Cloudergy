@@ -204,7 +204,7 @@ class Post extends Component{
         deleteComment:this.props.deleteComment,
         replyComment:this.replyComment
       }
-      let username = users[val.userid].username;
+      // let username = users[val.userid].username;
       let editOption = (<a id={val.id} onClick={this.deleteComment.bind(this)} href="#">x</a>);
       let edit = (this.state.displayedit) ? editOption : '';
       return(
@@ -240,7 +240,7 @@ class Post extends Component{
     let likes = (post.hasOwnProperty('likers') && post.likers.length > 1) ? (<div className="like-panel"><div><span className='post-likes fa fa-thumbs-o-up'></span>{post.likers.length-1}</div></div>) : '';
     let sticky = (this.props.posts.indexOf(post)==this.props.posts.length-1) ? "user-post sticky" : "user-post";
     return(
-      <div className={sticky}>
+      <div className="user-post">
       <div id={id} className="post-panel">
         <PostHeader {...props} />
 

@@ -9,7 +9,7 @@ import jquery from 'jquery';
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { socialApp, toggleAffiliation, fetchUserInfo, acceptAlly,login } from '../actions/index';
+import { socialApp, toggleAffiliation, fetchUserInfo, acceptAlly,login,doAuthentication } from '../actions/index';
 
 class Header extends Component{
   constructor(props){
@@ -22,8 +22,10 @@ class Header extends Component{
     }
   }
   componentWillMount(){
+    console.log('mounting header');
     let user = Functions.getCurrentUser();
     // console.log('user in header: ',user);
+    console.log('affiliation display: ',this.props.affiliation_display);
     let potential_allies = this.getPotentialAllies();
     this.setState({
       affiliation:this.props.affiliation_display,
@@ -33,23 +35,22 @@ class Header extends Component{
   }
   componentWillReceiveProps(nextProps){
     let uid= this.props.uid;
-    let user;
-    if(nextProps.profile !=='nada'){
-      user = (nextProps.user[0].hasOwnProperty('userid')) ? nextProps.user[0] : {};
-    }
-    // let affiliation = user.affiliation;
-    // console.log('props affiliation: ',affiliation);
+    let user = {};
+    if(nextProps.user.length>0){
+    user = (nextProps.user[0].hasOwnProperty('userid')) ? nextProps.user[0] : {};
+  }
+    let affiliation = user.affiliation;
+    console.log('props affiliation: ',affiliation);
     // let affiliation = nextProps.affiliation;
-    // this.refs.politics.value = affiliation;
+    this.refs.politics.value = affiliation;
     console.log('uid in header: ',uid);
     // let user;
     let userid = Functions.getCurrentUserId();
     //put potential allies, invitations received into state
     // let user = this.props.user;
-      this.setState({
-        user
-      });
-
+    this.setState({
+      user
+    });
     // let potential_allies = this.getPotentialAllies();
     // this.setState({
     //   affiliation:this.props.affiliation,
@@ -92,6 +93,7 @@ class Header extends Component{
   getPotentialAllies(){
     let user, users, uid, userpic, ally_invitations_received, allyRequestNumber,username, affiliation,allyReqs,potential_allies;
     user = (this.props.user !=='') ? this.props.user : [{userid:'',ally_invitations_received:[], allyRequestNumber,username, affiliation,allyReqs,potential_allies}];
+    console.log('user in header: ',user);
     users = (this.props.users.length > 0) ? this.props.users : [];
     uid = user[0].userid;
     userpic = user[0].photo;
@@ -160,8 +162,8 @@ class Header extends Component{
     e.preventDefault();
     console.log('ignoring request');
   }
-  toggleLogin(){
-    // e.preventDefault();
+  toggleLogin(e){
+    e.preventDefault();
     console.log('toggling');
     let loginstate = this.state.displaylogin;
     this.setState({
@@ -186,7 +188,7 @@ class Header extends Component{
       userpic = user[0].photo;
       username = user[0].username;
       affiliation = user[0].affiliation;
-      console.log('user in header render: ',this.props.user);
+      console.log('user in header render: ',user);
       // let potential_allies = this.state.potential_allies;
       let potential_allies = this.getPotentialAllies();
         console.log('potential allies render: ',potential_allies);
@@ -368,7 +370,8 @@ function mapDispatchToProps(dispatch){
     toggleAffiliation,
     fetchUserInfo,
     acceptAlly,
-    login
+    login,
+    doAuthentication
   },dispatch);
 }
 
