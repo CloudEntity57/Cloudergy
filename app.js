@@ -34,7 +34,7 @@ app.use(cors());
 // if (process.env.NODE_ENV === 'production') {
 //   app.use(express.static('./client/build'));
 // }
-app.use('/', index);
+// app.use('/', index);
 // app.use('/users', users);
 
 // catch 404 and forward to error handler
@@ -43,7 +43,7 @@ app.use(function(req, res, next) {
   err.status = 404;
   next(err);
 });
-
+app.use(express.static('./client/build'));
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
