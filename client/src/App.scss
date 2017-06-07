@@ -813,6 +813,14 @@ body{
   }
 }
 
+.user-story{
+  position:absolute;
+  top:200%;
+  font-size:.75em;
+  padding:10px 10px 10px 125px;
+  color:black;
+  font-style: italic;
+}
 .user-preview-box{
   position:absolute;
   top:30px;
@@ -846,7 +854,7 @@ body{
       color:white;
       position:absolute;
       bottom:15px;
-      left:40%;
+      left:20px;
     }
     .opaque-connector{
       height:25px;

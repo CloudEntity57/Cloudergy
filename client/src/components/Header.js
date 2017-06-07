@@ -19,7 +19,8 @@ class Header extends Component{
     this.state={
       affiliation:'',
       previewingAlly:false,
-      displaylogin:false
+      displaylogin:false,
+      previewingGlobal:false
     }
   }
   componentWillMount(){
@@ -142,6 +143,18 @@ class Header extends Component{
       jquery('.invites').remove();
     }
   }
+
+  toggleAlert(e){
+    console.log('toggling');
+    e.preventDefault();
+    let previewingGlobal = (this.state.previewingGlobal) ? false : true;
+    this.setState({
+      previewingGlobal:previewingGlobal
+    });
+    if(this.state.previewingAlly){
+      jquery('.invites').remove();
+    }
+  }
   acceptAlly(e){
     e.preventDefault();
     const allyId = e.target.id;
@@ -249,6 +262,13 @@ class Header extends Component{
         {allyReqs}
       </div>
     ) : '';
+    let globalPreview = (this.state.previewingGlobal) ?
+    (
+      <div key="./Header" className="ally-request-dropdown">
+        {previewText}
+        {allyReqs}
+      </div>
+    ) : '';
     console.log('aff in render: ',affiliation);
     console.log('user pic: ',userpic);
     let userlink = "/user/"+uid;
@@ -314,13 +334,17 @@ class Header extends Component{
     // ) : '';
     let usercontrols = (
       <span>
-        <div className="fa fa-globe">
-        </div>
         <div className="ally-request-holder">
-          <a onClick={this.toggleAllyRequest.bind(this)} href="#" className="fa fa-handshake-o">
+          <a onClick={this.toggleAllyRequest.bind(this)} href="#" className="fa fa-globe">
           </a>
           {allyRequestNumber}
           {allyPreview}
+        </div>
+        <div className="ally-request-holder">
+          <a onClick={this.toggleAlert.bind(this)} href="#" className="fa fa-handshake-o">
+          </a>
+          {allyRequestNumber}
+          {globalPreview}
         </div>
       </span>
     );

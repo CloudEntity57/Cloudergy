@@ -131,7 +131,8 @@ class UserDropdown extends Component{
           <div className="user-preview-header">
             {/* <div className="user-preview-pointer"></div> */}
             <div className="opaque-connector"></div>
-            <span className="user-link"><span>{ user.username }</span></span>
+            <div className="user-link"><span>{ user.username }</span></div>
+            <div className="user-story">{'"'+user.user_story+'"'}</div>
           </div>
         </div>
 

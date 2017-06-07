@@ -238,6 +238,8 @@ class Newsfeed extends Component{
         return story.affiliation == 'conservative';
       }).slice(0,10);
       break;
+      case 'none':
+      stories = stories.slice(0,10);
     }
     let user = this.props.user;
     console.log('user in newsfeed render: ',user);
