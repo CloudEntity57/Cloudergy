@@ -107,6 +107,7 @@ class Newsfeed extends Component{
     let callback = (stories)=>{
       console.log('stories in callback: ',stories);
       fullfeed=fullfeed.concat(stories);
+      fullfeed = this.shuffle(fullfeed);
       this.setState({
         stories:fullfeed
       });
@@ -230,15 +231,14 @@ class Newsfeed extends Component{
       case 'liberal':
       stories = stories.filter((story)=>{
         return story.affiliation == 'liberal';
-      });
+      }).slice(0,10);
       break;
       case 'conservative':
       stories = stories.filter((story)=>{
         return story.affiliation == 'conservative';
-      });
+      }).slice(0,10);
       break;
     }
-    stories = this.shuffle(stories);
     let user = this.props.user;
     console.log('user in newsfeed render: ',user);
     return(

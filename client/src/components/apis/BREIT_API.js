@@ -8,7 +8,7 @@ module.exports = {
       success:(stories)=>{
         console.log('stories: ',stories.articles);
         stories = stories.articles;
-        stories = stories.slice(0,2);
+        stories = stories.slice(0,10);
         let results=stories.map((article)=>{
           let object={};
           object.url=article.url;
