@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "PORT=8080 node start ./client/src/index.js"
   },
   "dependencies": {
     "auth0": "^2.6.0",
