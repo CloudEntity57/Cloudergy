@@ -15,7 +15,7 @@ var index = require('./routes/index');
 var app = express();
 
 //set server to localhost:3001 for development mode:
-// app.set('port', (process.env.PORT || 3001));
+app.set('port', (process.env.PORT || 5000));
 // app.set('port', (8080));
 
 mongoose.connect(process.env.DB_CONN_TEST);
