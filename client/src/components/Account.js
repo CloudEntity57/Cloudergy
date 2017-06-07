@@ -120,7 +120,7 @@ class Account extends Component{
               <input ref="work" className="form form-control" name="user-work" type="text" placeholder="Job title"/>
               <label>Location</label>
               <input ref="location" className="form form-control" name="user-location" type="text" placeholder="Where you live"/>
-              <label>Tell Other Users About Yourself (400 characters or less)</label>
+              <label>Tell Other Users About Yourself (150 characters or less)</label>
               <textarea ref="bio" className="form form-control" placeholder="(displayed at the top of your page)" name="user-bio" id="user-bio" cols="30" rows="10"></textarea>
               <button type="submit" className="btn btn-primary">Update Profile</button>
             </form>

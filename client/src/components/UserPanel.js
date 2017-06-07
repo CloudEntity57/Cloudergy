@@ -19,9 +19,12 @@ class UserPanel extends Component{
     e.preventDefault();
     let boolean = this.state.expanded;
     boolean = (this.state.expanded) ? false : true;
+    setTimeout(()=>{
     this.setState({
       expanded:boolean
     });
+  },250
+  )
   }
   render(){
     console.log('in userpanel: ',this.props.users);
@@ -33,10 +36,13 @@ class UserPanel extends Component{
       //Add user chat functionality here:
       return(
         // <NavLink to={userLink}>
-          <div className="user-tab">
+          <div onClick={this.props.push('/user/'+user.userid)} className="user-tab">
             {user.username}
-            <div className={color}></div>
-            <img id={user.id} className='user-pic' src={user.photo} alt='user image' />
+            <a href="#">
+              <div className={color}></div>
+              <img id={user.id} className='user-pic' src={user.photo} alt='user image' />
+            </a>
+
 
           </div>
         // </NavLink>
@@ -44,7 +50,10 @@ class UserPanel extends Component{
     })
     : '';
 
-    let memberToggleBar = (<a className="member-toggle" href="#"><div onClick={this.expandColumn.bind(this)} className="userToggle">&middot; Members</div></a>);
+    let memberToggleBar = (this.state.expanded) ?
+      (<a className="member-toggle" href="#"><div onClick={this.expandColumn.bind(this)} className="bluetoggle userToggle">&middot; Members</div></a>)
+      :
+      (<a className="member-toggle" href="#"><div onClick={this.expandColumn.bind(this)} className="userToggle">&middot; Members</div></a>);
 
     let expandingUserColumn = (this.state.expanded) ? (
       <div className="expanded-user-column">

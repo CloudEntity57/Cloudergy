@@ -424,7 +424,7 @@ body {
 .sticky {
   position: sticky;
   position: -webkit-sticky;
-  top: 300px;
+  bottom: 0px;
 }
 
 .ads-panel a, .friends-panel a {
@@ -870,9 +870,16 @@ body {
   margin-left: 5px;
 }
 
+.bluetoggle {
+  background-color: #5982ad;
+  padding: 0px !important;
+  color: white;
+  margin-bottom: 10px;
+}
+
 .expanded-user-column {
   width: 200px;
-  padding: 15px 0px 15px 5px;
+  padding: 0px 0px 15px 0px;
   position: fixed;
   right: 50px;
   background-color: #e8e7e7;
@@ -882,6 +889,10 @@ body {
 
 .expanded-user-column .userToggle {
   padding-bottom: 15px;
+}
+
+.expanded-user-column .user-tab {
+  padding-left: 5px;
 }
 
 .user-story {
@@ -980,7 +991,7 @@ body {
 
 .userToggle {
   position: relative;
-  bottom: 8px;
+  bottom: 0px;
 }
 
 .member-toggle {
