@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "PORT=8080 node start ./client/build"
+    "start": "node start ./client/build"
   },
   "dependencies": {
     "auth0": "^2.6.0",
