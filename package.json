@@ -2,8 +2,9 @@
   "name": "social-ntwrk",
   "version": "0.0.0",
   "private": true,
+  "main":"app.js",
   "scripts": {
-    "start": "node start ./client/build"
+    "start": "node start ./app.js"
   },
   "dependencies": {
     "auth0": "^2.6.0",

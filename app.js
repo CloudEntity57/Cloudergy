@@ -11,7 +11,7 @@ var mongoose = require('mongoose');
 
 var index = require('./routes/index');
 // var users = require('./routes/users');
-
+console.log('app running');
 var app = express();
 
 //set server to localhost:3001 for development mode:
