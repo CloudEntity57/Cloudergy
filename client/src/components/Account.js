@@ -5,7 +5,7 @@ import UserHeader from './UserHeader';
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { mainApp } from '../actions/index';
+import { mainApp, updateProfile } from '../actions/index';
 import { push } from 'react-router-redux';
 
 class Account extends Component{
@@ -51,24 +51,28 @@ class Account extends Component{
     //submit information to DB:
     let uid = profile.clientID;
     let data ={
-      username:username,
-      affiliation:ideology,
-      education:education,
-      location:location,
-      work:work,
-      user_story:bio
+      userinfo:{
+        username:username,
+        affiliation:ideology,
+        education:education,
+        location:location,
+        work:work,
+        user_story:bio
+      },
+      userid:uid
     }
     let querypath='http://localhost:3001/user/'+uid;
     console.log('querypath: ',querypath);
-    let userquery = jquery.ajax({
-      url:querypath,
-      type:'POST',
-      data:data
-    });
-    userquery.done((val)=>{
-      console.log('yeah!',val);
-      this.props.push('/user/'+userid);
-    });
+    this.props.updateProfile(data,uid)
+    // let userquery = jquery.ajax({
+    //   url:querypath,
+    //   type:'POST',
+    //   data:data
+    // });
+    // userquery.done((val)=>{
+    //   console.log('yeah!',val);
+    //   this.props.push('/user/'+userid);
+    // });
   }
   render(){
     let profile = this.props.profile;
@@ -140,7 +144,8 @@ function mapStateToProps(state){
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
     mainApp,
-    push
+    push,
+    updateProfile
   },dispatch);
 }
 

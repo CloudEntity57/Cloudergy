@@ -8,7 +8,7 @@ let Functions = new newModule();
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { mainApp,submitPost,fetchPosts,fetchAllUsers } from '../actions/index';
+import { mainApp,submitPost,fetchPosts,fetchAllUsers,login } from '../actions/index';
 
 class Posts extends Component{
   constructor(props){
@@ -71,10 +71,16 @@ class Posts extends Component{
   submitPost(e){
     console.log('submitting post');
     this.emphasizeForm();
-    let comment = this.refs.comment.value;
-    console.log('comment: ',comment);
+    // let affiliation = user.affiliation;
     let user = this.props.user[0];
+    let prefix='';
+    let affiliation = this.props.affiliation_display;
     console.log('user: ',user);
+    if(user.affiliation !==affiliation && affiliation !=='none'){
+      prefix="@"+affiliation+'s: '
+    }
+    let comment = prefix+this.refs.comment.value;
+    console.log('comment: ',comment);
     //create date information for post:
     var today = Functions.createDate();
     let time = new Date().getTime();
@@ -82,7 +88,6 @@ class Posts extends Component{
     //create remaining variables for post:
     let userid = user.userid;
     console.log('userid: ',userid);
-    let affiliation = user.affiliation;
     //create post for POST request
     let post = {
       text:comment,
@@ -101,7 +106,11 @@ class Posts extends Component{
       }]
     }
     console.log('post: ',post);
-    this.props.submitPost(post);
+    if(this.props.authenticated){
+      this.props.submitPost(post);
+    }else{
+      this.props.login();
+    }
     this.refs.comment.value = '';
   }
 
@@ -147,8 +156,12 @@ class Posts extends Component{
       }]
     }
     console.log('post: ',post);
-
-    this.props.submitPost(post);
+    if(this.props.authenticated){
+      this.props.submitPost(post);
+    }else{
+      this.props.login();
+    }
+    // this.props.submitPost(post);
     this.refs.comment.value = "";
   }
 
@@ -242,6 +255,7 @@ function mapStateToProps(state){
   let wall = state.allReducers.mainApp.wall;
   let usersObject = state.allReducers.mainApp.usersObject;
   let affiliation_display = state.allReducers.mainApp.affiliation_display;
+  let authenticated = state.allReducers.mainApp.authenticated;
   return{
     user,
     posts,
@@ -249,7 +263,8 @@ function mapStateToProps(state){
     postsUpdated,
     wall,
     usersObject,
-    affiliation_display
+    affiliation_display,
+    authenticated
   }
 }
 
@@ -258,7 +273,8 @@ function mapDispatchToProps(dispatch){
     mainApp,
     submitPost,
     fetchPosts,
-    fetchAllUsers
+    fetchAllUsers,
+    login
   },dispatch);
 }
 

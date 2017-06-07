@@ -9,7 +9,7 @@ let Functions = new functionsModule();
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { mainApp, displayUserPreview, hideUserPreview,setActivePost,clearActivePost,fetchPosts,likePost,likeComment,submitComment,deleteComment } from '../actions/index';
+import { mainApp, displayUserPreview, hideUserPreview,setActivePost,clearActivePost,fetchPosts,likePost,likeComment,submitComment,deleteComment,login } from '../actions/index';
 
 class Post extends Component{
   constructor(props){
@@ -70,7 +70,11 @@ class Post extends Component{
       id:this.refs.comment.id
     }
     this.refs.comment.value='';
-    this.props.submitComment(data);
+    if(this.props.authenticated){
+      this.props.submitComment(data);
+    }else{
+      this.props.login();
+    }
 
   }
   goToUser(e){
@@ -144,6 +148,7 @@ class Post extends Component{
   render(){
     let user = (this.state.user) ? this.state.user : '';
     let myId = (this.state.myId) ? this.state.myId : '';
+    // myId = (this.props.authenticated) ? myId : 'none';
     // let user = this.state.user;
     // console.log('user in post render: ',user);
     let teamcolor = user.affiliation + " user-stripe";
@@ -239,6 +244,9 @@ class Post extends Component{
 
     let likes = (post.hasOwnProperty('likers') && post.likers.length > 1) ? (<div className="like-panel"><div><span className='post-likes fa fa-thumbs-o-up'></span>{post.likers.length-1}</div></div>) : '';
     let sticky = (this.props.posts.indexOf(post)==this.props.posts.length-1) ? "user-post sticky" : "user-post";
+    if(!this.props.authenticated){
+      myId=null;
+    }
     return(
       <div className="user-post">
       <div id={id} className="post-panel">
@@ -279,11 +287,13 @@ function mapStateToProps(state){
   let user_preview_showing = state.allReducers.mainApp.user_preview_showing;
   let posts = state.allReducers.mainApp.posts;
   let usersObject = state.allReducers.mainApp.usersObject;
+  let authenticated = state.allReducers.mainApp.authenticated;
   return{
     user,
     user_preview_showing,
     posts,
-    usersObject
+    usersObject,
+    authenticated
   }
 }
 
@@ -298,7 +308,8 @@ function mapDispatchToProps(dispatch){
     likePost,
     likeComment,
     submitComment,
-    deleteComment
+    deleteComment,
+    login
   },dispatch);
 }
 

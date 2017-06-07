@@ -75,6 +75,36 @@ router.post('/user/:userid',function(req,res,next){
   );
 });
 
+//route for updating profile:
+
+router.post('/updateprofile',function(req,res,next){
+  let target_profile=req.body;
+  console.log('target profile: ',target_profile);
+  let userid=req.body.payload.userid;
+  let user=req.body.payload.userinfo;
+  console.log('userr: ',user);
+  User.findOneAndUpdate(
+    {
+      userid:userid
+    },
+    {
+      username:user.username,
+      affiliation:user.affiliation,
+      education:user.education,
+      location:user.location,
+      work:user.work,
+      user_story:user.user_story
+    },
+    function(err,user){
+      if(err){
+        console.log('error: ',err);
+      }
+      console.log('success!',user);
+      res.json([user]);
+    }
+  );
+});
+
 const getPosts=(res)=>{
   Post.find({},'',(err,posts)=>{
     if(err){console.log('error! ', err);}
@@ -207,6 +237,8 @@ router.post('/likecomment',function(req,res,next){
 router.post('/replycomment',function(req,res,next){
 });
 
+
+
 //======================route for requesting an alliance with another member:
 
 router.post('/ally/request/:id',function(req,res,next){
@@ -329,7 +361,10 @@ router.post('/acceptally',function(req,res,next){
     }
   });
 
+
 });
+
+
 
 
 

@@ -32,10 +32,11 @@ class UserPage extends Component{
   componentWillMount(){
     //filter user's posts:
     console.log('user page mounting');
-    const profile = this.props.auth.getProfile();
-    this.props.fetchUserInfo(profile.clientID);
+    // const profile = this.props.auth.getProfile();
+    // this.props.fetchUserInfo(profile.clientID);
+    const profile = this.props.profile;
     //save user's third party info to store:
-    this.props.saveProfile(profile);
+    // this.props.saveProfile(profile);
     // //find and store all users and posts currently in the API database:
     this.props.fetchAllUsers('');
     this.props.fetchPosts('');
@@ -213,7 +214,7 @@ configureUser(postUserId,currentuser){
     console.log('ally number: ',allynumber);
     console.log('user allies: ',this.state.allies);
     // const userpic = user.picture;
-    console.log('user pic: ',userpic);
+    // console.log('user pic: ',userpic);
     return(
       <div>
       <div className="outer-wrapper">
@@ -251,6 +252,7 @@ function mapStateToProps(state,ownProps){
   let usersObject = state.usersObject;
   let wall = state.wall;
   let auth = state.auth;
+  let profile = state.profile;
   return{
     user,
     users,

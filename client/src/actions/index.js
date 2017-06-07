@@ -118,6 +118,12 @@ let postApiCall = (reqType, recType, url1,url2) => {
 }
 
 //replies
+export const REQUEST_UPDATE_PROFILE = 'REQUEST_UPDATE_PROFILE';
+export const RECEIVE_UPDATE_PROFILE = 'RECEIVE_UPDATE_PROFILE';
+
+export const updateProfile= postApiCall(REQUEST_UPDATE_PROFILE,RECEIVE_UPDATE_PROFILE,"http://localhost:3001/updateprofile/","");
+
+//replies
 export const REQUEST_REPLY_COMMENT = 'REQUEST_REPLY_COMMENT';
 export const RECEIVE_REPLY_COMMENT = 'RECEIVE_REPLY_COMMENT';
 
@@ -174,9 +180,6 @@ export const RECEIVE_ALL_USERS = "RECEIVE_ALL_USERS";
 
 export const fetchAllUsers = apiCall(REQUEST_ALL_USERS,RECEIVE_ALL_USERS,'http://localhost:3001/user/','');
 
-export const REQUESTING_T0_POST_PROFILE_INFO = "REQUESTING_T0_POST_PROFILE_INFO";
-export const RECEIVING_POST_CONFIRMATION = "RECEIVING_POST_CONFIRMATION";
-
 //get all posts:
 
 export const REQUESTING_POSTS = "REQUESTING_POSTS";
@@ -185,7 +188,10 @@ export const RECEIVING_POSTS = "RECEIVING_POSTS";
 export const fetchPosts = apiCall(REQUESTING_POSTS, RECEIVING_POSTS,'http://localhost:3001/posts','');
 
 //create user
-export const createNewUser = postApiCall(REQUESTING_T0_POST_PROFILE_INFO,RECEIVING_POST_CONFIRMATION,'http://localhost:3001/user/','');
+export const REQUESTING_TO_POST_PROFILE_INFO = "REQUESTING_TO_POST_PROFILE_INFO";
+export const RECEIVING_POST_CONFIRMATION = "RECEIVING_POST_CONFIRMATION";
+
+export const createNewUser = postApiCall(REQUESTING_TO_POST_PROFILE_INFO,RECEIVING_POST_CONFIRMATION,'http://localhost:3001/user/','');
 
 //submit post:
 export const REQUEST_SUBMIT_POST = 'REQUEST_SUBMIT_POST';
@@ -239,9 +245,9 @@ export function doAuthentication() {
       lock.on("authenticated", function(authResult) {
         console.log('youre authentic');
             lock.getProfile(authResult.idToken, function(error, profile) {
-
               if (error) {
                 // handle error
+                // console.log('auth error!');
                 return dispatch(lockError(error))
               }
               console.log('redux profile: ',profile, ' redux id token: ',authResult.idToken);
@@ -250,5 +256,38 @@ export function doAuthentication() {
               return dispatch(lockSuccess(profile,authResult.idToken))
             });
       });
+
+      console.log('auth error');
     }
+}
+
+export const LOGOUT_REQUEST = 'LOGOUT_REQUEST'
+export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS'
+export const LOGOUT_FAILURE = 'LOGOUT_FAILURE'
+
+function requestLogout() {
+  return {
+    type: LOGOUT_REQUEST,
+    isFetching: true,
+    isAuthenticated: true
+  }
+}
+
+function receiveLogout() {
+  return {
+    type: LOGOUT_SUCCESS,
+    isFetching: false,
+    authenticated: false,
+    user:''
+  }
+}
+
+// Logs the user out
+export function logoutUser() {
+  return dispatch => {
+    dispatch(requestLogout())
+    localStorage.removeItem('id_token')
+    localStorage.removeItem('access_token')
+    dispatch(receiveLogout())
+  }
 }

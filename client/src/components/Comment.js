@@ -103,7 +103,7 @@ class Comment extends Component{
           {/* </ul> */}
         </div>
       ) : '';
-      let edittoggle = (this.state.displayedit) ? (<div className="comment-edit" onClick={this.toggleEditOption.bind(this)}><div className="fa fa-sort-desc"></div> {edit}</div>) : '';
+      let edittoggle = (this.state.displayedit && this.props.authenticated) ? (<div className="comment-edit" onClick={this.toggleEditOption.bind(this)}><div className="fa fa-sort-desc"></div> {edit}</div>) : '';
       return(
         <div onMouseEnter={()=>this.displayEdit()} onMouseLeave={()=>this.hideEdit()} className="comment-container">
           <span className='userpic-comment-col'><UserPic userid={val.userid} /></span>
@@ -120,8 +120,10 @@ class Comment extends Component{
 function mapStateToProps(state){
   state = state.allReducers.mainApp;
   let user = state.user;
+  let authenticated = state.authenticated
   return{
-    user
+    user,
+    authenticated
   }
 }
 function mapDispatchToProps(dispatch){

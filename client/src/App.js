@@ -25,7 +25,7 @@ console.log('auth : ', auth);
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { socialApp, fetchUserInfo, fetchPosts, saveProfile,createNewUser, fetchAllUsers,doAuthentication } from './actions/index';
+import { socialApp, fetchUserInfo, fetchPosts, saveProfile,createNewUser, fetchAllUsers,doAuthentication,logoutUser } from './actions/index';
 import { push } from 'connected-react-router';
 
 // validate authentication for private routes
@@ -63,21 +63,31 @@ class App extends React.Component{
     console.log('mounting App.js!!!');
     let targetURL = "http://localhost:3001/user/"
     console.log('app js auth: ',auth);
+
+
     // const profile = auth.getProfile();
     // this.props.fetchUserInfo(profile.clientID);
     // //save user's third party info to store:
     // this.props.saveProfile(profile);
 
   }
+
   componentDidMount(){
     console.log('getting profile in app');
-    const profile = this.props.auth.getProfile();
-    this.props.fetchUserInfo(profile.clientID);
+    // this.props.auth.getProfile().then((val)=>{console.log('our foo: ',val);});
+    // this.props.fetchUserInfo(profile.clientID);
+  }
+  componentWillUpdate(){
+    this.props.doAuthentication();
   }
   componentWillReceiveProps(nextProps){
     let user = this.props.user;
+    let profile = this.props.profile;
+    let authenticated = this.props.authenticated;
+    console.log('user authenticated: ',authenticated);
     console.log('user in willreceive: ',user);
-
+    console.log('profile in willreceive: ',profile);
+    console.log('user after fetching info: ',this.props.user[0]);
     //if user is new, save auth username, affiliation, first, last, pic, big pic, userid, requests sent, received in STORE:
     //all of this is already saved in store under 'user'
     if(user !=='' && user.length===0){
@@ -148,8 +158,10 @@ class App extends React.Component{
     this.props.push('/');
     console.log('logging out');
     // this.props.socialApp();
-    auth.logout();
-    this.forceUpdate();
+    this.props.logoutUser();
+    // auth.logout();
+    // this.props.doAuthentication();
+    // this.props.fetchPosts('');
   }
   toggle_affiliation(affiliation){
     console.log('working in App.js! ',affiliation);
@@ -225,11 +237,13 @@ function mapStateToProps(state){
   let profile = state.allReducers.mainApp.profile;
   let users = state.allReducers.mainApp.users;
   let token = state.allReducers.mainApp.token;
+  let authenticated = state.allReducers.mainApp.authenticated;
   return{
     user,
     users,
     profile,
-    token
+    token,
+    authenticated
   }
 }
 
@@ -242,7 +256,8 @@ function mapDispatchToProps(dispatch){
     createNewUser,
     fetchAllUsers,
     doAuthentication,
-    fetchPosts
+    fetchPosts,
+    logoutUser
   },dispatch);
 }
 

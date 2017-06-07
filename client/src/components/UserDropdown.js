@@ -42,6 +42,7 @@ class UserDropdown extends Component{
     // this.forceUpdate();
   }
   goToUser(userid){
+    // console.log('user target: ',e.target);
     console.log('going to user ', this.state.userPageId);
     this.props.push('/user/'+userid);
   }
@@ -126,15 +127,13 @@ class UserDropdown extends Component{
 // User Dropdown div:
   return (
       <div className="user-preview-box">
-        <a href="">
         <div onClick={()=>this.goToUser(user.userid)} className="user-preview-header">
           <div className="user-preview-header">
             {/* <div className="user-preview-pointer"></div> */}
             <div className="opaque-connector"></div>
-            <a className="user-link"><span>{ user.username }</span></a>
+            <span className="user-link"><span>{ user.username }</span></span>
           </div>
         </div>
-      </a>
 
           { embedded_pic }
         <div className="user-preview-footer">

@@ -196,7 +196,7 @@ class PostHeader extends Component{
     :
     //links if it's not my post
     '';
-    let linkbar = (this.state.toggleStatus && this.state.myPost) ? (
+    let linkbar = (this.state.toggleStatus && this.state.myPost && this.props.authenticated) ? (
       <div onMouseLeave={this.hideDeleteBar.bind(this)} className="post-header-deletebar">{linkBarLinks}</div>
     ) : '';
 
@@ -204,7 +204,7 @@ class PostHeader extends Component{
 
 
     return(
-      <div href="#" onMouseLeave={this.hideDeleteBar.bind(this)} className="post-header">
+      <div onMouseLeave={this.hideDeleteBar.bind(this)} className="post-header">
         <div className="post-pic-col">
           { userpic }
         </div>
@@ -235,12 +235,14 @@ function mapStateToProps(state){
   let usersObject = state.allReducers.mainApp.usersObject;
   let user_preview_showing = state.allReducers.mainApp.user_preview_showing;
   let activePost = state.allReducers.mainApp.activePost;
+  let authenticated = state.allReducers.mainApp.authenticated;
   return{
     user,
     users,
     usersObject,
     user_preview_showing,
-    activePost
+    activePost,
+    authenticated
   }
 }
 

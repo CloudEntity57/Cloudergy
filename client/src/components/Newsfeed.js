@@ -11,6 +11,7 @@ import { hashHistory } from 'react-router';
 import { nyt_feed } from './apis/NYT_API';
 import { wp_feed } from './apis/WP_API';
 import { breitbart_feed } from './apis/BREIT_API';
+import { push } from 'react-router-redux';
 import moment from 'moment';
 const nytkey=process.env.REACT_APP_NYTAPI;
 const wpkey=process.env.REACT_APP_WP_API;
@@ -20,7 +21,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { mainApp, fetchPosts, fetchAllUsers,
 fetchUserInfo,
-saveProfile, clearUserPageId, setWallState
+saveProfile, clearUserPageId, setWallState,login
 } from '../actions/index';
 
 
@@ -204,6 +205,15 @@ class Newsfeed extends Component{
   hideUser(){
     console.log('hiding user baby');
   }
+  goToAccount(e){
+    e.preventDefault();
+    console.log('going to account');
+    if(this.props.authenticated){
+      this.props.push('/account');
+    }else{
+      this.props.login();
+    }
+  }
   render(){
     console.log('rendering newsfeed');
     const profile = this.props.auth.getProfile();
@@ -245,7 +255,7 @@ class Newsfeed extends Component{
                         Friends
                       </li>
                       <li>
-                        Account
+                        <a href="" onClick={this.goToAccount.bind(this)}>Account</a>
                       </li>
                     </ul>
                   </div>
@@ -278,6 +288,7 @@ function mapStateToProps(state){
   let rand = state.allReducers.mainApp.rand;
   let affiliation = state.allReducers.mainApp.affiliation;
   let affiliation_display = state.allReducers.mainApp.affiliation_display;
+  let authenticated = state.allReducers.mainApp.authenticated;
   let router=state.router;
   return{
     user,
@@ -286,7 +297,8 @@ function mapStateToProps(state){
     rand,
     router,
     affiliation,
-    affiliation_display
+    affiliation_display,
+    authenticated
   }
 }
 
@@ -298,7 +310,9 @@ function mapDispatchToProps(dispatch){
     fetchUserInfo,
     saveProfile,
     clearUserPageId,
-    setWallState
+    setWallState,
+    push,
+    login
   },dispatch);
 }
 

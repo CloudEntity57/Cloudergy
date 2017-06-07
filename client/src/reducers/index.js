@@ -8,10 +8,16 @@ import initialState from './app/initialState.js';
 
 
 //import actions:
-import { SET_INITIAL_STATE, REQUEST_USER_INFO, RECEIVE_USER_INFO, GET_PROFILE, REQUEST_ALL_USERS, RECEIVE_ALL_USERS, REQUESTING_POSTS, RECEIVING_POSTS, DISPLAY_USER_PREVIEW, HIDE_USER_PREVIEW, SET_ACTIVE_POST, CLEAR_ACTIVE_POST, SET_USERPAGE_ID, SHOW_LOCK, LOCK_SUCCESS, LOCK_ERROR,TOGGLE_AFFILIATION,REQUEST_SUBMIT_POST,SUBMIT_POST_CONFIRMATION, CLEAR_USERPAGE_ID,REQUEST_ACCEPT_ALLY,RETRIEVE_ACCEPT_ALLY,REQUEST_DELETE_POST, RETRIEVE_DELETE_POST,SET_WALL_STATE,REQUEST_POST_COMMENT,RETRIEVE_POST_COMMENT,REQUEST_DELETE_COMMENT,RETRIEVE_DELETE_COMMENT,REQUEST_LIKE_POST,RECEIVE_LIKE_POST,REQUEST_ALLY_REQ,RECEIVE_ALLY_REQ} from '../actions/index';
+import { SET_INITIAL_STATE, REQUEST_USER_INFO, RECEIVE_USER_INFO, GET_PROFILE, REQUEST_ALL_USERS, RECEIVE_ALL_USERS, REQUESTING_POSTS, RECEIVING_POSTS, DISPLAY_USER_PREVIEW, HIDE_USER_PREVIEW, SET_ACTIVE_POST, CLEAR_ACTIVE_POST, SET_USERPAGE_ID, SHOW_LOCK, LOCK_SUCCESS, LOCK_ERROR,TOGGLE_AFFILIATION,REQUEST_SUBMIT_POST,SUBMIT_POST_CONFIRMATION, CLEAR_USERPAGE_ID,REQUEST_ACCEPT_ALLY} from '../actions/index';
+
+import { RETRIEVE_ACCEPT_ALLY,REQUEST_DELETE_POST,RETRIEVE_DELETE_POST,SET_WALL_STATE,REQUEST_POST_COMMENT,RETRIEVE_POST_COMMENT,REQUEST_DELETE_COMMENT,RETRIEVE_DELETE_COMMENT,REQUEST_LIKE_POST,RECEIVE_LIKE_POST,REQUEST_ALLY_REQ,RECEIVE_ALLY_REQ,LOGOUT_REQUEST,LOGOUT_SUCCESS,LOGOUT_FAILURE,REQUEST_UPDATE_PROFILE,RECEIVE_UPDATE_PROFILE,REQUESTING_TO_POST_PROFILE_INFO,RECEIVING_POST_CONFIRMATION} from '../actions/index';
 
 const mainApp = (state = initialState, action) => {
   switch(action.type){
+    case REQUESTING_TO_POST_PROFILE_INFO:
+      return createNewUser(state,action);
+    case RECEIVING_POST_CONFIRMATION:
+      return createNewUser(state,action);
     case SET_INITIAL_STATE:
       return initialState;
     case REQUEST_USER_INFO:
@@ -46,6 +52,8 @@ const mainApp = (state = initialState, action) => {
       return lockSuccess(state,action);
     case LOCK_ERROR:
       return lockError(state,action);
+    case LOGOUT_SUCCESS:
+      return logoutSuccess(state,action);
     case TOGGLE_AFFILIATION:
       return toggleAffiliation(state,action);
     case REQUEST_SUBMIT_POST:
@@ -78,6 +86,50 @@ const mainApp = (state = initialState, action) => {
       return requestAlly(state,action);
     case RECEIVE_ALLY_REQ:
       return requestAlly(state,action);
+    case REQUEST_UPDATE_PROFILE:
+      return updateProfile(state,action);
+    case RECEIVE_UPDATE_PROFILE:
+      return updateProfile(state,action);
+    default:
+      return state;
+  }
+}
+
+//update profile:
+const updateProfile = (state={isPosting:false,postsUpdated:false,user:[]},action) =>{
+  switch(action.type){
+    case REQUEST_UPDATE_PROFILE:
+      return {
+        ...state,
+        isPosting:true
+      }
+    case RECEIVE_UPDATE_PROFILE:
+      return {
+        ...state,
+        isPosting:false,
+        postsUpdated:true,
+        user:action.results
+      }
+    default:
+      return state;
+  }
+}
+
+//create new user:
+const createNewUser = (state={isPosting:false,postsUpdated:false,user:[]},action) => {
+  switch(action.type){
+    case REQUESTING_TO_POST_PROFILE_INFO:
+      return {
+        ...state,
+        isPosting:true
+      }
+    case RECEIVING_POST_CONFIRMATION:
+      return {
+        ...state,
+        isPosting:false,
+        postsUpdated:true,
+        user:action.results
+      }
     default:
       return state;
   }
@@ -279,7 +331,8 @@ const lockSuccess = (state={profile:{}},action) =>{
     return{
       ...state,
       profile:action.profile,
-      token:action.token
+      token:action.token,
+      authenticated:action.authenticated
     }
   }
 };
@@ -294,6 +347,40 @@ const lockError = (state={profile:{},token:''},action) =>{
   }
 };
 
+const logoutSuccess = (state={lockShowing:false},action) =>{
+  switch(action.type){
+    case LOGOUT_SUCCESS:
+     return {
+       ...state,
+       isFetching: true,
+       authenticated: false,
+       user:[{
+         "_id": {
+             "$oid": "58f66b22a53d2954c9f580fb"
+         },
+         "first_name": "Joe",
+         "last_name": "User",
+         "photo": "http://ijmhometutors.com/tutor/server/php/files/51b855e98abd7a5143c4d0176c119c0e/picture/avatar.png",
+         "largephoto": "http://ijmhometutors.com/tutor/server/php/files/51b855e98abd7a5143c4d0176c119c0e/picture/avatar.png",
+         "userid": "123456",
+         "__v": 0,
+         "username": "Guest",
+         "affiliation": "liberal",
+         "education": "Bachelor's",
+         "location": "Houston, TX",
+         "work": "Artist/Musician/Web Developer",
+         "user_story": "I'm an all-around renaissance man, living life to the fullest and doing the best I can. And I have a radical plan.",
+         "allies": [
+             "54321",
+             "J20zp56UZbPRlZ9eB1u41sBs9qXJxBVY",
+             "12345"
+         ],
+         "ally_requests_sent": [],
+         "ally_invitations_received": []
+     }]
+     }
+  }
+};
 //toggle user preview:
 const displayUserPreview = (state={
   user_preview_showing:false

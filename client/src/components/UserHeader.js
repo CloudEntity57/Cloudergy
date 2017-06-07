@@ -31,7 +31,7 @@ class UserHeader extends Component{
     const userpic=this.props.userpic;
     let destination = (route=="/user") ? "/account" : "/user";
     let button = (me.userid==userid) ? (
-      <span onClick={this.editProfile.bind(this)} className="profile-edit-btn">Edit Profile</span>
+      <a onClick={this.editProfile.bind(this)} className="profile-edit-btn">Edit Profile</a>
     )
     // : (
     //   <span onClick={this.viewProfile.bind(this)} className="profile-edit-btn">View Profile</span>
@@ -43,15 +43,15 @@ class UserHeader extends Component{
     return(
       <div className="user-header">
         <div className="user-background-photo">
-          <NavLink to={destination}>
-            <a href="#">
+          {/* <NavLink to={destination}> */}
+            {/* <a href="#"> */}
               <div>
                 <span id="title-username">{username}</span>
                 {button}
 
               </div>
-            </a>
-          </NavLink>
+            {/* </a> */}
+          {/* </NavLink> */}
         </div>
         <ul className="user-nav">
         <a href="#"><li>Posts</li></a>

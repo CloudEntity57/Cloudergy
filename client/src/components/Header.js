@@ -14,6 +14,7 @@ import { socialApp, toggleAffiliation, fetchUserInfo, acceptAlly,login,doAuthent
 class Header extends Component{
   constructor(props){
     super(props);
+    this.props.doAuthentication();
     // this.props.fetchUserInfo();
     this.state={
       affiliation:'',
@@ -23,7 +24,7 @@ class Header extends Component{
   }
   componentWillMount(){
     console.log('mounting header');
-    let user = Functions.getCurrentUser();
+    // let user = Functions.getCurrentUser();
     // console.log('user in header: ',user);
     console.log('affiliation display: ',this.props.affiliation_display);
     let potential_allies = this.getPotentialAllies();
@@ -45,7 +46,8 @@ class Header extends Component{
     this.refs.politics.value = affiliation;
     console.log('uid in header: ',uid);
     // let user;
-    let userid = Functions.getCurrentUserId();
+    let userid = user.userid;
+
     //put potential allies, invitations received into state
     // let user = this.props.user;
     this.setState({
@@ -172,6 +174,7 @@ class Header extends Component{
   }
   handleClick(e){
     console.log('handling click');
+    this.props.push('/');
     this.props.login();
   }
   clearDisplay(){
@@ -181,13 +184,20 @@ class Header extends Component{
     // let user = (this.state.user) ? this.state.user : '';
     // if(this.props.user !==''){
       let user, uid, userpic, ally_invitations_received, allyRequestNumber,username, affiliation,allyReqs;
-      user = (this.props.user !=='') ? this.props.user : [{userid:'',ally_invitations_received:[], allyRequestNumber,username, affiliation,allyReqs,potential_allies}];
+      user = (this.props.user !=='' && this.props.authenticated) ? this.props.user : [{userid:'',ally_invitations_received:[], allyRequestNumber,username, affiliation,allyReqs,potential_allies}];
       ally_invitations_received = user[0].ally_invitations_received;
       allyRequestNumber = (ally_invitations_received.length > 0) ? (<div className="invites">{ally_invitations_received.length}</div>) : '';
-      uid = user[0].userid;
-      userpic = user[0].photo;
-      username = user[0].username;
-      affiliation = user[0].affiliation;
+      uid = '123456';
+      userpic = "http://ijmhometutors.com/tutor/server/php/files/51b855e98abd7a5143c4d0176c119c0e/picture/avatar.png";
+      username = 'Guest';
+      affiliation = 'none';
+
+      if(this.props.authenticated){
+        uid = user[0].userid;
+        userpic = user[0].photo;
+        username = user[0].username;
+        affiliation = user[0].affiliation;
+      }
       console.log('user in header render: ',user);
       // let potential_allies = this.state.potential_allies;
       let potential_allies = this.getPotentialAllies();
@@ -253,7 +263,24 @@ class Header extends Component{
       </div>
     ) : '';
 
-    let usericon = (this.props.profile.hasOwnProperty('name')) ? (
+    // let usericon = (this.props.profile.hasOwnProperty('name')) ? (
+    //   <span>
+    //     <NavLink to={userlink}>
+    //       <a className="header-navlink" href="#">
+    //         <img className="user-pic" src={userpic} alt="user pic" />
+    //         {username}&nbsp;
+    //       </a>
+    //     </NavLink>
+    //   </span>
+    // ) : (
+    //   <span>
+    //     <a onClick={this.toggleLogin.bind(this)} className="header-navlink" href="#">
+    //       <div className="fa fa-user-o usericon"></div>
+    //       { loginlinks }
+    //     </a>
+    //   </span>
+    // );
+    let usericon =(
       <span>
         <NavLink to={userlink}>
           <a className="header-navlink" href="#">
@@ -262,20 +289,30 @@ class Header extends Component{
           </a>
         </NavLink>
       </span>
-    ) : (
-      <span>
-        <a onClick={this.toggleLogin.bind(this)} className="header-navlink" href="#">
-          <div className="fa fa-user-o usericon"></div>
-          { loginlinks }
-        </a>
-      </span>
     );
 
-    let userlogout = (this.props.profile.hasOwnProperty('name')) ? (
+    // let userlogout = (this.props.profile.hasOwnProperty('name')) ? (
+    //   <div><a className="log-out" onClick={this.props.logOut} href="#">Logout</a></div>
+    // ) : '';
+    let userlogout = (this.props.authenticated) ? (
       <div><a className="log-out" onClick={this.props.logOut} href="#">Logout</a></div>
-    ) : '';
+    ) : (
+      <div><a className="log-out" onClick={this.props.login} href="#">Join/login</a></div>
+    );
 
-    let usercontrols = (this.props.profile.hasOwnProperty('name')) ? (
+    // let usercontrols = (this.props.profile.hasOwnProperty('name')) ? (
+    //   <span>
+    //     <div className="fa fa-globe">
+    //     </div>
+    //     <div className="ally-request-holder">
+    //       <a onClick={this.toggleAllyRequest.bind(this)} href="#" className="fa fa-handshake-o">
+    //       </a>
+    //       {allyRequestNumber}
+    //       {allyPreview}
+    //     </div>
+    //   </span>
+    // ) : '';
+    let usercontrols = (
       <span>
         <div className="fa fa-globe">
         </div>
@@ -286,7 +323,7 @@ class Header extends Component{
           {allyPreview}
         </div>
       </span>
-    ) : '';
+    );
     return(
       <header onClick={()=>this.clearDisplay()} className={this.props.affiliation_display}>
 
@@ -344,6 +381,7 @@ class Header extends Component{
 }
 
 function mapStateToProps(state){
+  console.log('header state: ',state);
   let previewingAlly = state.allReducers.mainApp.previewingAlly;
   let affiliation = state.allReducers.mainApp.affiliation;
   let affiliation_display = state.allReducers.mainApp.affiliation_display;
@@ -352,10 +390,12 @@ function mapStateToProps(state){
   let user = state.allReducers.mainApp.user;
   let loggedIn = state.allReducers.mainApp.loggedIn;
   let users = state.allReducers.mainApp.users;
+  let authenticated = state.allReducers.mainApp.authenticated;
   return{
     previewingAlly,
     affiliation,
     affiliation_display,
+    authenticated,
     auth,
     user,
     profile,
