@@ -149,7 +149,7 @@ configureUser(postUserId,currentuser){
           });
     }
   //set up individual user's posts:
-    let querystring = "http://localhost:3001/posts";
+    // let querystring = "http://localhost:3001/posts";
     //replace api query for all posts with posts in store:
 
         let posts = (this.props.posts.length>0) ? this.props.posts : [];
