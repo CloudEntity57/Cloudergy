@@ -16,7 +16,7 @@ console.log('app running');
 var app = express();
 
 //set server to localhost:3001 for development mode:
-app.set('port', (process.env.PORT || '3000'));
+// app.set('port', (process.env.PORT || '3000'));
 
 // app.get('/', function (req, res) {
 //   res.sendFile(path.join(__dirname + 'client/build/index.html'));
