@@ -15,8 +15,8 @@ console.log('app running');
 var app = express();
 
 //set server to localhost:3001 for development mode:
-// app.set('port', (3000 || 5000));
-// app.set('port', (5000));
+app.set('port', (3000 || 5000));
+// app.set('port', 5000);
 // app.set('port', (3000));
 // app.set('port', (3001));
 
@@ -33,11 +33,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
+
+app.use('/', index);
+// app.use('/users', users);
 // if (process.env.NODE_ENV === 'production') {
 //   app.use(express.static('./client/build'));
 // }
-app.use('/', index);
-// app.use('/users', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

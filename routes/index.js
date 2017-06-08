@@ -7,6 +7,7 @@ var Post = require('../models/post');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+  console.log('in routes');
   res.render('index', { title: 'Express' });
 });
 

@@ -4,7 +4,7 @@
   "private": true,
   "main":"app.js",
   "scripts": {
-    "start": "node start ./app.js"
+    "start": "node ./bin/www"
   },
   "dependencies": {
     "auth0": "^2.6.0",
