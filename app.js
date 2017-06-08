@@ -25,7 +25,7 @@ var app = express();
 // app.set('port', (3000));
 // app.set('port', (3001));
 
-mongoose.connect(process.env.DB_CONN_TEST);
+// mongoose.connect(process.env.DB_CONN_TEST);
 // view engine setup
 
 app.set('views', path.join(__dirname, 'views'));
