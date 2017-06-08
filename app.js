@@ -2,7 +2,7 @@ require('dotenv').config();
 
 var express = require('express');
 var path = require('path');
-var favicon = require('serve-favicon');
+// var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
@@ -15,7 +15,7 @@ console.log('app running');
 var app = express();
 
 //set server to localhost:3001 for development mode:
-app.set('port', (3000 || 5000));
+app.set('port', (process.env.PORT || '3000'));
 // app.set('port', 5000);
 // app.set('port', (3000));
 // app.set('port', (3001));
