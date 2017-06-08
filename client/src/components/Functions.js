@@ -4,7 +4,7 @@ const authdomain = process.env.REACT_APP_AUTH0_DOMAIN;
 const auth = new AuthService(authid, authdomain);
 import AuthService from '../utils/AuthService';
 import { hashHistory } from 'react-router';
-let targetURL = "http://localhost:8080/user/";
+let targetURL = "https://couchpolitics.herokuapp.com/user/";
 
 function myFunctions(){
   this.getCurrentUser = ()=>{
@@ -62,7 +62,7 @@ function myFunctions(){
 
   this.sendAllyRequest = (friendId,callback) => {
     let userId = this.getCurrentUserId();
-    targetURL = "http://localhost:8080/ally/request/"+friendId;
+    targetURL = "https://couchpolitics.herokuapp.com/ally/request/"+friendId;
     jquery.ajax({
       url:targetURL,
       type:'POST',
@@ -121,7 +121,7 @@ function myFunctions(){
     });
   }
   this.acceptAlly = (allyid,userid,resFunction)=>{
-    let targetURL = 'http://localhost:8080/acceptally';
+    let targetURL = 'https://couchpolitics.herokuapp.com/acceptally';
     jquery.ajax({
       url:targetURL,
       type:'POST',
