@@ -23,6 +23,7 @@ router.get('/test', function(req, res, next) {
 
 router.get('/user',function(req,res,next){
   // let profile=req;
+  console.log('getting user');
   User.find({},'', function(err,profile){
     // console.log('profile: ',profile);
     res.json(profile);

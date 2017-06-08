@@ -10,19 +10,30 @@ var cors = require('cors');
 var mongoose = require('mongoose');
 
 var index = require('./routes/index');
+
 // var users = require('./routes/users');
 console.log('app running');
 var app = express();
 
 //set server to localhost:3001 for development mode:
 app.set('port', (process.env.PORT || '3000'));
+
+// app.get('/', function (req, res) {
+//   res.sendFile(path.join(__dirname + 'client/build/index.html'));
+// });
 // app.set('port', 5000);
 // app.set('port', (3000));
 // app.set('port', (3001));
 
 mongoose.connect(process.env.DB_CONN_TEST);
 // view engine setup
+
 app.set('views', path.join(__dirname, 'views'));
+
+app.use(express.static('client/build'));
+
+// app.set('views', path.join(__dirname, 'client/build'));
+
 app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
@@ -48,14 +59,25 @@ app.use(function(req, res, next) {
 });
 // app.use(express.static('./client/build'));
 // error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+// app.use(function(err, req, res, next) {
+//   // set locals, only providing error in development
+//   res.locals.message = err.message;
+//   res.locals.error = req.app.get('env') === 'development' ? err : {};
+//
+//   // render the error page
+//   res.status(err.status || 500);
+//   res.render('error');
+// });
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+//below was added on 6/7 from various online articles
+
+const PORT = process.env.PORT || 5000;
+
+
+app.listen(PORT, () => {
+  console.log(`App listening on port ${PORT}!`);
 });
-console.log('still running');
+
+
+
 module.exports = app;

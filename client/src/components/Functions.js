@@ -4,7 +4,7 @@ const authdomain = process.env.REACT_APP_AUTH0_DOMAIN;
 const auth = new AuthService(authid, authdomain);
 import AuthService from '../utils/AuthService';
 import { hashHistory } from 'react-router';
-let targetURL = "http://localhost:3001/user/";
+let targetURL = "http://localhost:8080/user/";
 
 function myFunctions(){
   this.getCurrentUser = ()=>{
@@ -62,7 +62,7 @@ function myFunctions(){
 
   this.sendAllyRequest = (friendId,callback) => {
     let userId = this.getCurrentUserId();
-    targetURL = "http://localhost:3001/ally/request/"+friendId;
+    targetURL = "http://localhost:8080/ally/request/"+friendId;
     jquery.ajax({
       url:targetURL,
       type:'POST',
@@ -121,7 +121,7 @@ function myFunctions(){
     });
   }
   this.acceptAlly = (allyid,userid,resFunction)=>{
-    let targetURL = 'http://localhost:3001/acceptally';
+    let targetURL = 'http://localhost:8080/acceptally';
     jquery.ajax({
       url:targetURL,
       type:'POST',
