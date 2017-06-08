@@ -61,7 +61,7 @@ class Account extends Component{
       },
       userid:uid
     }
-    console.log('querypath: ',querypath);
+    // console.log('querypath: ',querypath);
     this.props.updateProfile(data,uid)
     // let userquery = jquery.ajax({
     //   url:querypath,
