@@ -19,7 +19,6 @@ class StoryLinks extends Component{
         );
       });
     }
-
     return(
       <div className="ads-panel">
         <div className="features-panel panel panel-default">
