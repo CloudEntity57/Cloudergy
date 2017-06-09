@@ -19,6 +19,7 @@ class StoryLinks extends Component{
         );
       });
     }
+    let newstitle = this.props.newstitle
     return(
       <div className="ads-panel">
         <div className="features-panel panel panel-default">
@@ -31,7 +32,7 @@ class StoryLinks extends Component{
         </div>
         <div id="ads">
           <div className="panel panel-default">
-            <h4>Top Politics</h4>
+            <h4>Top Politics</h4>{newstitle}
             {stories}
           </div>
           <div className="panel panel-default">
