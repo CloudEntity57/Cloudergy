@@ -262,11 +262,12 @@ class Posts extends Component{
     if(this.props.wall === 'public'){
     //show only global, personal and ally posts:
     let myPost = false;
+    let userid = (this.props.user.length>0) ? this.props.user[0].userid : '';
     posts = posts.filter((val)=>{
-      if(val.uid == this.props.user[0].userid) myPost = true;
+      if(val.uid == userid) myPost = true;
       let isAllies = false;
       this.props.user[0].allies.forEach((ally)=>{
-        if (ally == val.uid) isAllies=true;
+        if (ally == this.props.user[0].userid){isAllies=true};
       });
       return val.privacy=='public' || (val.privacy=='allies' && isAllies) || myPost;
     });
