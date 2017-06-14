@@ -173,7 +173,62 @@ router.post('/postcomment',function(req,res,next){
   // res.send();
 });
 
+//edit individual message's privacy:
+router.post('/editprivacy',function(req,res,next){
+  let data = req.body.payload;
+  console.log('message to edit: ',data);
+  Post.findOneAndUpdate({_id:data.id},{$set:{privacy:data.setting}},(err,result)=>{
+    if(err) console.log('error! ',err);
+    getPosts(res);
+  });
+});
 
+//like comment:
+router.post('/likecomment',function(req,res,next){
+  let data = req.body.payload;
+  console.log('post: ',data.post,', ',data.liker,', ',data.comment);
+  let liker = data.liker;
+  console.log('liker: ',liker);
+  let commentid = data.comment;
+  //find comment, check if user already likes comment and either add user to 'likers' array or remove user; thus toggling the like.
+  Post.find({_id:data.post},'',(err,post)=>{
+    if(err) console.log('error: ',err);
+    console.log('post: ',post);
+    let comments = post[0].comments;
+    console.log('comments: ',comments);
+    comment = comments.filter((val)=>{
+      return val.id == commentid;
+    });
+    console.log('comment to like: ',comment);
+    let likers = comment[0].likers;
+    let index=likers.indexOf(liker);
+    console.log('liker: ',index);
+    if(index === -1){
+      likers.push(liker);
+      console.log('likers: ',likers);
+      Post.findOneAndUpdate({_id:data.post},{$set:{comments:comments}},(err,post)=>{
+        console.log('post is now: ',post);
+        getPosts(res);
+      });
+    }else{
+      console.log('removing like');
+      likers = likers.filter((val)=>{
+        return val !== liker;
+      });
+      console.log('likers: ',likers);
+      comments.forEach((val)=>{
+        if(val.id == commentid){
+          val.likers = likers;
+        }
+      });
+      console.log('comments is now: ',comments);
+      Post.findOneAndUpdate({_id:data.post},{$set:{comments:comments}},(err,post)=>{
+        console.log('post is now: ',post);
+        getPosts(res);
+      });
+    }
+  });
+});
 
 //like post:
 router.post('/likepost',function(req,res,next){
@@ -232,9 +287,6 @@ router.post('/deletecomment',function(req,res,next){
 
 
 
-//like comment:
-router.post('/likecomment',function(req,res,next){
-});
 //reply to comment:
 router.post('/replycomment',function(req,res,next){
 });
@@ -298,7 +350,49 @@ User.findOneAndUpdate(
   // res.send('success');
 });
 
-
+//cancel alliance:
+router.post('/cancelalliance/',function(req,res,next){
+  console.log('ally id: ',req.body.payload);
+  let userid = req.body.payload.userid;
+  let allyid = req.body.payload.allyid;
+  //remove your id from ally's list:
+  User.find({"userid":allyid},'allies',(err,val)=>{
+    if(err){
+      console.log('error! ',err);
+    }
+    console.log('the allies are: ',val[0].allies);
+    let allies = val[0].allies;
+    let index = allies.indexOf(userid);
+    allies.splice(index,1);
+    console.log('now the allies are: ',allies);
+    User.findOneAndUpdate({"userid":allyid},{"allies":allies},function(err,ally){
+         if(err) {console.log('error! ',err);}
+         console.log('updated ally list: ',ally.allies);
+       });
+  });
+  //remove ally from your list:
+  User.find({"userid":userid},'allies',(err,val)=>{
+    if(err){
+      console.log('error! ',err);
+    }
+    console.log('allies: ',val);
+    console.log('the allies are: ',val[0].allies);
+    let allies = val[0].allies;
+    let index = allies.indexOf(allyid);
+    allies.splice(index,1);
+    console.log('now the allies are: ',allies);
+    User.findOneAndUpdate({"userid":userid},{"allies":allies},function(err,ally){
+         if(err) {console.log('error! ',err);}
+         console.log('updated ally list: ',ally.allies);
+         User.find({"userid":userid},{},(err,val)=>{
+           if(err){
+             console.log('error! ',err);
+           }
+           res.json(val);
+         });
+       });
+  });
+});
 
 //=================================Route for accepting an alliance invitation:
 

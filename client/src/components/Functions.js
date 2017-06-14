@@ -120,6 +120,36 @@ function myFunctions(){
 
     });
   }
+
+  this.friendStatus = (them,you) => {
+    //check if it's you
+    if(them.userid == you.userid){
+      return 'its_you';
+    }
+    //check your allies list
+    for(let i=0; i<you.allies.length; i++){
+      if(you.allies[i]==them.userid){
+        return true;
+      }
+    }
+    //check your ally invites received list:
+    let reqsList = you.ally_invitations_received;
+    for(let i=0; i<reqsList.length; i++){
+      if(them.userid == reqsList[i]){
+        return "they_invited_you";
+      }
+    }
+    //check your ally requests sent list:
+    let invitesList = you.ally_requests_sent;
+    for(let i=0; i<invitesList.length; i++){
+      if(them.userid == invitesList[i]){
+        return "you_invited_them";
+      }
+    }
+    //they are neither friend nor pending ally status:
+    return false;
+  }
+
   this.acceptAlly = (allyid,userid,resFunction)=>{
     let targetURL = 'https://couchpolitics.herokuapp.com/acceptally';
     jquery.ajax({

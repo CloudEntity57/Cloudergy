@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import jquery from 'jquery';
-// import Functions from './Functions';
 import NavLink from './NavLink';
 import FilterLink from './FilterLink';
 import UserDropdown from './UserDropdown';
@@ -11,7 +10,7 @@ import { push } from 'connected-react-router';
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { mainApp,hideUserPreview,displayUserPreview,setActivePost, clearActivePost, setUserPageId, deletePost, requestAlly } from '../actions/index';
+import { mainApp,hideUserPreview,displayUserPreview,setActivePost, clearActivePost, setUserPageId, deletePost, requestAlly,editPrivacy } from '../actions/index';
 
 class PostHeader extends Component{
   constructor(props){
@@ -19,36 +18,38 @@ class PostHeader extends Component{
     this.state={
       userpreview:false,
       toggleStatus:false,
+      privacyToggle:false,
       myPost:false,
       postId:''
     }
   }
-  componentWillMount(){
-    // let currentUserId = Functions.getCurrentUserId();
-    // console.log('cwm currentUserId: ',currentUserId);
-    // this.setState({
-    //   currentUserId: currentUserId
-    // });
+  componentDidMount(){
+    let user = this.props.user[0];
+    let userid = this.props.user[0].userid;
+    let currentUserId = this.props.currentId;
+    // if(currentUserId == userid){
+    //   // console.log('cuid true');
+    //   this.setState({
+    //     myPost:true
+    //   });
+    // }else{
+    //   // console.log('cuid false');
+    //   this.setState({
+    //     myPost:false,
+    //   });
+    // }
   }
   componentWillReceiveProps(nextProps){
-    // let currentUserId = this.state.currentUserId;
     let currentUserId = nextProps.currentId;
     let postId = nextProps.postId;
+    let privacy = nextProps.post.privacy;
     console.log('postID: ',postId, 'user: ',currentUserId);
     this.setState({
-      postId:postId
+      postId:postId,
+      privacy
     });
-    // let user = (nextProps.id) ? nextProps.id : '';
     let user = this.props.user[0];
-    // console.log('mystery user: ',user);
     let userid = this.props.user[0].userid;
-    // console.log(currentUserId,' vs ',user);
-    // Functions.getUser(uid).then((val)=>{
-    //   this.setState({
-    //     user:val[0]
-    //   });
-    // });
-    // console.log('other person posting: ',user);
     if(currentUserId == userid){
       // console.log('cuid true');
       this.setState({
@@ -57,7 +58,7 @@ class PostHeader extends Component{
     }else{
       // console.log('cuid false');
       this.setState({
-        myPost:false
+        myPost:false,
       });
     }
     let callback = (isFriend)=>{
@@ -67,8 +68,6 @@ class PostHeader extends Component{
         currentUserId
       });
     }
-    // Functions.allyCheck(userid,currentUserId,callback);
-    // let user = this.props.user;
     let friends = user.allies;
     let isFriend = false;
     // console.log('current friends: ',friends);
@@ -99,6 +98,7 @@ class PostHeader extends Component{
     console.log('accepting invitation');
   }
   toggleDeleteBar(){
+    console.log('toggling');
     let toggleStatus = (this.state.toggleStatus==true) ? false : true;
     this.setState({
       toggleStatus:toggleStatus
@@ -122,6 +122,11 @@ class PostHeader extends Component{
     let postId = e.target.id;
     this.props.deletePost(postId);
   }
+  editPost(e){
+    e.preventDefault();
+    console.log('editing: ',e.target.id);
+
+  }
   displayUser(e){
     console.log('displaying!');
     this.props.setActivePost(this.props.id)
@@ -140,7 +145,6 @@ class PostHeader extends Component{
     // },250);
   }
   setUserPageId(userid){
-    // this.props.setUserPageId(userid)
     this.setState({
       userPageId:userid
     });
@@ -149,8 +153,40 @@ class PostHeader extends Component{
     this.props.push('/user/'+this.state.userPageId);
     console.log('going to user');
   }
+  hidePost(){
+    console.log('hiding post');
+  }
+  togglePrivacy(){
+    let privacyToggle = !this.state.privacyToggle;
+    this.setState({
+      privacyToggle
+    });
+    console.log('changing privacy');
+  }
+  hidePrivacy(){
+    if(this.state.privacyToggle==true){
+    this.setState({
+      privacyToggle:false
+    })
+  }
+}
+  showPrivacy(){
+    if(this.state.privacyToggle==false){
+    this.setState({
+      privacyToggle:true
+    })
+  }
+  }
+  setPrivacy(setting){
+    console.log('setting message # ',this.props.post._id,' to ',setting);
+    let data = {
+      setting,
+      id:this.props.post._id
+    }
+    this.props.editPrivacy(data);
+  }
   render(){
-
+    let token = (this.props.token !=='') ? this.props.token : '';
     // console.log('user object: ',userObj);
     let friendrequest = (this.state.friendrequest) ? this.state.friendrequest : '';
     let currentUserId = this.props.currentId;
@@ -158,7 +194,9 @@ class PostHeader extends Component{
 
     let user=this.props.user[0];
     // console.log('user in postheader render: ',user);
-
+    let myPost=false;
+    if(this.props.post.uid == this.props.user[0].userid) {myPost=true;}
+    console.log("it's ",myPost," that ", this.props.post.text, " is my post");
     let userpic,
     teamcolor,
     embedded_pic,
@@ -182,27 +220,78 @@ class PostHeader extends Component{
 
 
     let userdropdown = (postId==this.props.activePost && this.state.userpreview) ? (
-      <UserDropdown postId={postId} this_user={user} userPageId={this.state.userPageId}/>
+      <UserDropdown this_user={user} />
     ):'';
 
+//delete bar:
 
-    //delete bar:
-
-    let linkBarLinks = (this.state.myPost) ?
+    let linkBarLinks =  (myPost && token !=='') ?
     //links if it's my post
     (
-       <a id={postId} className="deletebar-item" onClick={this.deletePost.bind(this)} href="#">Delete</a>
+       <div>
+         <a id={postId} className="deletebar-item" onClick={this.deletePost.bind(this)} href="#">Delete</a>
+         <a id={postId} className="deletebar-item" onClick={this.editPost.bind(this)} href="#">Edit</a>
+       </div>
      )
     :
     //links if it's not my post
-    '';
-    let linkbar = (this.state.toggleStatus && this.state.myPost && this.props.authenticated) ? (
+    (
+       <div>
+         <a id={postId} className="deletebar-item" onClick={this.hidePost.bind(this)} href="#">Hide Post</a>
+       </div>
+     );
+    let linkbar = (this.state.toggleStatus) ? (
       <div onMouseLeave={this.hideDeleteBar.bind(this)} className="post-header-deletebar">{linkBarLinks}</div>
     ) : '';
+    let linktoggle = (<span onClick = {this.toggleDeleteBar.bind(this)} className="fa fa-sort-desc pull-right post-header-deleteicon">{linkbar}</span>);
 
-    let linktoggle = (this.state.myPost) ? (<div onClick={this.showDeleteBar.bind(this)} className="fa fa-sort-desc pull-right post-header-deleteicon">{linkbar}</div>) : '';
-
-
+//privacy bar:
+    let privacyBarLinks =  (myPost && token !=='') ?
+    //links if it's my post
+    (
+      <div onMouseEnter={this.showPrivacy.bind(this)} className="privacymenu">
+        <div>Who sees this?</div>
+        <div onClick={()=>this.setPrivacy('public')} className="privacy-btns">Public</div>
+        <div onClick={()=>this.setPrivacy('allies')} className="privacy-btns">Allies</div>
+        <div onClick={()=>this.setPrivacy('private')} className="privacy-btns">Only Me</div>
+      </div>
+     )
+    :
+    //links if it's not my post
+    (
+       <div>
+         <a id={postId} className="deletebar-item" onClick={this.hidePost.bind(this)} href="#">Hide Post</a>
+       </div>
+     );
+         let privacybar = (this.state.privacyToggle) ? (
+           <div onMouseLeave={this.hidePrivacy.bind(this)} className="post-header-deletebar">{privacyBarLinks}</div>
+         ) : '';
+    let privacyicon;
+    switch(this.props.post.privacy){
+      case 'public':
+        privacyicon = (myPost) ? (
+          <span onClick={this.togglePrivacy.bind(this)} className="fa my-privacyicon fa-globe"><span className="fa fa-sort-desc"></span></span>
+        ) :
+        (
+          <span className="fa privacyicon fa-globe"></span>
+        )
+      break;
+      case 'allies':
+        privacyicon = (myPost) ? (
+          <span onClick={this.togglePrivacy.bind(this)} className="fa my-privacyicon fa-users">{privacybar}<span className="fa fa-sort-desc"></span></span>
+        ) :
+        (
+          <span className="fa privacyicon fa-users"></span>
+        )
+      break;
+      case 'private':
+        privacyicon = (myPost) ? (
+          <span onClick={this.togglePrivacy.bind(this)} className="fa my-privacyicon fa-lock">{privacybar}<span className="fa fa-sort-desc"></span></span>
+        ) :
+        (
+          <span className="fa privacyicon fa-lock"></span>
+        )
+    }
     return(
       <div onMouseLeave={this.hideDeleteBar.bind(this)} className="post-header">
         <div className="post-pic-col">
@@ -220,10 +309,10 @@ class PostHeader extends Component{
             </div>
 
           </span>
-          <div className="post-date">{date}</div>
+          <div className="post-date">{date}{ privacyicon }</div>
+          {privacybar}
         </div>
         { linktoggle }
-
       </div>
     )
   }
@@ -235,14 +324,14 @@ function mapStateToProps(state){
   let usersObject = state.allReducers.mainApp.usersObject;
   let user_preview_showing = state.allReducers.mainApp.user_preview_showing;
   let activePost = state.allReducers.mainApp.activePost;
-  let authenticated = state.allReducers.mainApp.authenticated;
+  let token = state.allReducers.mainApp.token;
   return{
     user,
     users,
     usersObject,
     user_preview_showing,
     activePost,
-    authenticated
+    token
   }
 }
 
@@ -256,7 +345,8 @@ function mapDispatchToProps(dispatch){
     setUserPageId,
     push,
     deletePost,
-    requestAlly
+    requestAlly,
+    editPrivacy
   },dispatch);
 }
 

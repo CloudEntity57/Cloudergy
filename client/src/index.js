@@ -67,6 +67,7 @@ let rand = Math.random();
 let props={
   rand
 }
+
 ReactDOM.render(
 
   <Provider store={ store }>

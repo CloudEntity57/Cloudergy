@@ -8,12 +8,20 @@ import initialState from './app/initialState.js';
 
 
 //import actions:
-import { SET_INITIAL_STATE, REQUEST_USER_INFO, RECEIVE_USER_INFO, GET_PROFILE, REQUEST_ALL_USERS, RECEIVE_ALL_USERS, REQUESTING_POSTS, RECEIVING_POSTS, DISPLAY_USER_PREVIEW, HIDE_USER_PREVIEW, SET_ACTIVE_POST, CLEAR_ACTIVE_POST, SET_USERPAGE_ID, SHOW_LOCK, LOCK_SUCCESS, LOCK_ERROR,TOGGLE_AFFILIATION,REQUEST_SUBMIT_POST,SUBMIT_POST_CONFIRMATION, CLEAR_USERPAGE_ID,REQUEST_ACCEPT_ALLY} from '../actions/index';
+import { SET_INITIAL_STATE, REQUEST_USER_INFO, RECEIVE_USER_INFO, GET_PROFILE, REQUEST_ALL_USERS, RECEIVE_ALL_USERS, REQUESTING_POSTS, RECEIVING_POSTS, DISPLAY_USER_PREVIEW, HIDE_USER_PREVIEW, SET_ACTIVE_POST, CLEAR_ACTIVE_POST, SET_USERPAGE_ID, SHOW_LOCK, LOCK_SUCCESS, LOCK_ERROR,TOGGLE_AFFILIATION,REQUEST_SUBMIT_POST,SUBMIT_POST_CONFIRMATION, CLEAR_USERPAGE_ID,REQUEST_ACCEPT_ALLY,REQUEST_EDIT_PRIVACY,RECEIVE_EDIT_PRIVACY} from '../actions/index';
 
-import { RETRIEVE_ACCEPT_ALLY,REQUEST_DELETE_POST,RETRIEVE_DELETE_POST,SET_WALL_STATE,REQUEST_POST_COMMENT,RETRIEVE_POST_COMMENT,REQUEST_DELETE_COMMENT,RETRIEVE_DELETE_COMMENT,REQUEST_LIKE_POST,RECEIVE_LIKE_POST,REQUEST_ALLY_REQ,RECEIVE_ALLY_REQ,LOGOUT_REQUEST,LOGOUT_SUCCESS,LOGOUT_FAILURE,REQUEST_UPDATE_PROFILE,RECEIVE_UPDATE_PROFILE,REQUESTING_TO_POST_PROFILE_INFO,RECEIVING_POST_CONFIRMATION} from '../actions/index';
+import { RETRIEVE_ACCEPT_ALLY,REQUEST_DELETE_POST,RETRIEVE_DELETE_POST,SET_WALL_STATE,REQUEST_POST_COMMENT,RETRIEVE_POST_COMMENT,REQUEST_DELETE_COMMENT,RETRIEVE_DELETE_COMMENT,REQUEST_LIKE_POST,RECEIVE_LIKE_POST,REQUEST_ALLY_REQ,RECEIVE_ALLY_REQ,LOGOUT_REQUEST,LOGOUT_SUCCESS,LOGOUT_FAILURE,REQUEST_UPDATE_PROFILE,RECEIVE_UPDATE_PROFILE,REQUESTING_TO_POST_PROFILE_INFO,RECEIVING_POST_CONFIRMATION,REQUEST_CANCEL_ALLIANCE,RECEIVE_CANCEL_ALLIANCE,REQUEST_LIKE_COMMENT,RECEIVE_LIKE_COMMENT} from '../actions/index';
 
 const mainApp = (state = initialState, action) => {
   switch(action.type){
+    case REQUEST_EDIT_PRIVACY:
+      return editPrivacy(state,action);
+    case RECEIVE_EDIT_PRIVACY:
+      return editPrivacy(state,action);
+    case REQUEST_LIKE_COMMENT:
+      return likeComment(state,action);
+    case RECEIVE_LIKE_COMMENT:
+      return likeComment(state,action);
     case REQUESTING_TO_POST_PROFILE_INFO:
       return createNewUser(state,action);
     case RECEIVING_POST_CONFIRMATION:
@@ -90,6 +98,50 @@ const mainApp = (state = initialState, action) => {
       return updateProfile(state,action);
     case RECEIVE_UPDATE_PROFILE:
       return updateProfile(state,action);
+    case REQUEST_CANCEL_ALLIANCE:
+      return cancelAlliance(state,action);
+    case RECEIVE_CANCEL_ALLIANCE:
+      return cancelAlliance(state,action);
+    default:
+      return state;
+  }
+}
+
+//edit message privacy:
+const editPrivacy = (state={isPosting:false,postsUpdated:false,posts:[]},action) => {
+  switch(action.type){
+    case REQUEST_EDIT_PRIVACY:
+      return {
+        ...state,
+        isPosting:true
+      }
+    case RECEIVE_EDIT_PRIVACY:
+      return {
+        ...state,
+        isPosting:false,
+        postsUpdated:true,
+        posts:action.results
+      }
+    default:
+      return state;
+  }
+}
+
+//cancel Alliance:
+const cancelAlliance = (state={isPosting:false,postsUpdated:false,user:[]},action) =>{
+  switch(action.type){
+    case REQUEST_CANCEL_ALLIANCE:
+      return {
+        ...state,
+        isPosting:true
+      }
+    case RECEIVE_CANCEL_ALLIANCE:
+      return {
+        ...state,
+        isPosting:false,
+        postsUpdated:true,
+        user:action.results
+      }
     default:
       return state;
   }
@@ -149,6 +201,25 @@ const requestAlly = (state={isPosting:false,postsUpdated:false,user:[]},action) 
         isPosting:false,
         postsUpdated:true,
         user:action.results
+      }
+    default:
+      return state;
+  }
+}
+//like a post:
+const likeComment = (state={isPosting:false,postsUpdated:false,posts:[]},action) => {
+  switch(action.type){
+    case REQUEST_LIKE_COMMENT:
+      return {
+        ...state,
+        isPosting:true
+      }
+    case RECEIVE_LIKE_COMMENT:
+      return {
+        ...state,
+        isPosting:false,
+        postsUpdated:true,
+        posts:action.results
       }
     default:
       return state;

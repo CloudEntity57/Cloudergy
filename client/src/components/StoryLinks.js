@@ -9,17 +9,19 @@ class StoryLinks extends Component{
 
     if(stories_array){
       stories = stories_array.map((story)=>{
+        let color = (story.affiliation=='liberal') ? 'liberal band' : 'conservative band';
         let publishedTime = moment(story.publishedAt).format("LLLL");
         pic=(story.photo) ? (<img className="img-responsive" src={story.photo} alt="pic1"/>) : '';
         return(
           <div className="story">
             {/* {story.title} */}
+            <div className = {color}></div>
             <a href={story.url} target="_blank">{pic}<span className="story-title">{story.title}</span><span className="story-source">{story.source} - {publishedTime}</span></a>
           </div>
         );
       });
     }
-    let newstitle = this.props.newstitle
+    let newstitle = this.props.newstitle;
     return(
       <div className="ads-panel">
         <div className="features-panel panel panel-default">
@@ -32,7 +34,7 @@ class StoryLinks extends Component{
         </div>
         <div id="ads">
           <div className="panel panel-default">
-            <h4>Top Politics</h4>{newstitle}
+            <h4>{newstitle}</h4>
             {stories}
           </div>
           <div className="panel panel-default">

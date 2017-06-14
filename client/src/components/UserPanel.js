@@ -19,12 +19,13 @@ class UserPanel extends Component{
     e.preventDefault();
     let boolean = this.state.expanded;
     boolean = (this.state.expanded) ? false : true;
-    setTimeout(()=>{
     this.setState({
       expanded:boolean
     });
-  },250
-  )
+  }
+  toUser(userid){
+    console.log('going to user: ',userid);
+    this.props.push('/user/'+userid);
   }
   render(){
     console.log('in userpanel: ',this.props.users);
@@ -32,18 +33,14 @@ class UserPanel extends Component{
     let expandedColumn = (this.state.expanded) ?
     this.props.users.map((user)=>{
       let color = user.affiliation + ' stripe exp-user-panel-stripe';
-      // let userLink='/user/'+user.userid;
-      //Add user chat functionality here:
       return(
         // <NavLink to={userLink}>
-          <div onClick={this.props.push('/user/'+user.userid)} className="user-tab">
+          <div onClick={()=>this.toUser(user.userid)} className="user-tab">
             {user.username}
-            <a href="#">
-              <div className={color}></div>
+            <a className="user-stripe-img" href="#">
               <img id={user.id} className='user-pic' src={user.photo} alt='user image' />
+              {/* <div className={color}></div> */}
             </a>
-
-
           </div>
         // </NavLink>
       )
@@ -53,7 +50,7 @@ class UserPanel extends Component{
     let memberToggleBar = (this.state.expanded) ?
       (<a className="member-toggle" href="#"><div onClick={this.expandColumn.bind(this)} className="bluetoggle userToggle">&middot; Members</div></a>)
       :
-      (<a className="member-toggle" href="#"><div onClick={this.expandColumn.bind(this)} className="userToggle">&middot; Members</div></a>);
+      (<a onClick={this.expandColumn.bind(this)} className="member-toggle" href="#"><div className="userToggle">&middot; Members</div></a>);
 
     let expandingUserColumn = (this.state.expanded) ? (
       <div className="expanded-user-column">
@@ -65,17 +62,16 @@ class UserPanel extends Component{
       let color = user.affiliation + ' stripe user-panel-stripe';
       let userid = user.userid;
       let userLink='/user/'+userid;
-
       //Remove NavLink and add user chat functionality here:
       return(
         // <NavLink to={userLink}>
           <a onClick={()=>this.props.push(userLink)} className="link_normalize" href="#">
             <div className="userpic-tab">
             {/* <div className="user-tab"> */}
-              {user.first_name}&nbsp;{user.last_name}
+              {user.username}
               {/* <span className={color}></span> */}
               {/* <img id={user.id} className='user-pic' src={user.photo} alt='user image' /> */}
-              <div><UserPic userid={userid} /></div>
+              <div className="tab-userpic"><UserPic userid={userid} /></div>
             </div>
           </a>
         // </NavLink>

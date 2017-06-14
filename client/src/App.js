@@ -63,20 +63,8 @@ class App extends React.Component{
     console.log('mounting App.js!!!');
     let targetURL = "http://localhost:3001/user/"
     console.log('app js auth: ',auth);
-
-
-    // const profile = auth.getProfile();
-    // this.props.fetchUserInfo(profile.clientID);
-    // //save user's third party info to store:
-    // this.props.saveProfile(profile);
-
   }
 
-  componentDidMount(){
-    console.log('getting profile in app');
-    // this.props.auth.getProfile().then((val)=>{console.log('our foo: ',val);});
-    // this.props.fetchUserInfo(profile.clientID);
-  }
   componentWillUpdate(){
     this.props.doAuthentication();
   }
@@ -100,59 +88,15 @@ class App extends React.Component{
            largephoto:this.props.profile.picture_large,
            userid:this.props.profile.clientID,
            ally_requests_sent:[],
-           //give every new user a friend invitation from Forrest Gump:
-           ally_invitations_received:['12345']
+           //give every new user a friend invitation from me:
+           ally_invitations_received:['J20zp56UZbPRlZ9eB1u41sBs9qXJxBVY']
          };
       //  this.props.createNewUser(userData);
-       this.props.push('/account');
+       this.props.push('/');
      }else{
        console.log('app.js has confirmed user exists');
      }
 
-    // setTimeout(()=>{
-      // const profile = this.props.profile;
-      // console.log('cwm profile: ', profile);
-      //   this.setState({
-      //     profile:profile
-      //   });
-
-        // getting current user information MOVE ALL THIS TO WILL RECEIVE PROPS:
-
-        // let query = jquery.ajax({
-        //   url:targetURL+profile.clientID,
-        //   type:'GET',
-        //   success:(val)=>{
-        //     console.log('user in app.js: ',val[0]);
-        //     console.log('success: ',val[0]);
-        //     console.log('username: ',val[0].username);
-        //     console.log('affiliation in app.js: ',val[0].affiliation);
-        //     let affiliation = val[0].affiliation;
-        //     this.setState({
-        //       username:val[0].username,
-        //       affiliation:affiliation,
-        //       user:val[0]
-        //     });
-        //   }
-        // });
-  //       query.done((val)=>{
-  //         console.log('user in database: ',val);
-  //
-  //       });
-  // },0);
-
-
-    // let users;
-    // targetURL = "http://localhost:3001/user/"
-    // jquery.ajax({
-    //   url:targetURL,
-    //   type:"GET",
-    //   success:(users)=>{
-    //     console.log('all the users in the database: ',users);
-    //     this.setState({
-    //       users:users
-    //     });
-    //   }
-    // });
   }
   logOut(){
     this.props.push('/');
@@ -178,6 +122,11 @@ class App extends React.Component{
       username:user.username
     });
   }
+
+  updateRouter(){
+    console.log('updating router!!');
+    window.scrollTo(0, 0)
+  }
   render(){
    let profile = auth.getProfile();
    let children = this.props.children;
@@ -190,35 +139,15 @@ class App extends React.Component{
    console.log('username app.js render: ',username);
    let users = this.props.users;
    let update = this.update.bind(this);
-  //  if (this.props.children) {
-  //    children = React.cloneElement(this.props.children, {
-  //      //sends props to children
-  //      auth: auth,
-  //      profile:profile,
-  //      username:username,
-  //      affiliation:affiliation,
-  //      update:update,
-  //      user:user
-  //    })
-  //  }
-  //  let props = {
-  //    //sends props to children
-  //    auth,
-  //    profile,
-  //    username,
-  //    affiliation,
-  //    update
-  //  }
-
    return (
     <div>
       <Header uid={user.uid} affiliation={affiliation} logOut={this.logOut.bind(this)}/>
 
       {/* <Route exact path="/" render = {(props)=>(<LandingPage />)} /> */}
-      <Route exact path="/" render = {(props)=>(<Newsfeed />)} />
-      <Route path="/account" render = {(props)=>(<Account />)} />
+      <Route exact path="/" render = {(props)=>{this.updateRouter(); return(<Newsfeed />)}} />
+      <Route path="/account" render = {(props)=>{this.updateRouter(); return(<Account />)}} />
       {/* <Route path="/user" render = {(props)=>(<UserPage {...props} />)} /> */}
-      <Route path="/user/:userid" render = {(props)=>(<UserPage {...props} />)} />
+      <Route path="/user/:userid" render = {(props)=>{this.updateRouter(); return(<UserPage {...props} />)}} />
       {/* <Route path="/user" component = {UserPage} /> */}
       <Route path="/signedin" component={SignedIn} />
       {/* <Route path="/newsfeed" render = {(props)=>(<Newsfeed {...props} />)} /> */}

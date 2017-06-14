@@ -3,6 +3,7 @@ import UserPic from './UserPic';
 import { bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
+import { likeComment } from '../actions/index';
 //
 class Comment extends Component{
   constructor(props){
@@ -24,23 +25,6 @@ class Comment extends Component{
       displayedit:false,
       displayeditoption:false
     })
-  }
-  likeComment(e){
-    e.preventDefault();
-    let comment = e.target;
-    let data = {
-      comment,
-      liker:this.props.user[0].userid
-    }
-    // this.props.likeComment(data);
-  }
-  replyComment(e){
-    e.preventDefault();
-    let comment = e.target.id;
-    console.log('target: ',comment);
-    // this.refs.comment.value='@'+comment.id+' ';
-    // this.refs.comment.focus();
-    this.props.replyComment(comment);
   }
   deleteComment(e){
     e.preventDefault();
@@ -80,36 +64,77 @@ class Comment extends Component{
     this.props.push('/user/'+userid);
     console.log('going to user');
   }
+  replyComment(e){
+    e.preventDefault();
+    let comment = e.target.id;
+    console.log('target: ',comment);
+    // this.refs.comment.value='@'+comment.id+' ';
+    // this.refs.comment.focus();
+    this.props.replyComment(comment);
+  }
+  likeComment(e){
+    e.preventDefault();
+    let comment = e.target;
+    console.log('liking ',this.props.post_id,', ',e.target.id);
+    let data = {
+      comment,
+      liker:this.props.user[0].userid,
+      post:this.props.post_id,
+      comment:e.target.id
+    }
+    this.props.likeComment(data);
+  }
   render(){
-    let comments=(this.props.comments) ? this.props.comments : [];
+    let comments=(this.props.comments.length>0) ? this.props.comments : [];
     console.log('comments in component: ',comments);
-    let userid = (this.props.userid) ? this.props.userid:'';
-    console.log('userid: ',userid);
+    let post_userid = (this.props.post_userid) ? this.props.post_userid:'';
+    // console.log('userid: ',userid);
     let users = (this.props.users) ? this.props.users : [];
     console.log('users in component: ',users);
-    let user = (this.props.user[0].hasOwnProperty('_id')) ? this.props.user[0] : {};
+    let user = (this.props.user.length>0) ? this.props.user[0] : {};
     console.log('userid in comment: ',this.props.user[0].userid);
-    let val = (this.props.comment) ? this.props.comment : '';
-    console.log('this comments id: ',val.userid);
-      let username = users[val.userid].username;
-      let editOption = (val.userid === user.userid) ? (
-            <a id={val.id} onClick={this.editComment.bind(this)} href="#">Edit comment</a>
+    let comment = (this.props.comment) ? this.props.comment : '';
+    let comment_likes = (comment.likers && comment.likers.length>1) ? (
+      <span>{comment.likers.length-1}</span>
+    ) : '';
+    let likes = (comment.likers !==undefined && comment.likers.length>1) ? (<span><a className="fa fa-thumbs-up"></a>{comment_likes}</span>) : '';
+    console.log('this comments id: ',comment.userid);
+      let username = users[comment.userid].username;
+      let editOption = (comment.userid === user.userid) ? (
+            <a id={comment.id} className="deletebar-item" onClick={this.editComment.bind(this)} href="#">Edit</a>
+      ) : '';
+      let deleteOption = (comment.userid == user.userid) ? (
+            <a id={comment.id} className="deletebar-item" onClick={this.deleteComment.bind(this)} href="#">Delete</a>
       ) : '';
       let edit = (this.state.displayeditoption) ? (
-        <div className="comment-editbox">
+        <div className="post-header-deletebar">
           {/* <ul> */}
+            {deleteOption}
             {editOption}
-            <a id={val.id} onClick={this.deleteComment.bind(this)} href="#">Delete comment</a>
+            {/* <a id={comment.id} className="deletebar-item" onClick={this.deleteComment.bind(this)} href="#">Delete comment</a> */}
           {/* </ul> */}
         </div>
       ) : '';
-      let edittoggle = (this.state.displayedit && this.props.authenticated) ? (<div className="comment-edit" onClick={this.toggleEditOption.bind(this)}><div className="fa fa-sort-desc"></div> {edit}</div>) : '';
+      // <div>
+      //   <a id={postId} className="deletebar-item" onClick={this.deletePost.bind(this)} href="#">Delete</a>
+      //   <a id={postId} className="deletebar-item" onClick={this.editPost.bind(this)} href="#">Edit</a>
+      // </div>
+      let edittoggle = (this.state.displayedit && this.props.token && comment.userid == user.userid) ? (<div className="comment-edit" onClick={this.toggleEditOption.bind(this)}><div className="fa fa-sort-desc"></div> {edit}</div>) : '';
       return(
         <div onMouseEnter={()=>this.displayEdit()} onMouseLeave={()=>this.hideEdit()} className="comment-container">
-          <span className='userpic-comment-col'><UserPic userid={val.userid} /></span>
+          <span className='userpic-comment-col'>
+            <UserPic userid={comment.userid} />
+          </span>
           <div className="comment-header-text">
-          <div className="user-comment"><span className="comment-username"><a id={val.userid} href=""  onClick={()=>this.goToUser(val.userid)}>{username}</a></span><span className="user-comment-text">{val.text}</span></div>
-          <div className="user-comment"><a id={val.id} onClick={this.likeComment.bind(this)} href="#">Like</a><a id={username} onClick={this.replyComment.bind(this)} href="#">Reply</a></div>
+          <div className="user-comment">
+            <span className="comment-username">
+              <span id={post_userid} href="" onClick={()=>this.goToUser(comment.userid)}>
+                {username}
+              </span>
+            </span>
+            <span className="user-comment-text">{comment.text}</span>
+          </div>
+          <div className="user-comment"><a id={comment.id} onClick={this.likeComment.bind(this)} href="#">Like</a><a id={username} onClick={this.replyComment.bind(this)} href="#">Reply</a>{likes}</div>
         </div>
           {edittoggle}
         </div>
@@ -120,15 +145,16 @@ class Comment extends Component{
 function mapStateToProps(state){
   state = state.allReducers.mainApp;
   let user = state.user;
-  let authenticated = state.authenticated
+  let token = state.token
   return{
     user,
-    authenticated
+    token
   }
 }
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
-    push
+    push,
+    likeComment
   },dispatch);
 }
 

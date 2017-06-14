@@ -23,6 +23,7 @@ var schema = new mongoose.Schema({
     required:true
   },
   comments:{ type : Array },
+  privacy:{type: String},
   postedon:{type:String},
   affiliation:{type: String},
   date:{type: String},

@@ -3,6 +3,8 @@ import AuthService from '../../utils/AuthService';
 const authid = process.env.REACT_APP_AUTH0_CLIENT_ID;
 const authdomain = process.env.REACT_APP_AUTH0_DOMAIN;
 const auth = new AuthService(authid, authdomain);
+let token = localStorage.getItem('id_token');
+console.log('user token for app: ',token);
 const requireAuth = (nextState, replace) => {
   if (!auth.loggedIn()) {
     replace({ pathname: '/' })
@@ -21,7 +23,7 @@ const initialState = {
   users:[],
   //auth:
   auth:auth,
-  token:'',
+  token:token,
   //app.js:
   profile:{},
   updated:false,
@@ -60,6 +62,7 @@ const initialState = {
     "userid": "123456",
     "__v": 0,
     "username": "Guest",
+    "privacy":"everyone",
     "affiliation": "liberal",
     "education": "Bachelor's",
     "location": "Houston, TX",

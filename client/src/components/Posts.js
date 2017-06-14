@@ -18,7 +18,8 @@ class Posts extends Component{
       editing:false,
       user:{},
       posts:'',
-      updated:false
+      updated:false,
+      privacyshowing:false
     }
   }
   componentWillMount(){
@@ -32,7 +33,11 @@ class Posts extends Component{
     // });
   }
   componentWillReceiveProps(nextProps){
-    // let user = nextProps.user;
+    let user = nextProps.user;
+    console.log('users privacy: ',user[0].privacy);
+    this.setState({
+      privacy:user[0].privacy
+    });
     // let posts;
     // if(!this.props.postsUpdated){
     //   posts = nextProps.posts;
@@ -61,7 +66,8 @@ class Posts extends Component{
     let zIndex = (editing) ? 2 : -1;
     console.log('color: ',color);
     this.setState({
-      editing:editing
+      editing:editing,
+      privacyshowing:false
     });
     setTimeout(()=>{
         jquery('.opaqueBackground').css('background-color',color);
@@ -74,10 +80,11 @@ class Posts extends Component{
     // let affiliation = user.affiliation;
     let user = this.props.user[0];
     let prefix='';
-    let affiliation = this.props.affiliation_display;
+    let affiliation = user.affiliation;
     console.log('user: ',user);
-    if(user.affiliation !==affiliation && affiliation !=='none'){
-      prefix="@"+affiliation+'s: '
+    if(user.affiliation !== this.props.affiliation_display && this.props.affiliation_display !=='none'){
+      affiliation = this.props.affiliation_display;
+      prefix="@"+this.props.affiliation_display+'s: '
     }
     let comment = prefix+this.refs.comment.value;
     console.log('comment: ',comment);
@@ -95,6 +102,7 @@ class Posts extends Component{
       affiliation:affiliation,
       date:today,
       time:time,
+      privacy:this.state.privacy,
       postedon:'NA',
       likes:0,
       likers:["12345"],
@@ -106,7 +114,7 @@ class Posts extends Component{
       }]
     }
     console.log('post: ',post);
-    if(this.props.authenticated){
+    if(this.props.token){
       this.props.submitPost(post);
     }else{
       this.props.login();
@@ -145,6 +153,7 @@ class Posts extends Component{
       affiliation:affiliation,
       date:today,
       time:time,
+      privacy:this.state.privacy,
       postedon:postedon,
       likes:0,
       likers:["12345"],
@@ -156,7 +165,7 @@ class Posts extends Component{
       }]
     }
     console.log('post: ',post);
-    if(this.props.authenticated){
+    if(this.props.token){
       this.props.submitPost(post);
     }else{
       this.props.login();
@@ -164,7 +173,27 @@ class Posts extends Component{
     // this.props.submitPost(post);
     this.refs.comment.value = "";
   }
-
+  togglePrivacyChoices(){
+    console.log('privacy');
+    let boolean = !this.state.privacyshowing;
+    this.setState({
+      privacyshowing:boolean
+    })
+  }
+  hidePrivacyChoices(){
+    console.log('privacy');
+    if(this.state.privacyshowing ==true){
+      this.setState({
+        privacyshowing:false
+      })
+    }
+  }
+  setPrivacy(setting){
+    console.log('setting privacy to ',setting);
+    this.setState({
+      privacy:setting
+    });
+  }
   render(){
 
     let submitFunction = (this.props.wall=='public') ? (()=>{this.submitPost()}) : (()=>{this.submitUserPost()});
@@ -179,12 +208,41 @@ class Posts extends Component{
     // let opaqueBackground = (
     //   <div onClick={this.emphasizeForm.bind(this)} className="opaqueBackground"></div>
     // );
+    let privacymenu = (this.state.privacyshowing) ? (
+      <div className="privacymenu">
+        <div>Who sees this?</div>
+        <div onClick={()=>this.setPrivacy('public')} className="privacy-btns">Public</div>
+        <div onClick={()=>this.setPrivacy('allies')} className="privacy-btns">Allies</div>
+        <div onClick={()=>this.setPrivacy('private')} className="privacy-btns">Only Me</div>
+      </div>
+    ) : '';
+
+    let userprivacy;
+    switch(this.state.privacy){
+      case 'public':
+        userprivacy = (
+          <span><i className = 'fa fa-users'></i>&nbsp;Everyone</span>
+        );
+      break;
+      case 'allies':
+        userprivacy = (
+          <span><i className = 'fa fa-handshake-o'></i>&nbsp;Allies</span>
+        );
+      break;
+      case 'private':
+        userprivacy = (
+          <span><i className = 'fa fa-lock'></i>&nbsp;Private</span>
+        );
+    }
+
     let postEntry = (this.state.editing) ?
-    (  <div className="panel clearfix panel-default tall-comment-form">
+    (  <div onClick={this.hidePrivacyChoices.bind(this)} className="panel clearfix panel-default tall-comment-form">
           <form className="" action="index.html" method="post">
             <textarea ref="comment" name="comment" rows="8" cols="40"></textarea>
           </form>
             <div onClick={submitFunction} className="btn btn-primary">Post</div>
+            {privacymenu}
+            <div onClick={this.togglePrivacyChoices.bind(this)} className="privacy-btn pull-left btn btn-default">{userprivacy}</div>
       </div>
     )
     :
@@ -202,11 +260,20 @@ class Posts extends Component{
 
     //filter for different post component locations:
     if(this.props.wall === 'public'){
-
+    //show only global, personal and ally posts:
+    let myPost = false;
+    posts = posts.filter((val)=>{
+      if(val.uid == this.props.user[0].userid) myPost = true;
+      let isAllies = false;
+      this.props.user[0].allies.forEach((ally)=>{
+        if (ally == val.uid) isAllies=true;
+      });
+      return val.privacy=='public' || val.privacy=='allies' && isAllies || myPost;
+    });
     //case public wall:
       posts = posts.filter((val)=>{
         if(this.props.affiliation_display=="none"){
-          return val.postedon=='NA' || val.postedon==this.props.user[0].userid
+          return val.postedon=='NA' && val.text.slice(0,1) !== '@' || val.postedon==this.props.user[0].userid && val.text.slice(0,1) !== '@'
         }else{
           return (val.postedon=='NA' || val.postedon==this.props.user[0].userid) && val.affiliation==this.props.affiliation_display;
         }
@@ -217,9 +284,9 @@ class Posts extends Component{
       let results = [];
       for(let i=0; i<posts.length; i++){
         if(
-          (posts[i].uid === this.props.wall && posts[i].postedon==='NA')
+          (posts[i].uid === this.props.wall && posts[i].postedon==='NA')  && posts[i].text.slice(0,1) !== '@'
          ||
-          (posts[i].postedon === this.props.wall)
+          (posts[i].postedon === this.props.wall)  && posts[i].text.slice(0,1) !== '@'
         )
           {
             results.push(posts[i]);
@@ -255,7 +322,7 @@ function mapStateToProps(state){
   let wall = state.allReducers.mainApp.wall;
   let usersObject = state.allReducers.mainApp.usersObject;
   let affiliation_display = state.allReducers.mainApp.affiliation_display;
-  let authenticated = state.allReducers.mainApp.authenticated;
+  let token = state.allReducers.mainApp.token;
   return{
     user,
     posts,
@@ -264,7 +331,7 @@ function mapStateToProps(state){
     wall,
     usersObject,
     affiliation_display,
-    authenticated
+    token
   }
 }
 

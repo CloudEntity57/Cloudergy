@@ -43,48 +43,11 @@ class Newsfeed extends Component{
       editing:false
     }
   }
-  filterPosts(){
-    //convert to Redux API call:
-    // this.props.fetchPosts('');
 
-    // let postsquery = jquery.ajax({
-    //   url:querystring,
-    //   type:'GET',
-    //   success:(posts)=>{
-    //     posts = posts.reverse();
-    //     posts = posts.filter((val)=>{
-    //       return val.postedon=='NA';
-    //     });
-    //     console.log('posts: ',posts);
-    //     this.setState({
-    //       posts:[]
-    //     });
-    //     this.setState({
-    //       posts:posts
-    //     });
-    //   }
-    // });
-  }
   componentWillMount(){
     this.props.setWallState('public');
-    // let profile=this.props.profile;
-    // this.props.fetchUserInfo(profile.clientID);
-    // //save user's third party info to store:
-    // this.props.getProfile(profile);
-    // // //find and store all users and posts currently in the API database:
-    // this.props.fetchAllUsers('');
-    // this.props.fetchPosts('');
-  // }
+
   console.log('mounting newsfeed');
-  // const profile = this.props.auth.getProfile();
-  // console.log('newsfeed profile: ',profile);
-  // this.props.fetchUserInfo(profile.clientID);
-  // //save user's third party info to store:
-  // this.props.saveProfile(profile);
-  // // //find and store all users and posts currently in the API database:
-  // this.props.fetchAllUsers('');
-  // this.props.fetchPosts('');
-  // componentWillReceiveProps(){
 
     this.props.clearUserPageId();
     console.log('newsfeed receive props');
@@ -101,9 +64,6 @@ class Newsfeed extends Component{
     console.log('affiliation in newsfeed: ',affiliation);
     let fullfeed=[];
     let result;
-    // this.props.fetchPosts('');
-    // // this.filterPosts();
-    //
     let callback = (stories)=>{
       console.log('stories in callback: ',stories);
       fullfeed=fullfeed.concat(stories);
@@ -133,17 +93,7 @@ class Newsfeed extends Component{
       console.log('affiliation in newsfeed: ',affiliation);
       let fullfeed=[];
       let result;
-      // this.props.fetchPosts('');
-      // this.filterPosts();
 
-      // let callback = (stories)=>{
-      //   console.log('stories in callback: ',stories);
-      //   fullfeed=fullfeed.concat(stories);
-      //   this.setState({
-      //     stories:fullfeed
-      //   });
-      // }
-      //   this.getNews(callback);
   }
   updatePosts(){
     let posts=this.props.posts;
@@ -153,20 +103,9 @@ class Newsfeed extends Component{
   }
   componentDidMount(){
     console.log('news did mount');
-    // let user = this.props.user;
-    // console.log('user in cdm newsfeed: ',user);
-    // this.setState({
-    //   user:this.props.user
-    // });
-    // this.props.fetchPosts();
+
   }
-  // componentWillReceiveProps(){
-  //   let x = this.props.rand;
-  //   console.log('x: ',x);
-  //   this.setState({
-  //     x
-  //   });
-  // }
+
   componentWillUpdate(){
     console.log('news will update');
   }
@@ -209,7 +148,7 @@ class Newsfeed extends Component{
   goToAccount(e){
     e.preventDefault();
     console.log('going to account');
-    if(this.props.authenticated){
+    if(this.props.token){
       this.props.push('/account');
     }else{
       this.props.login();
@@ -242,13 +181,25 @@ class Newsfeed extends Component{
       stories = stories.slice(0,10);
     }
     let user = this.props.user;
+    let newstitle;
+    switch(affiliation){
+      case 'liberal':
+        newstitle = 'Top Liberal Politics';
+          break;
+      case 'conservative':
+        newstitle = 'Top Conservative Politics';
+          break;
+      case 'none':
+        newstitle = 'Top Politics';
+          break;
+    }
     console.log('user in newsfeed render: ',user);
     return(
       <div>
         <div className="outer-wrapper">
             <div className="wrapper">
                 <div className="navigation-panel">
-                  <div className="panel panel-default">
+                  <div className="navigation-content panel panel-default">
                     <ul>
                       <li>
                         Live News Feed
@@ -268,15 +219,10 @@ class Newsfeed extends Component{
                 <div className="posts-wrapper">
                   <Posts update={this.updatePosts.bind(this)}/>
                 </div>
-                  <StoryLinks stories={stories}/>
+                  <StoryLinks newstitle={newstitle} stories={stories}/>
 
             </div>
         </div>
-
-        {/* <UserPanel/> */}
-
-
-
     </div>
     )
   }
@@ -290,7 +236,7 @@ function mapStateToProps(state){
   let rand = state.allReducers.mainApp.rand;
   let affiliation = state.allReducers.mainApp.affiliation;
   let affiliation_display = state.allReducers.mainApp.affiliation_display;
-  let authenticated = state.allReducers.mainApp.authenticated;
+  let token = state.allReducers.mainApp.token;
   let router=state.router;
   return{
     user,
@@ -300,7 +246,7 @@ function mapStateToProps(state){
     router,
     affiliation,
     affiliation_display,
-    authenticated
+    token
   }
 }
 

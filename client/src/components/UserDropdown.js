@@ -91,29 +91,28 @@ class UserDropdown extends Component{
     let you = (this.props.user.hasOwnProperty('userid')) ? this.props.user : {};
     console.log('you are: ',you);
     console.log('the user in dropdown: ',user);
-    let postId = this.props.postId;
     let largephoto = user.largephoto;
 
     let isFriend = this.friendStatus(user,you);
 
     let offerAllegiance;
     let ally_status;
-    switch (isFriend){
+    switch(isFriend){
       case true:
         offerAllegiance = this.doNothing.bind(this);
-        ally_status = ('Allies');
+        ally_status = (<div id={user.userid} onClick={offerAllegiance}>Allies</div>);
         break;
       case false:
         offerAllegiance = this.offerAllegiance.bind(this);
-        ally_status = ('Become Allies');
+        ally_status = (<div id={user.userid} onClick={offerAllegiance}>Become Allies</div>);
         break;
       case 'you_invited_them':
         offerAllegiance = this.doNothing.bind(this);
-        ally_status = ('Request Sent');
+        ally_status = (<div id={user.userid} onClick={offerAllegiance}>Request Sent</div>);
         break;
       case 'they_invited_you':
         offerAllegiance = this.acceptInvitation.bind(this);
-        ally_status = ('Accept Invitation');
+        ally_status = (<div id={user.userid} onClick={offerAllegiance}>Accept Invitation</div>);
         break;
       case 'its_you':
         offerAllegiance = this.doNothing.bind(this);
@@ -132,13 +131,13 @@ class UserDropdown extends Component{
             {/* <div className="user-preview-pointer"></div> */}
             <div className="opaque-connector"></div>
             <div className="user-link"><span>{ user.username }</span></div>
-            <div className="user-story">{'"'+user.user_story+'"'}</div>
+            <div className="user-story">{'"'+user.user_story.slice(0,120)+'"'}</div>
           </div>
         </div>
 
           { embedded_pic }
         <div className="user-preview-footer">
-          <a href="#"><div id={user.userid} onClick={offerAllegiance}>{ally_status}</div></a>
+          <a href="#">{ally_status}</a>
         </div>
       </div>
     )

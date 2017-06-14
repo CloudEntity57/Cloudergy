@@ -65,12 +65,13 @@ class Post extends Component{
         id:postId,
         text:this.refs.comment.value,
         userid:userid,
-        likes:0
+        likes:0,
+        likers:["12345"]
       },
       id:this.refs.comment.id
     }
     this.refs.comment.value='';
-    if(this.props.authenticated){
+    if(this.props.token){
       this.props.submitComment(data);
     }else{
       this.props.login();
@@ -136,7 +137,7 @@ class Post extends Component{
   replyComment(name){
     // e.preventDefault();
     // let comment = e.target;
-    console.log('target in post: ',name);
+    console.log('replying - target in post: ',name);
     this.refs.comment.value='@'+name+' ';
     // this.refs.comment.focus();
     console.log('props: ',this.props);
@@ -145,10 +146,14 @@ class Post extends Component{
     // let refs = this.refs.bind(this);
     this.refs.comment.focus();
   }
+  comment(e){
+    e.preventDefault();
+    this.refs.comment.focus();
+  }
   render(){
     let user = (this.state.user) ? this.state.user : '';
     let myId = (this.state.myId) ? this.state.myId : '';
-    // myId = (this.props.authenticated) ? myId : 'none';
+    // myId = (this.props.token) ? myId : 'none';
     // let user = this.state.user;
     // console.log('user in post render: ',user);
     let teamcolor = user.affiliation + " user-stripe";
@@ -173,7 +178,7 @@ class Post extends Component{
     let currentId = (post.hasOwnProperty('text')) ? post.uid : '';
     //create comments:
     let comments = (post.hasOwnProperty('text')) ? post.comments:'';
-    let userid = (post.hasOwnProperty('text')) ? post.userid:'';
+    let post_userid = (post.hasOwnProperty('text')) ? post.userid:'';
     let users = (this.props.usersObject) ? this.props.usersObject : [];
     let displayededit = this.state.displayededit;
     console.log('users in post: ',users);
@@ -181,33 +186,18 @@ class Post extends Component{
 
     let commentSection = (post.hasOwnProperty('comments')) ?
 
-    // comments.slice(1,comments.length).map((val)=>{
-    //   let username = users[val.userid].username;
-    //   let editOption = (<a id={val.id} onClick={this.deleteComment.bind(this)} href="#">x</a>);
-    //   let edit = (this.state.displayedit) ? editOption : '';
-    //   return(
-    //     <div onMouseEnter={()=>this.displayEdit()} onMouseLeave={()=>this.hideEdit()} className="comment-container clearfix">
-    //       <span className='userpic-comment-col'><UserPic userid={val.userid} /></span>
-    //       <div className="comment-header-text">
-    //       <div className="user-comment"><span className="comment-username"><a id={userid} href="#" onClick={()=>this.goToUser()}>{username}</a></span><span className="user-comment-text">{val.text}</span></div>
-    //       <div className="user-comment"><a id={val.id} onClick={this.likeComment.bind(this)} href="#">Like</a><a id={username} onClick={this.replyComment.bind(this)} href="#">Reply</a></div>
-    //     </div>
-    //       <div className="comment-edit">{edit}</div>
-    //     </div>
-    //   );
-    // })
-
     comments.slice(1,comments.length).map((val)=>{
       let props = {
         comments,
-        userid,
+        post_userid,
         users,
         user:user[0],
         displayededit,
         post:this.props.post,
+        post_id:postId,
         comment:val,
-        deleteComment:this.props.deleteComment,
-        replyComment:this.replyComment
+        deleteComment:this.props.deleteComment.bind(this),
+        replyComment:this.replyComment.bind(this)
       }
       // let username = users[val.userid].username;
       let editOption = (<a id={val.id} onClick={this.deleteComment.bind(this)} href="#">x</a>);
@@ -244,7 +234,7 @@ class Post extends Component{
 
     let likes = (post.hasOwnProperty('likers') && post.likers.length > 1) ? (<div className="like-panel"><div><span className='post-likes fa fa-thumbs-o-up'></span>{post.likers.length-1}</div></div>) : '';
     let sticky = (this.props.posts.indexOf(post)==this.props.posts.length-1) ? "user-post sticky" : "user-post";
-    if(!this.props.authenticated){
+    if(!this.props.token){
       myId=null;
     }
     return(
@@ -259,7 +249,7 @@ class Post extends Component{
             <span id={id} className="fa fa-thumbs-up"></span>
             <span id={id} onClick={this.likePost.bind(this)}>Like</span>
           </a>
-          <a href="#">
+          <a href="#" onClick = {this.comment.bind(this)}>
             <span className="fa fa-comment"></span>
             <span>Comment</span>
           </a>
@@ -287,13 +277,13 @@ function mapStateToProps(state){
   let user_preview_showing = state.allReducers.mainApp.user_preview_showing;
   let posts = state.allReducers.mainApp.posts;
   let usersObject = state.allReducers.mainApp.usersObject;
-  let authenticated = state.allReducers.mainApp.authenticated;
+  let token = state.allReducers.mainApp.token;
   return{
     user,
     user_preview_showing,
     posts,
     usersObject,
-    authenticated
+    token
   }
 }
 

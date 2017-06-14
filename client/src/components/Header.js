@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import NavLink from './NavLink';
 import UserPic from './UserPic';
+import DropButton from './DropButton';
 import { hashHistory } from 'react-router';
 let functionsModule = require('./Functions');
 let Functions = new functionsModule();
@@ -9,6 +10,7 @@ import jquery from 'jquery';
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { push } from 'connected-react-router';
 import { socialApp, toggleAffiliation, fetchUserInfo, acceptAlly,login,doAuthentication } from '../actions/index';
 
 class Header extends Component{
@@ -36,11 +38,16 @@ class Header extends Component{
 
   }
   componentWillReceiveProps(nextProps){
+    let token = localStorage.getItem('id_token');
+    console.log('user token for app: ',token);
+    this.setState({
+      token
+    });
     let uid= this.props.uid;
     let user = {};
     if(nextProps.user.length>0){
-    user = (nextProps.user[0].hasOwnProperty('userid')) ? nextProps.user[0] : {};
-  }
+      user = (nextProps.user[0].hasOwnProperty('userid')) ? nextProps.user : {};
+    }
     let affiliation = user.affiliation;
     console.log('props affiliation: ',affiliation);
     // let affiliation = nextProps.affiliation;
@@ -186,18 +193,21 @@ class Header extends Component{
     })
   }
   handleClick(e){
-    console.log('handling click');
-    this.props.push('/');
+    // e.preventDefault();
+    console.log('clickking');
     this.props.login();
+    this.props.push('/');
   }
   clearDisplay(){
 
   }
   render(){
+      let token = this.state.token;
+      console.log('token in header: ',token);
     // let user = (this.state.user) ? this.state.user : '';
     // if(this.props.user !==''){
       let user, uid, userpic, ally_invitations_received, allyRequestNumber,username, affiliation,allyReqs;
-      user = (this.props.user !=='' && this.props.authenticated) ? this.props.user : [{userid:'',ally_invitations_received:[], allyRequestNumber,username, affiliation,allyReqs,potential_allies}];
+      user = (this.props.user !=='' && this.props.token) ? this.props.user : [{userid:'',ally_invitations_received:[], allyRequestNumber,username, affiliation,allyReqs,potential_allies}];
       ally_invitations_received = user[0].ally_invitations_received;
       allyRequestNumber = (ally_invitations_received.length > 0) ? (<div className="invites">{ally_invitations_received.length}</div>) : '';
       uid = '123456';
@@ -205,7 +215,7 @@ class Header extends Component{
       username = 'Guest';
       affiliation = 'none';
 
-      if(this.props.authenticated){
+      if(this.state.token){
         uid = user[0].userid;
         userpic = user[0].photo;
         username = user[0].username;
@@ -314,10 +324,10 @@ class Header extends Component{
     // let userlogout = (this.props.profile.hasOwnProperty('name')) ? (
     //   <div><a className="log-out" onClick={this.props.logOut} href="#">Logout</a></div>
     // ) : '';
-    let userlogout = (this.props.authenticated) ? (
+    let userlogout = (this.state.token !==null) ? (
       <div><a className="log-out" onClick={this.props.logOut} href="#">Logout</a></div>
     ) : (
-      <div><a className="log-out" onClick={this.props.login} href="#">Join/login</a></div>
+      <div><a className="log-out" onClick={()=>this.handleClick()} href="#">Join/login</a></div>
     );
 
     // let usercontrols = (this.props.profile.hasOwnProperty('name')) ? (
@@ -353,8 +363,8 @@ class Header extends Component{
 
         <div className="outer-nav-wrapper">
           <div className="nav">
-            NMA &nbsp;
-            <input type="text" name="search" placeholder="Search CouchPolitics" />
+            <span className="site-title">CouchPolitics</span> &nbsp;
+            {/* <input type="text" name="search" placeholder="Search CouchPolitics" /> */}
 
             <div className="navbar-nav nav-right">
               {userlogout}
@@ -415,6 +425,7 @@ function mapStateToProps(state){
   let loggedIn = state.allReducers.mainApp.loggedIn;
   let users = state.allReducers.mainApp.users;
   let authenticated = state.allReducers.mainApp.authenticated;
+  let token = state.allReducers.mainApp.token;
   return{
     previewingAlly,
     affiliation,
@@ -424,7 +435,8 @@ function mapStateToProps(state){
     user,
     profile,
     loggedIn,
-    users
+    users,
+    token
   }
 }
 
@@ -435,7 +447,8 @@ function mapDispatchToProps(dispatch){
     fetchUserInfo,
     acceptAlly,
     login,
-    doAuthentication
+    doAuthentication,
+    push
   },dispatch);
 }
 

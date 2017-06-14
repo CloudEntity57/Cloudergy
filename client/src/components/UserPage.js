@@ -221,7 +221,7 @@ configureUser(postUserId,currentuser){
       </div>
       <div className="wrapper">
         <div className="user-panel">
-          <UserHeader me={me} username={username} userid={userid} userpic={userpic} />
+          <UserHeader me={me} pageuser={user} username={username} userid={userid} userpic={userpic} />
           <div className="user-page-container">
             <div className="panel panel-default friends-panel">
               <div className="friends-panel-header">
