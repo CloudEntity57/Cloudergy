@@ -217,6 +217,18 @@ class Newsfeed extends Component{
     if(allies_barheight > 66){
       ally_rank = "Senior CouchPolitician";
     }
+    let alliespanel = (this.props.token !=='') ? (
+        <div className = "allies-panel panel panel-default">
+        <h4>Rank</h4>
+        <div className="ally-bar-container">
+          {alliesBar}
+          {usersBar}
+        </div>
+        <div>
+          {ally_rank}
+        </div>
+      </div>
+    ) : '';
     return(
       <div>
         <div className="outer-wrapper">
@@ -233,16 +245,7 @@ class Newsfeed extends Component{
                       </li>
                     </ul>
                   </div>
-                  <div className = "allies-panel panel panel-default">
-                    <h4>Rank</h4>
-                    <div className="ally-bar-container">
-                      {alliesBar}
-                      {usersBar}
-                    </div>
-                    <div>
-                      {ally_rank}
-                    </div>
-                  </div>
+                  {alliespanel}
                 </div>
 
                 </div>
