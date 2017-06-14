@@ -194,25 +194,53 @@ class Newsfeed extends Component{
           break;
     }
     console.log('user in newsfeed render: ',user);
+    let num_users = this.props.users.length;
+    let num_allies = this.props.user[0].allies.length;
+    console.log('there are ',num_users,' users on CouchPolitics and user has ',num_allies,' allies');
+
+    console.log('ally rank: ',ally_rank);
+    let allies_barheight = (100/(num_users-1))*num_allies;
+    let users_barheight = (100/(num_users-1))*((num_users-1)-num_allies);
+    let usersClass='users-bar '+this.props.user[0].affiliation;
+    let usersBar = (<div className={usersClass} style={{height:allies_barheight+"px"}}></div>);
+    let alliesBar = (<div className='allies-bar' style={{height:users_barheight+"px"}}></div>);
+    let ally_rank;
+    if(allies_barheight > 0){
+      ally_rank = "Junior CouchPolitician";
+    }
+    if(allies_barheight > 33){
+      ally_rank = "Ranking CouchPolitician";
+    }
+    if(allies_barheight > 66){
+      ally_rank = "Senior CouchPolitician";
+    }
     return(
       <div>
         <div className="outer-wrapper">
             <div className="wrapper">
                 <div className="navigation-panel">
+                  <div className="nav-content-wrapper">
                   <div className="navigation-content panel panel-default">
                     <ul>
                       <li>
                         Live News Feed
                       </li>
                       <li>
-                        Friends
-                      </li>
-                      <li>
                         <a href="" onClick={this.goToAccount.bind(this)}>Account</a>
                       </li>
                     </ul>
                   </div>
-
+                  <div className = "allies-panel panel panel-default">
+                    <h4>Rank</h4>
+                    <div className="ally-bar-container">
+                      {alliesBar}
+                      {usersBar}
+                    </div>
+                    <div>
+                      {ally_rank}
+                    </div>
+                  </div>
+                </div>
 
                 </div>
 
@@ -238,8 +266,10 @@ function mapStateToProps(state){
   let affiliation_display = state.allReducers.mainApp.affiliation_display;
   let token = state.allReducers.mainApp.token;
   let router=state.router;
+  let users=state.allReducers.mainApp.users;
   return{
     user,
+    users,
     auth,
     profile,
     rand,

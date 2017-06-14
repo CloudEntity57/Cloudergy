@@ -3,7 +3,10 @@ var router = express.Router();
 var Test = require('../models/test');
 var User = require('../models/user');
 var Post = require('../models/post');
-
+var Metascraper = require('metascraper');
+Metascraper.scrapeUrl('https://smartset-7a283.firebaseapp.com').then((metadata)=>{
+  console.log('metadata is...: ',metadata);
+});
 
 /* GET home page. */
 router.get('/', function(req, res, next) {

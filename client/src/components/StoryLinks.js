@@ -30,6 +30,7 @@ class StoryLinks extends Component{
             <li>Toggle news feed by ideology above</li>
             <li>Edit your user profile in the account section</li>
             <li>Send ally requests to other members</li>
+            <li>Add allies to increase your rank</li>
           </ul>
         </div>
         <div id="ads">

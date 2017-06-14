@@ -462,13 +462,39 @@ body{
 .navigation-panel, .live-posts-panel, .ads-panel, .friends-panel{
   padding:10px;
 }
+.allies-panel{
+  text-align: center;
+}
+.ally-bar-container{
+  border-radius:5px;
+  overflow: hidden;
+}
+.users-bar{
+  // background-color:#6f989c;
+  // border-radius:0px 0px 5px 5px;
+}
+.allies-bar{
+  background-color:lightgrey;
+  // border-radius: 5px 5px 0px 0px;
+}
+.ally-bar-container{
+  width:25%;
+  display: inline-block;
+  // margin-left:10%;
+  text-align: center;
+}
 .navigation-panel{
   width:190px !important;
-  .navigation-content{
-    width:100% !important;
+  .nav-content-wrapper{
     position: sticky !important;
     position:-webkit-sticky !important;
     top:44px !important;
+  }
+  .navigation-content{
+    width:100% !important;
+    // position: sticky !important;
+    // position:-webkit-sticky !important;
+    // top:44px !important;
   }
 }
 .posts-wrapper{
@@ -1107,8 +1133,6 @@ body{
 }
 #ads{
   display: block;
-  position:-webkit-sticky;
-  position:sticky;
   top:0px;
 }
 .tall{

@@ -4,6 +4,7 @@ import PostHeader from './PostHeader';
 import Comment from './Comment';
 import Linkify from 'react-linkify';
 import jquery from 'jquery';
+import Metascraper from 'metascraper';
 let functionsModule = require('./Functions');
 let Functions = new functionsModule();
 
@@ -152,6 +153,10 @@ class Post extends Component{
     this.refs.comment.focus();
   }
   render(){
+
+    Metascraper.scrapeUrl('https://smartset-7a283.firebaseapp.com').then((metadata)=>{
+      console.log('metadata is...: ',metadata);
+    });
     let user = (this.state.user) ? this.state.user : '';
     let myId = (this.state.myId) ? this.state.myId : '';
     // myId = (this.props.token) ? myId : 'none';

@@ -522,15 +522,37 @@ body {
   padding: 10px;
 }
 
+.allies-panel {
+  text-align: center;
+}
+
+.ally-bar-container {
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.allies-bar {
+  background-color: lightgrey;
+}
+
+.ally-bar-container {
+  width: 25%;
+  display: inline-block;
+  text-align: center;
+}
+
 .navigation-panel {
   width: 190px !important;
 }
 
-.navigation-panel .navigation-content {
-  width: 100% !important;
+.navigation-panel .nav-content-wrapper {
   position: sticky !important;
   position: -webkit-sticky !important;
   top: 44px !important;
+}
+
+.navigation-panel .navigation-content {
+  width: 100% !important;
 }
 
 .posts-wrapper {
@@ -1211,8 +1233,6 @@ body {
 
 #ads {
   display: block;
-  position: -webkit-sticky;
-  position: sticky;
   top: 0px;
 }
 
