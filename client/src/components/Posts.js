@@ -268,7 +268,7 @@ class Posts extends Component{
       this.props.user[0].allies.forEach((ally)=>{
         if (ally == val.uid) isAllies=true;
       });
-      return val.privacy=='public' || val.privacy=='allies' && isAllies || myPost;
+      return val.privacy=='public' || (val.privacy=='allies' && isAllies) || myPost;
     });
     //case public wall:
       posts = posts.filter((val)=>{
