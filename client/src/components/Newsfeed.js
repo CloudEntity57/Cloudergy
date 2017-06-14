@@ -75,6 +75,8 @@ class Newsfeed extends Component{
       this.getNews(callback);
   }
   componentWillReceiveProps(nextProps){
+    let test = process.env.FRONT_TEST_VAR;
+    console.log(test,' from the front end');
     console.log('receiving newsfeed');
     const profile = this.props.auth.getProfile();
     console.log('newsfeed profile: ',profile);

@@ -11,6 +11,8 @@ var mongoose = require('mongoose');
 
 var index = require('./routes/index');
 
+let testvar = process.env.BACK_TEST_VAR;
+console.log(testvar,' from the back end');
 // var users = require('./routes/users');
 console.log('app running');
 var app = express();
