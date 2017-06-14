@@ -14,6 +14,7 @@ switch(process.env.REACT_APP_ENV){
     apiRoot = "https://couchpolitics.herokuapp.com/";
   break;
 }
+console.log('api root is: ',apiRoot);
 
 export const socialApp = (state) => ({
   type:SET_INITIAL_STATE,
