@@ -27,6 +27,9 @@ router.get('/test', function(req, res, next) {
 router.get('/user',function(req,res,next){
   // let profile=req;
   console.log('getting user');
+  Metascraper.scrapeUrl('https://smartset-7a283.firebaseapp.com').then((metadata)=>{
+    console.log('metadata is...: ',metadata);
+  });
   User.find({},'', function(err,profile){
     // console.log('profile: ',profile);
     res.json(profile);

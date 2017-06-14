@@ -4,7 +4,7 @@ import { hashHistory } from 'react-router';
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { socialApp, toggleAffiliation, fetchUserInfo, acceptAlly,login,cancelAlliance } from '../actions/index';
+import { socialApp, toggleAffiliation, fetchUserInfo, acceptAlly,login,cancelAlliance,requestAlly } from '../actions/index';
 import { push } from 'react-router-redux';
 let newModule = require('./Functions');
 let Functions = new newModule();
@@ -19,7 +19,7 @@ class UserHeader extends Component{
     }
   }
   componentWillReceiveProps(nextProps){
-    let user = (nextProps.user.length>0) ? nextProps.user[0] : '';
+    let user = (nextProps.me.length>0) ? nextProps.me[0] : '';
     console.log('you:',user);
     const userid=nextProps.userid;
     let them = (nextProps.usersObject !== undefined) ? nextProps.usersObject[userid] : '';
@@ -39,6 +39,15 @@ class UserHeader extends Component{
   }
   offerAllegiance(e){
     e.preventDefault();
+    console.log('target: ',e.target);
+    let userid = this.props.userid;
+    let me = this.props.me[0].userid;
+    let data = {
+      ally_request:userid,
+      user:me
+    }
+    console.log('allegiance data: ',data);
+    this.props.requestAlly(data);
   }
   cancelAllegiance(e){
     e.preventDefault();
@@ -87,6 +96,7 @@ class UserHeader extends Component{
   }
   render(){
     let allystatus = this.state.allystatus;
+    const userid=(this.props.userid !==undefined) ? this.props.userid : '';
   let allydropdown = (this.state.allydropdown) ?
   (<a onClick={this.cancelAllegiance.bind(this)} className="allydropdown-cancel" href="#"><li>Cancel</li></a>) : '';
     let allybutton;
@@ -95,7 +105,7 @@ class UserHeader extends Component{
         allybutton = (<a onMouseEnter={this.showDropdown.bind(this)} onMouseLeave={this.hideDropdown.bind(this)} href="#"><li className='relative'>Allies{allydropdown}</li></a>);
         break;
       case false:
-        allybutton = (<a onClick={()=>this.offerAllegiance.bind(this)} href="#"><li className='relative'>Request Ally</li></a>);
+        allybutton = (<a id={userid} onClick={this.offerAllegiance.bind(this)} href="#"><li className='relative'>Request Ally</li></a>);
         break;
       case 'you_invited_them':
         allybutton = (<a href="#"><li className='relative'>Pending Ally</li></a>);
@@ -114,7 +124,6 @@ class UserHeader extends Component{
     console.log('header is now: ',route);
     let user = (this.props.user.length>0) ? this.props.user[0] : '';
     let userallies = user.allies;
-    const userid=this.props.userid;
     // let isally = false;
     // userallies.forEach((val)=>{
     //   if(val === userid){
@@ -218,7 +227,8 @@ function mapDispatchToProps(dispatch){
     acceptAlly,
     login,
     push,
-    cancelAlliance
+    cancelAlliance,
+    requestAlly
   },dispatch);
 }
 

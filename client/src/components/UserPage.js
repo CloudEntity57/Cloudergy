@@ -17,13 +17,7 @@ saveProfile, clearUserPageId, setWallState } from '../actions/index';
 class UserPage extends Component{
   constructor(props){
     super(props);
-    const profile = this.props.auth.getProfile();
-    // this.props.fetchUserInfo(profile.clientID);
-    // //save user's third party info to store:
-    // this.props.saveProfile(profile);
-    // // //find and store all users and posts currently in the API database:
-    // this.props.fetchAllUsers('');
-    // this.props.fetchPosts('');
+    // const profile = this.props.auth.getProfile();
     this.state={
       updated:false,
       posts:[]
@@ -39,6 +33,7 @@ class UserPage extends Component{
     // this.props.saveProfile(profile);
     // //find and store all users and posts currently in the API database:
     this.props.fetchAllUsers('');
+    this.props.fetchUserInfo('');
     this.props.fetchPosts('');
 
     let user;
@@ -52,27 +47,7 @@ class UserPage extends Component{
       user:this.props.currentUserId
     });
     this.configureUser(clientID,userid);
-    // console.log('users in user page: ',this.props.usersObject);
-    // let userid=this.props.userPageId;
-    // console.log('userpage id: ',userid);
-    // if(this.props.userPageId){
-    // let posts = this.props.posts;
-    //       posts = posts.reverse();
-    //       console.log('userpage posts: ',posts);
-    //       let results = [];
-    //       for(let i=0; i<posts.length; i++){
-    //         if(posts[i].uid || posts[i].postedon == userid){
-    //           console.log('userpage uid: ',userid);
-    //           console.log('compared to: ',posts[i].uid);
-    //           results.push(posts[i]);
-    //           console.log('posts is now: ',results);
-    //           this.setState({
-    //             posts:[]
-    //           });
-    //
-    //         }
-    //       }
-    //     }
+
   }
   componentDidMount(){
     console.log('remounting');
@@ -83,9 +58,9 @@ class UserPage extends Component{
     console.log('app js auth: ',auth);
     const profile = auth.getProfile();
     let clientID = (userid !== '') ? userid : profile.clientID;
-    this.setState({
-      user:this.props.currentUserId
-    });
+    // this.setState({
+    //   user:this.props.currentUserId
+    // });
     this.configureUser(clientID,userid);
   }
 
@@ -95,23 +70,7 @@ class UserPage extends Component{
     let userPageid=nextProps.userPageId;
     //redux action to change global 'wall' state to this user's id:
     this.props.setWallState(userPageid);
-    // let userPageid=(this.props.params.userid) ? this.props.params.userid.toString() : '';
     console.log('userpage uid: ',userPageid);
-    // let posts = nextProps.posts.reverse;
-    // console.log('userpage posts: ',posts);
-    //  let results = [];
-    //  for(let i=0; i<posts.length; i++){
-    //    if(posts[i].uid || posts[i].postedon == userPageid){
-    //      console.log('userpage uid: ',userPageid);
-    //      console.log('compared to: ',posts[i].uid);
-    //      results.push(posts[i]);
-    //      console.log('posts is now: ',results);
-    //      this.setState({
-    //        posts:[]
-    //      });
-    //
-    //    }
-    //  }
     console.log('current user in userpage: ',userPageid);
     let targetURL = "http://localhost:3001/user/";
     let nextAccountId = (this.props.user.length > 0) ? this.props.user[0].userid : '';
@@ -191,8 +150,8 @@ configureUser(postUserId,currentuser){
     const userpic = (this.state.userpic) ? this.state.userpic : '';
     const currentUser = this.props.user;
     // const user = (this.state.profile) ? (this.state.profile[0]) : '';
-    // console.log('user page user: ',user);
     const user = (this.state.user) ? this.state.user : '';
+    console.log('user page user: ',user);
     const userid = (this.state.user) ? this.state.user.userid : '';
     const me = (this.props.user.length>0) ? this.props.user : {};
     console.log('me in userpage: ',me);

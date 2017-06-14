@@ -129,6 +129,7 @@ function myFunctions(){
     //check your allies list
     for(let i=0; i<you.allies.length; i++){
       if(you.allies[i]==them.userid){
+        console.log(you.allies[i],' == ',them.userid,'! match!!');
         return true;
       }
     }
