@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import UserPic from './UserPic';
 import PostHeader from './PostHeader';
 import Comment from './Comment';
+import Linkify from 'react-linkify';
 import jquery from 'jquery';
 let functionsModule = require('./Functions');
 let Functions = new functionsModule();
@@ -242,7 +243,7 @@ class Post extends Component{
       <div id={id} className="post-panel">
         <PostHeader {...props} />
 
-        <div className="post-text">{text}</div>
+        <div className="post-text"><Linkify>{text}</Linkify></div>
         {/* <div className="like-panel">{likes}</div> */}
         <div className="like-bar">
           <a id={id} href="#">
