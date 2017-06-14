@@ -156,6 +156,9 @@ class Newsfeed extends Component{
   }
   render(){
     console.log('rendering newsfeed');
+
+    let test = process.env.REACT_APP_FRONT_TEST_VAR;
+    console.log(test,' from the front end');
     const profile = this.props.auth.getProfile();
     if(profile !== {}){
       console.log('render profile: ', profile);
