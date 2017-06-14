@@ -217,7 +217,7 @@ class Newsfeed extends Component{
     if(allies_barheight > 66){
       ally_rank = "Senior CouchPolitician";
     }
-    let alliespanel = (this.props.token !=='') ? (
+    let alliespanel = (this.props.token) ? (
         <div className = "allies-panel panel panel-default">
         <h4>Rank</h4>
         <div className="ally-bar-container">
