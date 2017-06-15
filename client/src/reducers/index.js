@@ -8,12 +8,26 @@ import initialState from './app/initialState.js';
 
 
 //import actions:
-import { SET_INITIAL_STATE, REQUEST_USER_INFO, RECEIVE_USER_INFO, GET_PROFILE, REQUEST_ALL_USERS, RECEIVE_ALL_USERS, REQUESTING_POSTS, RECEIVING_POSTS, DISPLAY_USER_PREVIEW, HIDE_USER_PREVIEW, SET_ACTIVE_POST, CLEAR_ACTIVE_POST, SET_USERPAGE_ID, SHOW_LOCK, LOCK_SUCCESS, LOCK_ERROR,TOGGLE_AFFILIATION,REQUEST_SUBMIT_POST,SUBMIT_POST_CONFIRMATION, CLEAR_USERPAGE_ID,REQUEST_ACCEPT_ALLY,REQUEST_EDIT_PRIVACY,RECEIVE_EDIT_PRIVACY} from '../actions/index';
+import { SET_INITIAL_STATE, REQUEST_USER_INFO, RECEIVE_USER_INFO, GET_PROFILE, REQUEST_ALL_USERS, RECEIVE_ALL_USERS, REQUESTING_POSTS, RECEIVING_POSTS, DISPLAY_USER_PREVIEW, HIDE_USER_PREVIEW, SET_ACTIVE_POST, CLEAR_ACTIVE_POST, SET_USERPAGE_ID, SHOW_LOCK, LOCK_SUCCESS, LOCK_ERROR,TOGGLE_AFFILIATION,REQUEST_SUBMIT_POST,SUBMIT_POST_CONFIRMATION, CLEAR_USERPAGE_ID,REQUEST_ACCEPT_ALLY,REQUEST_EDIT_PRIVACY,RECEIVE_EDIT_PRIVACY,CLEAR_METADATA,SET_STORY_LINK,EDIT_POST,REQUEST_UPDATE_POST,RECEIVE_UPDATE_POST} from '../actions/index';
 
-import { RETRIEVE_ACCEPT_ALLY,REQUEST_DELETE_POST,RETRIEVE_DELETE_POST,SET_WALL_STATE,REQUEST_POST_COMMENT,RETRIEVE_POST_COMMENT,REQUEST_DELETE_COMMENT,RETRIEVE_DELETE_COMMENT,REQUEST_LIKE_POST,RECEIVE_LIKE_POST,REQUEST_ALLY_REQ,RECEIVE_ALLY_REQ,LOGOUT_REQUEST,LOGOUT_SUCCESS,LOGOUT_FAILURE,REQUEST_UPDATE_PROFILE,RECEIVE_UPDATE_PROFILE,REQUESTING_TO_POST_PROFILE_INFO,RECEIVING_POST_CONFIRMATION,REQUEST_CANCEL_ALLIANCE,RECEIVE_CANCEL_ALLIANCE,REQUEST_LIKE_COMMENT,RECEIVE_LIKE_COMMENT} from '../actions/index';
+import { RETRIEVE_ACCEPT_ALLY,REQUEST_DELETE_POST,RETRIEVE_DELETE_POST,SET_WALL_STATE,REQUEST_POST_COMMENT,RETRIEVE_POST_COMMENT,REQUEST_DELETE_COMMENT,RETRIEVE_DELETE_COMMENT,REQUEST_LIKE_POST,RECEIVE_LIKE_POST,REQUEST_ALLY_REQ,RECEIVE_ALLY_REQ,LOGOUT_REQUEST,LOGOUT_SUCCESS,LOGOUT_FAILURE,REQUEST_UPDATE_PROFILE,RECEIVE_UPDATE_PROFILE,REQUESTING_TO_POST_PROFILE_INFO,RECEIVING_POST_CONFIRMATION,REQUEST_CANCEL_ALLIANCE,RECEIVE_CANCEL_ALLIANCE,REQUEST_LIKE_COMMENT,RECEIVE_LIKE_COMMENT,REQUEST_LINK_METADATA, RECEIVE_LINK_METADATA,REQUESTING_POST, RECEIVING_POST} from '../actions/index';
 
 const mainApp = (state = initialState, action) => {
   switch(action.type){
+    case REQUEST_UPDATE_POST:
+      return updatePost(state,action);
+    case RECEIVE_UPDATE_POST:
+      return updatePost(state,action);
+    case EDIT_POST:
+      return editPost(state,action);
+    case SET_STORY_LINK:
+      return setStoryLink(state,action);
+    case CLEAR_METADATA:
+      return clearMetadata(state,action);
+    case REQUEST_LINK_METADATA:
+      return getMetadata(state,action);
+    case RECEIVE_LINK_METADATA:
+      return getMetadata(state,action);
     case REQUEST_EDIT_PRIVACY:
       return editPrivacy(state,action);
     case RECEIVE_EDIT_PRIVACY:
@@ -46,6 +60,10 @@ const mainApp = (state = initialState, action) => {
       return getAllPosts(state,action);
     case RECEIVING_POSTS:
       return getAllPosts(state,action);
+    case REQUESTING_POST:
+      return getPost(state,action);
+    case RECEIVING_POST:
+      return getPost(state,action);
     case DISPLAY_USER_PREVIEW:
       return displayUserPreview(state,action);
     case HIDE_USER_PREVIEW:
@@ -104,6 +122,105 @@ const mainApp = (state = initialState, action) => {
       return cancelAlliance(state,action);
     default:
       return state;
+  }
+}
+
+//edit post:
+const updatePost = (state={isPosting:false,postsUpdated:false,posts:[]},action) => {
+  switch(action.type){
+    case REQUEST_UPDATE_POST:
+      return {
+        ...state,
+        isPosting:true
+      }
+    case RECEIVE_UPDATE_POST:
+      return {
+        ...state,
+        isPosting:false,
+        postsUpdated:true,
+        posts:action.results
+      }
+    default:
+      return state;
+  }
+}
+
+//get a single post
+
+const getPost = (state={posts:{},postsUpdated:false},action) => {
+  switch(action.type) {
+    case REQUESTING_POSTS:
+      return {
+        ...state,
+        isFetching:true
+      }
+    case RECEIVING_POSTS:
+      console.log('reducks');
+      let posts = action.results;
+      // posts = posts.filter((val)=>{
+      //   return val.postedon=='NA';
+      // });
+      return{
+        ...state,
+        isFetching: false,
+        posts:posts,
+        postsUpdated:true
+      }
+      default:
+        return state;
+  }
+}
+
+//set up post editing:
+
+const editPost = (state={editing:false,post:''},action)=>{
+  switch(action.type){
+    case EDIT_POST:
+      return {
+        ...state,
+        post:action.post,
+        editing:true
+      }
+  }
+}
+
+//set story link:
+
+const setStoryLink = (state={storyLink:''},action)=>{
+  switch(action.type){
+    case SET_STORY_LINK:
+      return {
+        ...state,
+        storyLink:action.link
+      }
+  }
+}
+
+//clear metadata cache in state
+
+const clearMetadata = (state={metadata:''},action)=>{
+  switch(action.type){
+    case CLEAR_METADATA:
+      return {
+        ...state,
+        metadata:''
+      }
+  }
+}
+//get post url metadata
+const getMetadata = (state={metadata:''},action) => {
+  switch(action.type){
+    case REQUEST_LINK_METADATA:
+      return {
+        ...state,
+        isFetching:true
+      }
+    case RECEIVE_LINK_METADATA:
+      return {
+        ...state,
+        isFetching:false,
+        metadata:action.results
+      }
   }
 }
 

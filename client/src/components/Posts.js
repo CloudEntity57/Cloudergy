@@ -8,7 +8,7 @@ let Functions = new newModule();
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { mainApp,submitPost,fetchPosts,fetchAllUsers,login } from '../actions/index';
+import { mainApp,submitPost,fetchPosts,fetchAllUsers,login,getMetadata,clearMetadata,setStoryLink } from '../actions/index';
 
 class Posts extends Component{
   constructor(props){
@@ -38,6 +38,35 @@ class Posts extends Component{
     this.setState({
       privacy:user[0].privacy
     });
+
+    //after link metadata retrieved, the rest of post has been stored in state and full post is submitted:
+    let metadata = (nextProps.metadata !=='') ? nextProps.metadata : '';
+    console.log('metadata in post: ',metadata);
+    if(nextProps.metadata !==''){
+      if(this.props.token){
+        let post = this.state.submit_post;
+    //metadata is attached to post:
+        post.metadata = metadata;
+        this.props.submitPost(post);
+        this.props.clearMetadata();
+      }else{
+        this.props.login();
+      }
+    }
+
+    //post a story link:
+    let storyLink = nextProps.storyLink;
+    if(storyLink !==''){
+      console.log('sharing story link');
+      window.scrollTo(0, 0);
+      this.setState({
+        editing:true
+      })
+      this.emphasizeForm();
+      console.log('got ',storyLink);
+      this.refs.comment.value = storyLink;
+      this.props.setStoryLink('');
+    }
     // let posts;
     // if(!this.props.postsUpdated){
     //   posts = nextProps.posts;
@@ -74,6 +103,49 @@ class Posts extends Component{
         jquery('.opaqueBackground').css('z-index',zIndex);
       },15);
   }
+  scourMetadata(post){
+    let string = post.text;
+    let wordarray = [];
+    let word;
+    let boolean=false;
+    let start = -1;
+    for(let i=0; i<string.length; i++){
+      let index = string.charAt(i);
+      // console.log(string.charAt(i));
+      if(index == ' ' || (index == '.' && string.charAt(i+1) == ' ')){
+        word = string.slice(start+1,i);
+        start = i;
+        console.log(word);
+        wordarray.push(word);
+      }else if(i == string.length-1){
+        word = string.slice(start+1,i+1);
+        console.log(word);
+        wordarray.push(word);
+        break;
+      }
+    }
+    wordarray.forEach((word)=>{
+      if(word.match(/\bhttp|\bwww/g)){
+        boolean = true;
+        for(let i=0; i<word.length; i++){
+          if((word.charAt(i)==='h' && word.charAt(i+1) =='t') || (word.charAt(i)=='w' && word.charAt(i+1) =='w')){
+            word = word.slice(i,word.length);
+            console.log('we have a link: ',word);
+            break;
+          }
+        }
+        this.props.getMetadata(word);
+        return;
+      }
+    });
+    if(!boolean){
+      if(this.props.token){
+        this.props.submitPost(post);
+      }else{
+        this.props.login();
+      }
+    }
+  }
   submitPost(e){
     console.log('submitting post');
     this.emphasizeForm();
@@ -87,8 +159,11 @@ class Posts extends Component{
       prefix="@"+this.props.affiliation_display+'s: '
     }
     let comment = prefix+this.refs.comment.value;
+    comment.replace(/' '/g,'%20');
     console.log('comment: ',comment);
     //create date information for post:
+    console.log('wall to post: ',this.props.wall);
+
     var today = Functions.createDate();
     let time = new Date().getTime();
     console.log('today: ',today);
@@ -113,12 +188,17 @@ class Posts extends Component{
         "likes":0
       }]
     }
+
     console.log('post: ',post);
-    if(this.props.token){
-      this.props.submitPost(post);
-    }else{
-      this.props.login();
-    }
+    this.setState({
+      submit_post:post
+    });
+    this.scourMetadata(post);
+    // if(this.props.token){
+    //   this.props.submitPost(post);
+    // }else{
+    //   this.props.login();
+    // }
     this.refs.comment.value = '';
   }
 
@@ -164,12 +244,13 @@ class Posts extends Component{
         "likes":0
       }]
     }
+    this.scourMetadata(postText);
     console.log('post: ',post);
-    if(this.props.token){
-      this.props.submitPost(post);
-    }else{
-      this.props.login();
-    }
+    // if(this.props.token){
+    //   this.props.submitPost(post);
+    // }else{
+    //   this.props.login();
+    // }
     // this.props.submitPost(post);
     this.refs.comment.value = "";
   }
@@ -194,9 +275,23 @@ class Posts extends Component{
       privacy:setting
     });
   }
+  sharePost(id){
+    console.log('sharing in Posts feed: ',id);
+    window.scrollTo(0, 0);
+    this.setState({
+      editing:true
+    })
+    this.emphasizeForm();
+    let posts = this.props.posts;
+    let post = posts.filter((val)=>{
+      return val._id == id;
+    });
+    console.log('got ',post);
+    this.refs.comment.value = post[0].text;
+  }
   render(){
-
     let submitFunction = (this.props.wall=='public') ? (()=>{this.submitPost()}) : (()=>{this.submitUserPost()});
+    console.log('wall state: ',this.props.wall);
     console.log('wall state: ',this.props.wall);
     // let user = (this.state.user) ? this.state.user : '';
     let user = this.props.user;
@@ -297,7 +392,7 @@ class Posts extends Component{
     }
     let finalposts = posts.map((post)=>{
       return(
-        <Post uid={post.uid} post={post._id} />
+        <Post sharePost={this.sharePost.bind(this)} uid={post.uid} post={post._id} />
       );
     });
 
@@ -324,6 +419,8 @@ function mapStateToProps(state){
   let usersObject = state.allReducers.mainApp.usersObject;
   let affiliation_display = state.allReducers.mainApp.affiliation_display;
   let token = state.allReducers.mainApp.token;
+  let metadata = state.allReducers.mainApp.metadata;
+  let storyLink = state.allReducers.mainApp.storyLink;
   return{
     user,
     posts,
@@ -332,7 +429,9 @@ function mapStateToProps(state){
     wall,
     usersObject,
     affiliation_display,
-    token
+    token,
+    metadata,
+    storyLink
   }
 }
 
@@ -342,7 +441,10 @@ function mapDispatchToProps(dispatch){
     submitPost,
     fetchPosts,
     fetchAllUsers,
-    login
+    login,
+    getMetadata,
+    clearMetadata,
+    setStoryLink
   },dispatch);
 }
 

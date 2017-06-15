@@ -16,6 +16,10 @@ header .fa {
   margin-top: -1px;
 }
 
+header .site-title {
+  cursor: pointer;
+}
+
 header .invites:nth-child(1) {
   background-color: orange !important;
 }
@@ -135,6 +139,33 @@ body {
   width: 105px;
   height: 1.5em;
   margin-right: 5px;
+}
+
+.post-editing-modal {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  background-color: black;
+  opacity: .5;
+  width: 100%;
+  height: 500vh;
+  z-index: 5;
+}
+
+.post-to-edit {
+  position: absolute;
+  padding: 10px;
+  top: 25vh;
+  left: 30vw;
+  min-height: 30vh;
+  width: 40vw;
+  z-index: 10;
+  background-color: lightgrey;
+}
+
+.post-to-edit textarea {
+  width: 100%;
+  height: 30vh;
 }
 
 .comment-edit {
@@ -442,6 +473,24 @@ body {
 .post-text {
   margin-top: 15px;
   padding-bottom: 5px;
+  position: relative;
+}
+
+.post-text .weblink_image a, .post-text .weblink_description a, .post-text .weblink_title a {
+  text-decoration: none;
+  color: black;
+}
+
+.post-text .weblink_image a:hover, .post-text .weblink_description a:hover, .post-text .weblink_title a:hover {
+  text-decoration: none;
+}
+
+.post-text .weblink_image {
+  width: 100%;
+}
+
+.post-text .weblink_description {
+  font-size: .75em;
 }
 
 .like-bar {
@@ -587,9 +636,19 @@ body {
   width: 300px;
 }
 
+.features-panel {
+  position: relative;
+}
+
 .features-panel ul {
   margin-right: 15px;
   font-size: .85em;
+}
+
+.features-panel .post-header-deleteicon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
 }
 
 .friends-panel-header {

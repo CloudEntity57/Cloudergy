@@ -20,7 +20,9 @@ const initialState = {
   invites_sent:[],
   invites_received:[],
   affiliation_display:'none',
+  metadata:'',
   users:[],
+  storyLink:'',
   //auth:
   auth:auth,
   token:token,
@@ -31,7 +33,6 @@ const initialState = {
   test:'',
   stories:[],
   affiliation:'none',
-  editing:false,
   //userpage:
   usrpg_updated:false,
   usrpg_posts:[],

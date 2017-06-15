@@ -152,11 +152,12 @@ class Post extends Component{
     e.preventDefault();
     this.refs.comment.focus();
   }
+  sharePost(e){
+    e.preventDefault();
+    console.log('sharing post: ',e.target.id);
+    this.props.sharePost(e.target.id);
+  }
   render(){
-
-    Metascraper.scrapeUrl('https://smartset-7a283.firebaseapp.com').then((metadata)=>{
-      console.log('metadata is...: ',metadata);
-    });
     let user = (this.state.user) ? this.state.user : '';
     let myId = (this.state.myId) ? this.state.myId : '';
     // myId = (this.props.token) ? myId : 'none';
@@ -176,15 +177,40 @@ class Post extends Component{
     }) : '';
     console.log('Post post: ',post[0]);
     post = post[0];
-    let text = (post.hasOwnProperty('text')) ? post.text : '';
-    let date = (post.hasOwnProperty('text')) ? post.date : '';
-    let id = (post.hasOwnProperty('text')) ? post._id : '';
-    let postId = (post.hasOwnProperty('text')) ? post._id : '';
+    let boolean = post.hasOwnProperty('text');
+    let text = (boolean) ? post.text : '';
+    let date = (boolean) ? post.date : '';
+    let id = (boolean) ? post._id : '';
+    let postId = (boolean) ? post._id : '';
     console.log('post id: ',postId);
-    let currentId = (post.hasOwnProperty('text')) ? post.uid : '';
-    //create comments:
-    let comments = (post.hasOwnProperty('text')) ? post.comments:'';
-    let post_userid = (post.hasOwnProperty('text')) ? post.userid:'';
+    let currentId = (boolean) ? post.uid : '';
+    let postImg = (post.hasOwnProperty('metadata')) ? (
+      <div>
+        <a href={post.metadata.url} alt={post.metadata.title}>
+          <img className="weblink_image image-responsive" src={post.metadata.image} alt={post.metadata.title} />
+        </a>
+      </div>
+
+    ) : '';
+    let postTitle = (post.hasOwnProperty('metadata')) ? (
+      <div className="weblink_title">
+        <a href={post.metadata.url} alt={post.metadata.title}>
+          <h4>{post.metadata.title}</h4>
+        </a>
+      </div>
+    ) : '';
+    let postDescription = (post.hasOwnProperty('metadata')) ? (
+      <div className="weblink_description">
+        <a href={post.metadata.url} alt={post.metadata.title}>
+          <div>{post.metadata.description}</div>
+        </a>
+      </div>
+    ) : '';
+
+
+//create comments:
+    let comments = (boolean) ? post.comments:'';
+    let post_userid = (boolean) ? post.userid:'';
     let users = (this.props.usersObject) ? this.props.usersObject : [];
     let displayededit = this.state.displayededit;
     console.log('users in post: ',users);
@@ -213,14 +239,7 @@ class Post extends Component{
 
       );
     })
-
-
-
-
     : '';
-    // let commentSection = (post.hasOwnProperty('comments')) ?
-    //   comments(post,users,this.goToUser)
-    //  : '';
 
     //to avoid props confusion:
     let thisuser=user;
@@ -248,7 +267,14 @@ class Post extends Component{
       <div id={id} className="post-panel">
         <PostHeader {...props} />
 
-        <div className="post-text"><Linkify>{text}</Linkify></div>
+        <div className="post-text">
+          <Linkify properties={{target:'_blank'}}>
+            {text}
+            {postImg}
+            {postTitle}
+            {postDescription}
+          </Linkify>
+        </div>
         {/* <div className="like-panel">{likes}</div> */}
         <div className="like-bar">
           <a id={id} href="#">
@@ -259,9 +285,9 @@ class Post extends Component{
             <span className="fa fa-comment"></span>
             <span>Comment</span>
           </a>
-          <a href="#">
-            <span className="fa fa-share"></span>
-            <span>Share</span>
+          <a id={id} onClick={this.sharePost.bind(this)} href="#">
+            <span id={id} className="fa fa-share"></span>
+            <span id={id} >Share</span>
           </a>
         </div>
       </div>

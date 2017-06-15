@@ -5,6 +5,7 @@ const auth = new AuthService(authid, authdomain);
 import AuthService from '../utils/AuthService';
 import { hashHistory } from 'react-router';
 let targetURL = "https://couchpolitics.herokuapp.com/user/";
+import Metascraper from 'metascraper';
 
 function myFunctions(){
   this.getCurrentUser = ()=>{

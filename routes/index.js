@@ -4,9 +4,9 @@ var Test = require('../models/test');
 var User = require('../models/user');
 var Post = require('../models/post');
 var Metascraper = require('metascraper');
-Metascraper.scrapeUrl('https://smartset-7a283.firebaseapp.com').then((metadata)=>{
-  console.log('metadata is...: ',metadata);
-});
+// Metascraper.scrapeUrl('https://smartset-7a283.firebaseapp.com').then((metadata)=>{
+//   console.log('metadata is...: ',metadata);
+// });
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -27,9 +27,6 @@ router.get('/test', function(req, res, next) {
 router.get('/user',function(req,res,next){
   // let profile=req;
   console.log('getting user');
-  Metascraper.scrapeUrl('https://smartset-7a283.firebaseapp.com').then((metadata)=>{
-    console.log('metadata is...: ',metadata);
-  });
   User.find({},'', function(err,profile){
     // console.log('profile: ',profile);
     res.json(profile);
@@ -131,6 +128,24 @@ router.get('/posts',function(req,res,next){
     // res.json(posts);
 });
 
+//get post metadata:
+router.post('/getmetadata/',function(req,res,next){
+  console.log('url to search: ',req.body.payload);
+  let url = req.body.payload;
+  if((url.charAt(0)=='w') && (url.charAt(1)=='w')){
+    let prefix="http://";
+    url = prefix+url;
+    console.log('url is now: ',url);
+  }
+  Metascraper.scrapeUrl(url).then((metadata)=>{
+    console.log('site metadata: ',metadata);
+    metadata.url=url;
+    res.json(metadata);
+  });
+  // le
+  // res.json(req.body.param);
+});
+
 //======================route for deleting a post:
 
 router.post('/deletepost',function(req,res,next){
@@ -160,6 +175,20 @@ router.post('/post',function(req,res,next){
   });
 });
 
+//update post:
+
+router.post('/updatepost',function(req,res,next){
+  console.log('req body: ',req.body);
+  let post = req.body.payload.post;
+
+  // let postId = req.body.payload.id
+  // console.log('postId: ',postId);
+  // Post.findOneAndUpdate({_id:postId},{$push:{text:post}},(err,result)=>{
+  //   if(err) console.log('error! ',err);
+  //   getPosts(res);
+  // });
+  // res.send();
+});
 
 
 //post comment:

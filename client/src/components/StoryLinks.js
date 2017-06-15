@@ -1,7 +1,30 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 
+//redux
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { setStoryLink } from '../actions/index';
+
 class StoryLinks extends Component{
+  constructor(props){
+    super(props);
+    this.state={
+      featuresPanel:false
+    }
+  }
+  shareLink(e){
+    e.preventDefault();
+    console.log('sharing link: ',e.target.id);
+    this.props.setStoryLink(e.target.id);
+  }
+  displayPanel(e){
+    e.preventDefault();
+    let featuresPanel = !this.state.featuresPanel;
+    this.setState({
+      featuresPanel
+    });
+  }
   render(){
     let stories_array = this.props.stories;
     let stories;
@@ -16,22 +39,33 @@ class StoryLinks extends Component{
           <div className="story">
             {/* {story.title} */}
             <div className = {color}></div>
-            <a href={story.url} target="_blank">{pic}<span className="story-title">{story.title}</span><span className="story-source">{story.source} - {publishedTime}</span></a>
+            <a href={story.url} target="_blank">{pic}<span className="story-title">{story.title}</span><span  className="story-source">{story.source} - {publishedTime}</span>
+            </a>
+
+            <a className="story-source" id={story.url} onClick={this.shareLink.bind(this)} href="#">
+              <span id={story.url}>
+                <span id={story.url} className="fa fa-share"></span>
+                <span id={story.url} >Share</span>
+              </span>
+            </a>
           </div>
         );
       });
     }
     let newstitle = this.props.newstitle;
+    let featuresPanel = (this.state.featuresPanel) ?
+    (<ul>
+      <li>Three separate public news feeds (Liberal, Conservative, Moderate) filter above</li>
+      <li>Share any story from any site, anywhere, or click 'share' button anywhere in this site</li>
+      <li>Edit your user profile in the 'account' section, choose your affiliation and more</li>
+      <li>Send ally requests to other members and increase your rank!</li>
+    </ul>)
+     : '';
     return(
       <div className="ads-panel">
         <div className="features-panel panel panel-default">
-          <h4>Site Features</h4>
-          <ul>
-            <li>Toggle news feed by ideology above</li>
-            <li>Edit your user profile in the account section</li>
-            <li>Send ally requests to other members</li>
-            <li>Add allies to increase your rank</li>
-          </ul>
+          <h4>Site Features</h4><span onClick={this.displayPanel.bind(this)} className="fa fa-sort-desc pull-right post-header-deleteicon"></span>
+          {featuresPanel}
         </div>
         <div id="ads">
           <div className="panel panel-default">
@@ -51,4 +85,19 @@ class StoryLinks extends Component{
   }
 }
 
-export default StoryLinks;
+function mapStateToProps(state){
+  let storyLink = state.allReducers.mainApp.storyLink;
+  return{
+    storyLink
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return bindActionCreators({
+    setStoryLink
+  },dispatch);
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(StoryLinks);
+
+// export default StoryLinks;

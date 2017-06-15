@@ -21,7 +21,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { mainApp, fetchPosts, fetchAllUsers,
 fetchUserInfo,
-saveProfile, clearUserPageId, setWallState,login
+saveProfile, clearUserPageId, setWallState,login,updatePost
 } from '../actions/index';
 
 
@@ -93,7 +93,29 @@ class Newsfeed extends Component{
       console.log('affiliation in newsfeed: ',affiliation);
       let fullfeed=[];
       let result;
+    //editing posts:
+    let post = nextProps.post;
+    let id = post;
+    let editing = nextProps.editing;
+    if(editing && post !==''){
+      console.log('post editing in newsfeed');
+      this.setState({
+        postedit:true
+      });
+      post = nextProps.posts.filter((val)=>{
+        return val._id == id;
+      });
+      console.log('filtered post: ',post);
+      this.setState({
+        post
+      });
+    }
 
+  }
+  componentDidUpdate(){
+    let post = this.state.post;
+    console.log('filtered post: ',post);
+    this.refs.editing.value = post[0].text;
   }
   updatePosts(){
     let posts=this.props.posts;
@@ -153,6 +175,15 @@ class Newsfeed extends Component{
     }else{
       this.props.login();
     }
+  }
+  updatePost(e){
+    console.log('we are updating: ',e.target);
+  }
+  cancelEdit(e){
+    e.preventDefault();
+    this.setState({
+      editing:false
+    });
   }
   render(){
     console.log('rendering newsfeed');
@@ -229,8 +260,27 @@ class Newsfeed extends Component{
         </div>
       </div>
     ) : '';
+
+    //post editing modal:
+    let post_edit_background = (this.state.postedit) ? (
+      <div className="post-editing-modal">
+
+      </div>
+    ) : '';
+    let post_edit_modal = (this.state.postedit) ? (
+      <div className="post-to-edit">
+        <form>
+          <textarea ref="editing" />
+          <div onClick = {this.cancelEdit.bind(this)} className = "btn btn-default">Cancel</div>
+          <div id={this.state.post[0]._id} onClick = {this.updatePost.bind(this)} className = "btn btn-primary">Update</div>
+        </form>
+      </div>
+    ) : '';
+
     return(
       <div>
+        {post_edit_background}
+        {post_edit_modal}
         <div className="outer-wrapper">
             <div className="wrapper">
                 <div className="navigation-panel">
@@ -273,6 +323,8 @@ function mapStateToProps(state){
   let token = state.allReducers.mainApp.token;
   let router=state.router;
   let users=state.allReducers.mainApp.users;
+  let post=state.allReducers.mainApp.post;
+  let editing=state.allReducers.mainApp.editing;
   return{
     user,
     users,
@@ -282,7 +334,10 @@ function mapStateToProps(state){
     router,
     affiliation,
     affiliation_display,
-    token
+    token,
+    editing,
+    post,
+    posts
   }
 }
 
@@ -296,7 +351,8 @@ function mapDispatchToProps(dispatch){
     clearUserPageId,
     setWallState,
     push,
-    login
+    login,
+    updatePost
   },dispatch);
 }
 

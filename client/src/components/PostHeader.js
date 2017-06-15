@@ -10,7 +10,7 @@ import { push } from 'connected-react-router';
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { mainApp,hideUserPreview,displayUserPreview,setActivePost, clearActivePost, setUserPageId, deletePost, requestAlly,editPrivacy } from '../actions/index';
+import { mainApp,hideUserPreview,displayUserPreview,setActivePost, clearActivePost, setUserPageId, deletePost, requestAlly,editPrivacy,editPost} from '../actions/index';
 
 class PostHeader extends Component{
   constructor(props){
@@ -20,7 +20,8 @@ class PostHeader extends Component{
       toggleStatus:false,
       privacyToggle:false,
       myPost:false,
-      postId:''
+      postId:'',
+      editing:false
     }
   }
   componentDidMount(){
@@ -125,7 +126,10 @@ class PostHeader extends Component{
   editPost(e){
     e.preventDefault();
     console.log('editing: ',e.target.id);
-
+    this.props.editPost(e.target.id);
+    // this.setState({
+    //   editing:true
+    // });
   }
   displayUser(e){
     console.log('displaying!');
@@ -346,7 +350,8 @@ function mapDispatchToProps(dispatch){
     push,
     deletePost,
     requestAlly,
-    editPrivacy
+    editPrivacy,
+    editPost
   },dispatch);
 }
 

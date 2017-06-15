@@ -49,6 +49,12 @@ class UserPage extends Component{
     this.configureUser(clientID,userid);
 
   }
+  updatePosts(){
+    let posts=this.props.posts;
+    console.log('updating!!!');
+    this.props.fetchPosts('');
+    // this.forceUpdate();
+  }
   componentDidMount(){
     console.log('remounting');
     let user;
@@ -191,7 +197,7 @@ configureUser(postUserId,currentuser){
             </div>
             <div className="user-posts-container">
               {/* <PostsUser posts={posts} userid={userid} user={user} currentUser={currentUser}/> */}
-              <Posts posts={posts} userid={this.props.userid} user={user}/>
+              <Posts update={this.updatePosts.bind(this)}/>
             </div>
           </div>
         </div>

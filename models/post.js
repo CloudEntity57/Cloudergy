@@ -22,6 +22,7 @@ var schema = new mongoose.Schema({
     type:String,
     required:true
   },
+  metadata:{ type: Object},
   comments:{ type : Array },
   privacy:{type: String},
   postedon:{type:String},

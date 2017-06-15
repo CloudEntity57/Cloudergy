@@ -5,15 +5,15 @@ export const SET_INITIAL_STATE = "SET_INITIAL_STATE";
 export const SET_AUTH = "SET_AUTH";
 export const GET_PROFILE = "GET_PROFILE";
 
-let apiRoot;
-switch(process.env.REACT_APP_ENV){
-  case 'dev':
-    apiRoot = "http://localhost:8080/";
-  break;
-  case 'production':
-    apiRoot = "https://couchpolitics.herokuapp.com/";
-  break;
-}
+let apiRoot="http://localhost:8080/";
+// switch(process.env.REACT_APP_ENV){
+//   case 'dev':
+//     apiRoot = "http://localhost:8080/";
+//   break;
+//   case 'production':
+//     apiRoot = "https://couchpolitics.herokuapp.com/";
+//   break;
+// }
 console.log('api root is: ',apiRoot);
 
 export const socialApp = (state) => ({
@@ -35,6 +35,20 @@ export const setActivePost = (postid) =>({
   type:SET_ACTIVE_POST,
   post:postid
 })
+
+export const EDIT_POST = "EDIT_POST";
+export const editPost = (postid) =>({
+  type:EDIT_POST,
+  post:postid,
+  editing:true
+})
+
+export const SET_STORY_LINK = "SET_STORY_LINK";
+export const setStoryLink = (link) =>({
+  type:SET_STORY_LINK,
+  link
+})
+
 export const CLEAR_ACTIVE_POST = "CLEAR_ACTIVE_POST";
 export const clearActivePost = () =>({
   type:CLEAR_ACTIVE_POST,
@@ -75,6 +89,12 @@ export const setWallState = (uid) => ({
   type:SET_WALL_STATE,
   uid
 })
+
+export const CLEAR_METADATA = "CLEAR_METADATA"
+export const clearMetadata = () => ({
+  type:CLEAR_METADATA,
+  metadata:''
+});
 
 
 //fetch API call to get user info:
@@ -128,6 +148,41 @@ let postApiCall = (reqType, recType, url1,url2) => {
     return postFunc;
 }
 
+//get link metadata:
+export const REQUEST_LINK_METADATA = 'REQUEST_LINK_METADATA';
+export const RECEIVE_LINK_METADATA = 'RECEIVE_LINK_METADATA';
+
+let apiDataCall = (reqType, recType, url1,url2) => {
+    const reqFunc = (arg) => ({
+        type: reqType,
+        arg
+    })
+
+    const recFunc = (arg, data) => ({
+        type: recType,
+        arg,
+        results:data,
+        receivedAt:Date.now()
+    })
+
+    const fetchFunc = arg => dispatch =>{
+      console.log('action creator go');
+        dispatch(reqFunc(arg))
+        console.log('argument: ',arg);
+        return axios.get(url1,
+          {
+            params:{
+              word:arg
+            }
+          })
+        .then(response => response.json())
+        .then((json) => {console.log('action creator json: ',json); dispatch(recFunc(arg,json))})
+    }
+    return fetchFunc;
+}
+
+// export const getMetadata = apiDataCall(REQUEST_LINK_METADATA, RECEIVE_LINK_METADATA,apiRoot+'getmetadata/','');
+export const getMetadata= postApiCall(REQUEST_LINK_METADATA,RECEIVE_LINK_METADATA,apiRoot+"getmetadata/","");
 //message privacy edit
 export const REQUEST_EDIT_PRIVACY = 'REQUEST_EDIT_PRIVACY';
 export const RECEIVE_EDIT_PRIVACY = 'RECEIVE_EDIT_PRIVACY';
@@ -204,6 +259,11 @@ export const REQUESTING_POSTS = "REQUESTING_POSTS";
 export const RECEIVING_POSTS = "RECEIVING_POSTS";
 
 export const fetchPosts = apiCall(REQUESTING_POSTS, RECEIVING_POSTS,apiRoot+'posts','');
+
+export const REQUESTING_POST = "REQUESTING_POST";
+export const RECEIVING_POST = "RECEIVING_POST";
+
+export const fetchPost = apiCall(REQUESTING_POST, RECEIVING_POST,apiRoot+'post','');
 
 //create user
 export const REQUESTING_TO_POST_PROFILE_INFO = "REQUESTING_TO_POST_PROFILE_INFO";

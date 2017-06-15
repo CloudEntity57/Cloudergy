@@ -144,7 +144,8 @@ class Header extends Component{
     e.preventDefault();
     let previewingAlly = (this.state.previewingAlly) ? false : true;
     this.setState({
-      previewingAlly:previewingAlly
+      previewingAlly:previewingAlly,
+      previewingGlobal:false
     });
     if(this.state.previewingAlly){
       jquery('.invites').remove();
@@ -156,7 +157,8 @@ class Header extends Component{
     e.preventDefault();
     let previewingGlobal = (this.state.previewingGlobal) ? false : true;
     this.setState({
-      previewingGlobal:previewingGlobal
+      previewingGlobal:previewingGlobal,
+      previewingAlly:false
     });
     if(this.state.previewingAlly){
       jquery('.invites').remove();
@@ -198,8 +200,8 @@ class Header extends Component{
     this.props.login();
     this.props.push('/');
   }
-  clearDisplay(){
-
+  goToNews(e){
+    this.props.push('/');
   }
   render(){
       let token = this.state.token;
@@ -293,23 +295,6 @@ class Header extends Component{
       </div>
     ) : '';
 
-    // let usericon = (this.props.profile.hasOwnProperty('name')) ? (
-    //   <span>
-    //     <NavLink to={userlink}>
-    //       <a className="header-navlink" href="#">
-    //         <img className="user-pic" src={userpic} alt="user pic" />
-    //         {username}&nbsp;
-    //       </a>
-    //     </NavLink>
-    //   </span>
-    // ) : (
-    //   <span>
-    //     <a onClick={this.toggleLogin.bind(this)} className="header-navlink" href="#">
-    //       <div className="fa fa-user-o usericon"></div>
-    //       { loginlinks }
-    //     </a>
-    //   </span>
-    // );
     let usericon =(
       <span>
         <NavLink to={userlink}>
@@ -321,27 +306,12 @@ class Header extends Component{
       </span>
     );
 
-    // let userlogout = (this.props.profile.hasOwnProperty('name')) ? (
-    //   <div><a className="log-out" onClick={this.props.logOut} href="#">Logout</a></div>
-    // ) : '';
     let userlogout = (this.state.token !==null) ? (
       <div><a className="log-out" onClick={this.props.logOut} href="#">Logout</a></div>
     ) : (
       <div><a className="log-out" onClick={()=>this.handleClick()} href="#">Join/login</a></div>
     );
 
-    // let usercontrols = (this.props.profile.hasOwnProperty('name')) ? (
-    //   <span>
-    //     <div className="fa fa-globe">
-    //     </div>
-    //     <div className="ally-request-holder">
-    //       <a onClick={this.toggleAllyRequest.bind(this)} href="#" className="fa fa-handshake-o">
-    //       </a>
-    //       {allyRequestNumber}
-    //       {allyPreview}
-    //     </div>
-    //   </span>
-    // ) : '';
     let usercontrols = (
       <span>
         <div className="ally-request-holder">
@@ -363,12 +333,9 @@ class Header extends Component{
 
         <div className="outer-nav-wrapper">
           <div className="nav">
-            <span className="site-title">CouchPolitics</span> &nbsp;
-            {/* <input type="text" name="search" placeholder="Search CouchPolitics" /> */}
-
+            <span onClick={this.goToNews.bind(this)} className="site-title">CouchPolitics</span> &nbsp;
             <div className="navbar-nav nav-right">
               {userlogout}
-              {/* <div><a className="log-out" onClick={this.props.logOut} href="#">Logout</a></div> */}
               <span>
                 <select ref="politics" onChange={this.toggle_affiliation.bind(this)} value={this.props.affiliation_display} className="header-toggle" name="user-affiliation" id="">
                   <optgroup value="Choose">
@@ -378,37 +345,14 @@ class Header extends Component{
                   </optgroup>
                 </select>
               </span>
-
-              {/* <NavLink to={userlink}>
-                <a className="header-navlink" href="#">
-                  {userimg}
-                  {username}&nbsp;
-                </a>
-              </NavLink> */}
               {usericon}
               <NavLink to="/"><a href="#">Home</a></NavLink>&nbsp;
-
-              {/* <div className="fa fa-globe">
-              </div>
-              <div className="ally-request-holder">
-                <a href="#" onClick={this.toggleAllyRequest.bind(this)} className="fa fa-handshake-o">
-                </a>
-                {allyRequestNumber}
-                {allyPreview}
-              </div> */}
               { usercontrols }
-
-
             </div>
-
           </div>
-
         </div>
-
         <div className="nav-buffer">
-
         </div>
-
       </header>
     );
   }

@@ -14,6 +14,9 @@ header{
     margin-top:-1px;
 
   }
+  .site-title{
+    cursor: pointer;
+  }
   .invites:nth-child(1){
     background-color:orange !important;
   }
@@ -117,6 +120,30 @@ body{
   margin-right:5px;
 }
 
+.post-editing-modal{
+  position: absolute;
+  top:0px;
+  left:0px;
+  background-color:black;
+  opacity: .5;
+  width: 100%;
+  height:500vh;
+  z-index: 5;
+}
+.post-to-edit{
+  position: absolute;
+  padding: 10px;
+  top:25vh;
+  left:30vw;
+  min-height: 30vh;
+  width: 40vw;
+  z-index: 10;
+  background-color: lightgrey;
+  textarea{
+    width: 100%;
+    height:30vh;
+  }
+}
 .comment-edit{
   display:inline-block;
   padding:0px 10px;
@@ -396,6 +423,22 @@ body{
 .post-text{
   margin-top:15px;
   padding-bottom: 5px;
+  position: relative;
+  .weblink_image,.weblink_description,.weblink_title{
+    a{
+      text-decoration: none;
+      color:black;
+      &:hover{
+        text-decoration: none;
+      }
+    }
+  }
+  .weblink_image{
+    width:100%;
+  }
+  .weblink_description{
+    font-size:.75em;
+  }
 }
 .like-bar{
   border-top:1px solid darkgrey;
@@ -529,9 +572,15 @@ body{
   width:300px;
 }
 .features-panel{
+  position: relative;
   ul{
     margin-right:15px;
     font-size: .85em;
+  }
+  .post-header-deleteicon{
+    position: absolute;
+    top:10px;
+    right:10px;
   }
 }
 .friends-panel-header{
