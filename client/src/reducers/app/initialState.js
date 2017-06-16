@@ -23,6 +23,7 @@ const initialState = {
   metadata:'',
   users:[],
   storyLink:'',
+  post:'',
   //auth:
   auth:auth,
   token:token,
@@ -51,6 +52,7 @@ const initialState = {
   myPost:false,
   postId:'',
   notifications:'',
+  globalNotifications:'',
   //posts:
   editing:false,
   user:[{

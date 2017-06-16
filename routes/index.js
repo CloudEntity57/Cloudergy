@@ -4,6 +4,7 @@ var Test = require('../models/test');
 var User = require('../models/user');
 var Post = require('../models/post');
 var Notification = require('../models/notification');
+var GlobalNotification = require('../models/globalnotification');
 var Metascraper = require('metascraper');
 // Metascraper.scrapeUrl('https://smartset-7a283.firebaseapp.com').then((metadata)=>{
 //   console.log('metadata is...: ',metadata);
@@ -45,7 +46,29 @@ router.get('/user/:userid',function(req,res,next){
   });
   // User.find({req.},''
 });
+
+//create user
 router.post('/user',function(req,res,next){
+  let user = req.body;
+  let newPost = new User(user);
+  newPost.save(function(err,success){
+    if(err) console.log('error: ',err);
+  });
+  console.log('data you sent DB: ',user);
+});
+
+//create user
+router.post('/notification',function(req,res,next){
+  let user = req.body;
+  let newPost = new User(user);
+  newPost.save(function(err,success){
+    if(err) console.log('error: ',err);
+  });
+  console.log('data you sent DB: ',user);
+});
+
+//create user
+router.post('/globalnotification',function(req,res,next){
   let user = req.body;
   let newPost = new User(user);
   newPost.save(function(err,success){
@@ -390,7 +413,7 @@ User.findOneAndUpdate(
 router.get('/notifications/:userid',function(req,res,next){
   // getPosts(res);
   console.log('user to update: ',req.params.userid);
-  User.find({"userid":req.params.userid},'notifications',function(err,results){
+  Notification.find({"userid":req.params.userid},'',function(err,results){
     if(err) console.log('error: ',err);
     console.log("this user's notifications are: ",results[0]);
     res.json(results[0]);
@@ -400,19 +423,41 @@ router.get('/notifications/:userid',function(req,res,next){
     // res.json(posts);
 });
 
-//notifications seen:
+//get global notifications:
 
-router.post('/notificationsseen',function(req,res,next){
+router.get('/globalnotifications/:userid',function(req,res,next){
   // getPosts(res);
-  console.log('user to update: ',req.body.payload);
-  User.findOneAndUpdate({"userid":req.body.payload},'notifications',function(err,results){
+  console.log('user to update: ',req.params.userid);
+  GlobalNotification.find({"userid":req.params.userid},'',function(err,results){
     if(err) console.log('error: ',err);
-    console.log('notifications are: ',results);
-    // res.json(results[0]);
+    console.log("this user's global notifications are: ",results[0]);
+    res.json(results[0]);
   });
   // console.log('posts: ',posts);
     // profile=profile.reverse();
     // res.json(posts);
+});
+
+//ally notifications seen:
+
+router.post('/notificationsseen',function(req,res,next){
+  console.log('user to update: ',req.body.payload);
+  Notification.findOneAndUpdate({"userid":req.body.payload},{"read":true},function(err,results){
+    if(err) console.log('error: ',err);
+    console.log('notifications are: ',results);
+    res.json(results);
+  });
+});
+
+//global notifications seen:
+
+router.post('/globalnotificationsseen',function(req,res,next){
+  console.log('user to update: ',req.body.payload);
+  GlobalNotification.findOneAndUpdate({"userid":req.body.payload},{"read":true},function(err,results){
+    if(err) console.log('error: ',err);
+    console.log('global notifications are: ',results);
+    res.json(results);
+  });
 });
 
 

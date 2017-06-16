@@ -91,7 +91,27 @@ class App extends React.Component{
            //give every new user a friend invitation from me:
            ally_invitations_received:['J20zp56UZbPRlZ9eB1u41sBs9qXJxBVY']
          };
-      //  this.props.createNewUser(userData);
+
+         //  this.props.createNewUser(userData);
+
+  //create notifications, ally & global:
+      let notifications = {
+          "userid": this.props.profile.clientID,
+          "ally_invitations": [
+              "J20zp56UZbPRlZ9eB1u41sBs9qXJxBVY"
+          ],
+          "ally_accepts": [],
+          "ally_cancels": [],
+          "read": false
+      };
+      //  this.props.createNotifications(notifications);
+      let globalnotifications = {
+          "userid": this.props.profile.clientID,
+          "likes": {},
+          "replies": {},
+          "read": false
+      };
+      //  this.props.createGlobalNotifications(userData);
        this.props.push('/');
      }else{
        console.log('app.js has confirmed user exists');

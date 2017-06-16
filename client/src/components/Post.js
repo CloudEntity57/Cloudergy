@@ -173,7 +173,7 @@ class Post extends Component{
     let x = (this.props.post !=='') ? this.props.post : '';
     let post = (this.props.posts.length>0) ?
     this.props.posts.filter((val)=>{
-      return val._id === x;
+      return val._id == x;
     }) : '';
     console.log('Post post: ',post[0]);
     post = post[0];

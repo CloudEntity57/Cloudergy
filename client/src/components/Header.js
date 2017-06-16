@@ -11,7 +11,7 @@ import jquery from 'jquery';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
-import { socialApp, toggleAffiliation, fetchUserInfo, acceptAlly,login,doAuthentication,fetchNotifications,notificationsSeen } from '../actions/index';
+import { socialApp, toggleAffiliation, fetchUserInfo, acceptAlly,login,doAuthentication,fetchNotifications,fetchGlobalNotifications,notificationsSeen,globalNotificationsSeen } from '../actions/index';
 
 class Header extends Component{
   constructor(props){
@@ -23,7 +23,8 @@ class Header extends Component{
       previewingAlly:false,
       displaylogin:false,
       previewingGlobal:false,
-      notifications:''
+      notifications:'',
+      globalNotifications:''
     }
   }
   componentWillMount(){
@@ -62,14 +63,22 @@ class Header extends Component{
       user
     });
 
-    //user notifications:
-    if(nextProps.notifications !== ''){
+    //user ally notifications:
+    if(nextProps.notifications !==''){
       let notifications = nextProps.notifications;
-      console.log('header notifications: ',notifications.notifications);
-      notifications = notifications.notifications;
+      console.log('header notifications: ',notifications);
       //put all notification data in local state:
       this.setState({
         notifications
+      });
+    }
+    //user global notifications:
+    if(nextProps.globalNotifications !==''){
+      let globalNotifications = nextProps.globalNotifications;
+      console.log('header globalNotifications: ',globalNotifications);
+      //put all notification data in local state:
+      this.setState({
+        globalNotifications
       });
     }
 
@@ -179,8 +188,9 @@ class Header extends Component{
     // if(this.state.previewingAlly){
     //   jquery('.invites').remove();
     // }
-    this.props.notificationsSeen(user);
+    this.props.globalNotificationsSeen(user);
   }
+
   acceptAlly(e){
     e.preventDefault();
     const allyId = e.target.id;
@@ -226,8 +236,9 @@ class Header extends Component{
       console.log('token in header: ',token);
     // let user = (this.state.user) ? this.state.user : '';
     // if(this.props.user !==''){
-      let user, uid, userpic, ally_invitations_received, allyRequestNumber,username, affiliation,allyReqs;
+      let user, uid, userpic, ally_invitations_received, allyRequestNumber,globalUpdateNumber,username, affiliation,allyReqs;
       user = (this.props.user !=='' && this.props.token) ? this.props.user : [{userid:'',ally_invitations_received:[], allyRequestNumber,username, affiliation,allyReqs,potential_allies}];
+      let likenumber = 0;
       ally_invitations_received = user[0].ally_invitations_received;
 
       uid = '123456';
@@ -246,22 +257,33 @@ class Header extends Component{
       let potential_allies = this.getPotentialAllies();
         console.log('potential allies render: ',potential_allies);
 
-        //user notifications
+        //user ally notifications
         if(this.state.notifications !==''){
           let notifications = this.state.notifications;
           console.log('notifications in render: ',notifications);
           let n = notifications;
-          let ally_invitations_received = n.ally_invitations;
-          // allyRequestNumber = (
-          //   n.ally_invitations !==[] &&
-          //   n.ally_accepts !==[] &&
-          //   n.ally_cancels !==[] &&
-          //   n.likes !== {} &&
-          //   n.replies !== {}
-          // ) ? (<div className="invites">{ally_invitations_received.length}</div>) : '';
+          let ally_invitations_received = n.ally_invitations
+          let invites = (n.ally_invitations.length !==0) ? n.ally_invitations.length : '';
           allyRequestNumber = (
             n.read ==false
-          ) ? (<div className="invites">{ally_invitations_received.length}</div>) : '';
+          ) ? (<div className="invites">{invites}</div>) : '';
+
+        }
+        //user global notifications
+        if(this.state.globalNotifications !==''){
+          let globalNotifications = this.state.globalNotifications;
+          console.log('globalNotifications in render: ',globalNotifications);
+          let n = globalNotifications;
+          let ally_invitations_received = n.ally_invitations;
+          let likes = n.likes;
+          console.log('likes in render: ',likes);
+          for(let val in likes){
+            console.log('like val: ',val);
+            likenumber++;
+          };
+          globalUpdateNumber = (
+            n.read==false
+          ) ? (<div className="invites">{likenumber}</div>) : '';
         }
         //user ally
 
@@ -361,13 +383,13 @@ class Header extends Component{
         <div className="ally-request-holder">
           <a onClick={this.toggleAlert.bind(this)} href="#" className="fa fa-handshake-o">
           </a>
-          {allyRequestNumber}
+          {globalUpdateNumber}
           {globalPreview}
         </div>
       </span>
     );
     return(
-      <header onClick={()=>this.clearDisplay()} className={this.props.affiliation_display}>
+      <header /*onClick={()=>this.clearDisplay()}*/ className={this.props.affiliation_display}>
 
         <div className="outer-nav-wrapper">
           <div className="nav">
@@ -409,6 +431,7 @@ function mapStateToProps(state){
   let authenticated = state.allReducers.mainApp.authenticated;
   let token = state.allReducers.mainApp.token;
   let notifications = state.allReducers.mainApp.notifications;
+  let globalNotifications = state.allReducers.mainApp.globalNotifications;
   return{
     previewingAlly,
     affiliation,
@@ -420,7 +443,8 @@ function mapStateToProps(state){
     loggedIn,
     users,
     token,
-    notifications
+    notifications,
+    globalNotifications
   }
 }
 
@@ -434,7 +458,9 @@ function mapDispatchToProps(dispatch){
     doAuthentication,
     push,
     fetchNotifications,
-    notificationsSeen
+    fetchGlobalNotifications,
+    notificationsSeen,
+    globalNotificationsSeen
   },dispatch);
 }
 

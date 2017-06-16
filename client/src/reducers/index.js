@@ -8,12 +8,16 @@ import initialState from './app/initialState.js';
 
 
 //import actions:
-import { SET_INITIAL_STATE, REQUEST_USER_INFO, RECEIVE_USER_INFO, GET_PROFILE, REQUEST_ALL_USERS, RECEIVE_ALL_USERS, REQUESTING_POSTS, RECEIVING_POSTS, DISPLAY_USER_PREVIEW, HIDE_USER_PREVIEW, SET_ACTIVE_POST, CLEAR_ACTIVE_POST, SET_USERPAGE_ID, SHOW_LOCK, LOCK_SUCCESS, LOCK_ERROR,TOGGLE_AFFILIATION,REQUEST_SUBMIT_POST,SUBMIT_POST_CONFIRMATION, CLEAR_USERPAGE_ID,REQUEST_ACCEPT_ALLY,REQUEST_EDIT_PRIVACY,RECEIVE_EDIT_PRIVACY,CLEAR_METADATA,SET_STORY_LINK,EDIT_POST,REQUEST_UPDATE_POST,RECEIVE_UPDATE_POST} from '../actions/index';
+import { SET_INITIAL_STATE, REQUEST_USER_INFO, RECEIVE_USER_INFO, GET_PROFILE, REQUEST_ALL_USERS, RECEIVE_ALL_USERS, REQUESTING_POSTS, RECEIVING_POSTS, DISPLAY_USER_PREVIEW, HIDE_USER_PREVIEW, SET_ACTIVE_POST, CLEAR_ACTIVE_POST, SET_USERPAGE_ID, SHOW_LOCK, LOCK_SUCCESS, LOCK_ERROR,TOGGLE_AFFILIATION,REQUEST_SUBMIT_POST,SUBMIT_POST_CONFIRMATION, CLEAR_USERPAGE_ID,REQUEST_ACCEPT_ALLY,REQUEST_EDIT_PRIVACY,RECEIVE_EDIT_PRIVACY,CLEAR_METADATA,SET_STORY_LINK,EDIT_POST,REQUEST_UPDATE_POST,RECEIVE_UPDATE_POST,REQUEST_GET_GLOBAL_NOTIFICATIONS, RECEIVE_GET_GLOBAL_NOTIFICATIONS} from '../actions/index';
 
-import { RETRIEVE_ACCEPT_ALLY,REQUEST_DELETE_POST,RETRIEVE_DELETE_POST,SET_WALL_STATE,REQUEST_POST_COMMENT,RETRIEVE_POST_COMMENT,REQUEST_DELETE_COMMENT,RETRIEVE_DELETE_COMMENT,REQUEST_LIKE_POST,RECEIVE_LIKE_POST,REQUEST_ALLY_REQ,RECEIVE_ALLY_REQ,LOGOUT_REQUEST,LOGOUT_SUCCESS,LOGOUT_FAILURE,REQUEST_UPDATE_PROFILE,RECEIVE_UPDATE_PROFILE,REQUESTING_TO_POST_PROFILE_INFO,RECEIVING_POST_CONFIRMATION,REQUEST_CANCEL_ALLIANCE,RECEIVE_CANCEL_ALLIANCE,REQUEST_LIKE_COMMENT,RECEIVE_LIKE_COMMENT,REQUEST_LINK_METADATA, RECEIVE_LINK_METADATA,REQUESTING_POST, RECEIVING_POST,REQUEST_GET_NOTIFICATIONS, RECEIVE_GET_NOTIFICATIONS,REQUEST_NOTIFICATIONS_SEEN, RETRIEVE_NOTIFICATIONS_SEEN} from '../actions/index';
+import { RETRIEVE_ACCEPT_ALLY,REQUEST_DELETE_POST,RETRIEVE_DELETE_POST,SET_WALL_STATE,REQUEST_POST_COMMENT,RETRIEVE_POST_COMMENT,REQUEST_DELETE_COMMENT,RETRIEVE_DELETE_COMMENT,REQUEST_LIKE_POST,RECEIVE_LIKE_POST,REQUEST_ALLY_REQ,RECEIVE_ALLY_REQ,LOGOUT_REQUEST,LOGOUT_SUCCESS,LOGOUT_FAILURE,REQUEST_UPDATE_PROFILE,RECEIVE_UPDATE_PROFILE,REQUESTING_TO_POST_PROFILE_INFO,RECEIVING_POST_CONFIRMATION,REQUEST_CANCEL_ALLIANCE,RECEIVE_CANCEL_ALLIANCE,REQUEST_LIKE_COMMENT,RECEIVE_LIKE_COMMENT,REQUEST_LINK_METADATA, RECEIVE_LINK_METADATA,REQUESTING_POST, RECEIVING_POST,REQUEST_GET_NOTIFICATIONS, RECEIVE_GET_NOTIFICATIONS,REQUEST_NOTIFICATIONS_SEEN, RETRIEVE_NOTIFICATIONS_SEEN,REQUEST_GLOBAL_NOTIFICATIONS_SEEN, RETRIEVE_GLOBAL_NOTIFICATIONS_SEEN} from '../actions/index';
 
 const mainApp = (state = initialState, action) => {
   switch(action.type){
+    case REQUEST_GLOBAL_NOTIFICATIONS_SEEN:
+      return globalNotificationsSeen(state,action);
+    case RETRIEVE_GLOBAL_NOTIFICATIONS_SEEN:
+      return globalNotificationsSeen(state,action);
     case REQUEST_NOTIFICATIONS_SEEN:
       return notificationsSeen(state,action);
     case RETRIEVE_NOTIFICATIONS_SEEN:
@@ -22,6 +26,10 @@ const mainApp = (state = initialState, action) => {
       return fetchNotifications(state,action);
     case RECEIVE_GET_NOTIFICATIONS:
       return fetchNotifications(state,action);
+    case REQUEST_GET_GLOBAL_NOTIFICATIONS:
+      return fetchGlobalNotifications(state,action);
+    case RECEIVE_GET_GLOBAL_NOTIFICATIONS:
+      return fetchGlobalNotifications(state,action);
     case REQUEST_UPDATE_POST:
       return updatePost(state,action);
     case RECEIVE_UPDATE_POST:
@@ -156,7 +164,7 @@ const updatePost = (state={isPosting:false,postsUpdated:false,posts:[]},action) 
 
 //get notifications
 
-const fetchNotifications = (state={notifications:{},postsUpdated:false},action) => {
+const fetchNotifications = (state={notifications:'',postsUpdated:false},action) => {
   switch(action.type) {
     case REQUEST_GET_NOTIFICATIONS:
       return {
@@ -175,20 +183,58 @@ const fetchNotifications = (state={notifications:{},postsUpdated:false},action) 
   }
 }
 
-//notifications seen
-
-const notificationsSeen = (state={notifications:{},postsUpdated:false},action) => {
+const fetchGlobalNotifications = (state={globalNotifications:'',postsUpdated:false},action) => {
   switch(action.type) {
-    case REQUEST_GET_NOTIFICATIONS:
+    case REQUEST_GET_GLOBAL_NOTIFICATIONS:
       return {
         ...state,
         isFetching:true
       }
-    case RECEIVE_GET_NOTIFICATIONS:
+    case RECEIVE_GET_GLOBAL_NOTIFICATIONS:
+      return{
+        ...state,
+        isFetching: false,
+        globalNotifications:action.results,
+        postsUpdated:true
+      }
+      default:
+        return state;
+  }
+}
+
+//notifications seen
+
+const notificationsSeen = (state={notifications:'',postsUpdated:false},action) => {
+  switch(action.type) {
+    case REQUEST_NOTIFICATIONS_SEEN:
+      return {
+        ...state,
+        isFetching:true
+      }
+    case RETRIEVE_NOTIFICATIONS_SEEN:
       return{
         ...state,
         isFetching: false,
         notifications:action.results,
+        postsUpdated:true
+      }
+      default:
+        return state;
+  }
+}
+
+const globalNotificationsSeen = (state={globalNotifications:'',postsUpdated:false},action) => {
+  switch(action.type) {
+    case REQUEST_GLOBAL_NOTIFICATIONS_SEEN:
+      return {
+        ...state,
+        isFetching:true
+      }
+    case RETRIEVE_GLOBAL_NOTIFICATIONS_SEEN:
+      return{
+        ...state,
+        isFetching: false,
+        globalNotifications:action.results,
         postsUpdated:true
       }
       default:

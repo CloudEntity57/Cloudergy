@@ -21,7 +21,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { mainApp, fetchPosts, fetchAllUsers,
 fetchUserInfo,
-saveProfile, clearUserPageId, setWallState,login,updatePost,editPost,fetchNotifications
+saveProfile, clearUserPageId, setWallState,login,updatePost,editPost,fetchNotifications,fetchGlobalNotifications
 } from '../actions/index';
 
 
@@ -40,7 +40,8 @@ class Newsfeed extends Component{
       test:'',
       stories:[],
       affiliation:this.props.affiliation_display,
-      editing:false
+      editing:false,
+      post:''
     }
   }
 
@@ -92,30 +93,35 @@ class Newsfeed extends Component{
       console.log('affiliation in newsfeed: ',affiliation);
       let fullfeed=[];
       let result;
+      this.props.fetchNotifications(user[0].userid);
+      this.props.fetchGlobalNotifications(user[0].userid);
     //editing posts:
     let post = nextProps.post;
     let id = post;
     let editing = nextProps.editing;
-    if(editing && post !==''){
+    if(editing == true && post !==''){
       console.log('post editing in newsfeed');
       this.setState({
         postedit:true
       });
+
+      window.scrollTo(0, 0);
       post = nextProps.posts.filter((val)=>{
         return val._id == id;
       });
       console.log('filtered post: ',post);
       this.setState({
-        post
+        post:post
       });
     }
-    this.props.fetchNotifications(user[0].userid);
   }
 
   componentDidUpdate(){
     let post = this.state.post;
     console.log('filtered post: ',post);
-    this.refs.editing.value = post[0].text;
+    if(this.state.postedit){
+      this.refs.editing.value = post[0].text;
+    }
   }
   updatePosts(){
     let posts=this.props.posts;
@@ -192,12 +198,13 @@ class Newsfeed extends Component{
     this.setState({
       postedit:false
     });
+    this.props.editPost('',false);
   }
   render(){
     console.log('rendering newsfeed');
 
-    let test = process.env.REACT_APP_FRONT_TEST_VAR;
-    console.log(test,' from the front end');
+    // let test = process.env.REACT_APP_FRONT_TEST_VAR;
+    // console.log(test,' from the front end');
     const profile = this.props.auth.getProfile();
     if(profile !== {}){
       console.log('render profile: ', profile);
@@ -272,7 +279,6 @@ class Newsfeed extends Component{
     //post editing modal:
     let post_edit_background = (this.state.postedit) ? (
       <div className="post-editing-modal">
-
       </div>
     ) : '';
     let post_edit_modal = (this.state.postedit) ? (
@@ -362,7 +368,8 @@ function mapDispatchToProps(dispatch){
     login,
     updatePost,
     editPost,
-    fetchNotifications
+    fetchNotifications,
+    fetchGlobalNotifications
   },dispatch);
 }
 

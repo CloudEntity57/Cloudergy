@@ -125,11 +125,8 @@ class PostHeader extends Component{
   }
   editPost(e){
     e.preventDefault();
-    console.log('editing: ',e.target.id);
-    this.props.editPost(e.target.id,true);
-    // this.setState({
-    //   editing:true
-    // });
+    console.log('editing: ',this.props.id);
+    this.props.editPost(this.props.id,true);
   }
   displayUser(e){
     console.log('displaying!');
@@ -232,7 +229,7 @@ class PostHeader extends Component{
     let linkBarLinks =  (myPost && token !=='') ?
     //links if it's my post
     (
-       <div>
+       <div id={postId}>
          <a id={postId} className="deletebar-item" onClick={this.deletePost.bind(this)} href="#">Delete</a>
          <a id={postId} className="deletebar-item" onClick={this.editPost.bind(this)} href="#">Edit</a>
        </div>
