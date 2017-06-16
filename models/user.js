@@ -7,6 +7,7 @@ var schema = new mongoose.Schema({
   last_name:String,
   username:String,
   userid:String,
+  updates:{type:Object},
   photo:String,
   largephoto:String,
   affiliation:String,

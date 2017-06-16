@@ -126,7 +126,7 @@ class PostHeader extends Component{
   editPost(e){
     e.preventDefault();
     console.log('editing: ',e.target.id);
-    this.props.editPost(e.target.id);
+    this.props.editPost(e.target.id,true);
     // this.setState({
     //   editing:true
     // });

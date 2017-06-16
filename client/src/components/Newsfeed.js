@@ -21,7 +21,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { mainApp, fetchPosts, fetchAllUsers,
 fetchUserInfo,
-saveProfile, clearUserPageId, setWallState,login,updatePost
+saveProfile, clearUserPageId, setWallState,login,updatePost,editPost,fetchNotifications
 } from '../actions/index';
 
 
@@ -78,7 +78,6 @@ class Newsfeed extends Component{
     console.log('receiving newsfeed');
     const profile = this.props.auth.getProfile();
     console.log('newsfeed profile: ',profile);
-    // componentWillReceiveProps(){
       console.log('newsfeed receive props');
       let user = nextProps.user;
       console.log('user in cdm newsfeed: ',user);
@@ -110,8 +109,9 @@ class Newsfeed extends Component{
         post
       });
     }
-
+    this.props.fetchNotifications(user[0].userid);
   }
+
   componentDidUpdate(){
     let post = this.state.post;
     console.log('filtered post: ',post);
@@ -178,11 +178,19 @@ class Newsfeed extends Component{
   }
   updatePost(e){
     console.log('we are updating: ',e.target);
-  }
-  cancelEdit(e){
-    e.preventDefault();
+    let data = {
+      id:e.target.id,
+      post:this.refs.editing.value
+    }
+    this.props.updatePost(data);
     this.setState({
-      editing:false
+      postedit:false
+    });
+    this.props.editPost('',false);
+  }
+  cancelEdit(){
+    this.setState({
+      postedit:false
     });
   }
   render(){
@@ -352,7 +360,9 @@ function mapDispatchToProps(dispatch){
     setWallState,
     push,
     login,
-    updatePost
+    updatePost,
+    editPost,
+    fetchNotifications
   },dispatch);
 }
 

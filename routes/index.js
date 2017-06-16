@@ -3,6 +3,7 @@ var router = express.Router();
 var Test = require('../models/test');
 var User = require('../models/user');
 var Post = require('../models/post');
+var Notification = require('../models/notification');
 var Metascraper = require('metascraper');
 // Metascraper.scrapeUrl('https://smartset-7a283.firebaseapp.com').then((metadata)=>{
 //   console.log('metadata is...: ',metadata);
@@ -128,6 +129,7 @@ router.get('/posts',function(req,res,next){
     // res.json(posts);
 });
 
+
 //get post metadata:
 router.post('/getmetadata/',function(req,res,next){
   console.log('url to search: ',req.body.payload);
@@ -180,14 +182,12 @@ router.post('/post',function(req,res,next){
 router.post('/updatepost',function(req,res,next){
   console.log('req body: ',req.body);
   let post = req.body.payload.post;
-
-  // let postId = req.body.payload.id
-  // console.log('postId: ',postId);
-  // Post.findOneAndUpdate({_id:postId},{$push:{text:post}},(err,result)=>{
-  //   if(err) console.log('error! ',err);
-  //   getPosts(res);
-  // });
-  // res.send();
+  let postId = req.body.payload.id
+  console.log('postId: ',postId);
+  Post.findOneAndUpdate({_id:postId},{$set:{text:post}},(err,result)=>{
+    if(err) console.log('error! ',err);
+    getPosts(res);
+  });
 });
 
 
@@ -384,6 +384,37 @@ User.findOneAndUpdate(
    });
   // res.send('success');
 });
+
+//get notifications:
+
+router.get('/notifications/:userid',function(req,res,next){
+  // getPosts(res);
+  console.log('user to update: ',req.params.userid);
+  User.find({"userid":req.params.userid},'notifications',function(err,results){
+    if(err) console.log('error: ',err);
+    console.log("this user's notifications are: ",results[0]);
+    res.json(results[0]);
+  });
+  // console.log('posts: ',posts);
+    // profile=profile.reverse();
+    // res.json(posts);
+});
+
+//notifications seen:
+
+router.post('/notificationsseen',function(req,res,next){
+  // getPosts(res);
+  console.log('user to update: ',req.body.payload);
+  User.findOneAndUpdate({"userid":req.body.payload},'notifications',function(err,results){
+    if(err) console.log('error: ',err);
+    console.log('notifications are: ',results);
+    // res.json(results[0]);
+  });
+  // console.log('posts: ',posts);
+    // profile=profile.reverse();
+    // res.json(posts);
+});
+
 
 //cancel alliance:
 router.post('/cancelalliance/',function(req,res,next){

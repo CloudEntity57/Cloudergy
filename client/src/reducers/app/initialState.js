@@ -50,6 +50,7 @@ const initialState = {
   toggleStatus:false,
   myPost:false,
   postId:'',
+  notifications:'',
   //posts:
   editing:false,
   user:[{

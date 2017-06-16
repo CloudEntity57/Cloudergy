@@ -11,7 +11,7 @@ import jquery from 'jquery';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
-import { socialApp, toggleAffiliation, fetchUserInfo, acceptAlly,login,doAuthentication } from '../actions/index';
+import { socialApp, toggleAffiliation, fetchUserInfo, acceptAlly,login,doAuthentication,fetchNotifications,notificationsSeen } from '../actions/index';
 
 class Header extends Component{
   constructor(props){
@@ -22,7 +22,8 @@ class Header extends Component{
       affiliation:'',
       previewingAlly:false,
       displaylogin:false,
-      previewingGlobal:false
+      previewingGlobal:false,
+      notifications:''
     }
   }
   componentWillMount(){
@@ -35,7 +36,6 @@ class Header extends Component{
       affiliation:this.props.affiliation_display,
       potential_allies
     });
-
   }
   componentWillReceiveProps(nextProps){
     let token = localStorage.getItem('id_token');
@@ -61,6 +61,19 @@ class Header extends Component{
     this.setState({
       user
     });
+
+    //user notifications:
+    if(nextProps.notifications !== ''){
+      let notifications = nextProps.notifications;
+      console.log('header notifications: ',notifications.notifications);
+      notifications = notifications.notifications;
+      //put all notification data in local state:
+      this.setState({
+        notifications
+      });
+    }
+
+
     // let potential_allies = this.getPotentialAllies();
     // this.setState({
     //   affiliation:this.props.affiliation,
@@ -140,29 +153,33 @@ class Header extends Component{
 
   }
   toggleAllyRequest(e){
-    console.log('toggling');
+    let user = this.props.user[0].userid
+    console.log('toggling',user);
     e.preventDefault();
     let previewingAlly = (this.state.previewingAlly) ? false : true;
     this.setState({
       previewingAlly:previewingAlly,
       previewingGlobal:false
     });
-    if(this.state.previewingAlly){
-      jquery('.invites').remove();
-    }
+    // if(this.state.previewingAlly){
+    //   jquery('.invites').remove();
+    // }
+    this.props.notificationsSeen(user);
   }
 
   toggleAlert(e){
-    console.log('toggling');
+    let user = this.props.user[0].userid
+    console.log('toggling',user);
     e.preventDefault();
     let previewingGlobal = (this.state.previewingGlobal) ? false : true;
     this.setState({
       previewingGlobal:previewingGlobal,
       previewingAlly:false
     });
-    if(this.state.previewingAlly){
-      jquery('.invites').remove();
-    }
+    // if(this.state.previewingAlly){
+    //   jquery('.invites').remove();
+    // }
+    this.props.notificationsSeen(user);
   }
   acceptAlly(e){
     e.preventDefault();
@@ -204,6 +221,7 @@ class Header extends Component{
     this.props.push('/');
   }
   render(){
+
       let token = this.state.token;
       console.log('token in header: ',token);
     // let user = (this.state.user) ? this.state.user : '';
@@ -211,7 +229,7 @@ class Header extends Component{
       let user, uid, userpic, ally_invitations_received, allyRequestNumber,username, affiliation,allyReqs;
       user = (this.props.user !=='' && this.props.token) ? this.props.user : [{userid:'',ally_invitations_received:[], allyRequestNumber,username, affiliation,allyReqs,potential_allies}];
       ally_invitations_received = user[0].ally_invitations_received;
-      allyRequestNumber = (ally_invitations_received.length > 0) ? (<div className="invites">{ally_invitations_received.length}</div>) : '';
+
       uid = '123456';
       userpic = "http://ijmhometutors.com/tutor/server/php/files/51b855e98abd7a5143c4d0176c119c0e/picture/avatar.png";
       username = 'Guest';
@@ -227,6 +245,26 @@ class Header extends Component{
       // let potential_allies = this.state.potential_allies;
       let potential_allies = this.getPotentialAllies();
         console.log('potential allies render: ',potential_allies);
+
+        //user notifications
+        if(this.state.notifications !==''){
+          let notifications = this.state.notifications;
+          console.log('notifications in render: ',notifications);
+          let n = notifications;
+          let ally_invitations_received = n.ally_invitations;
+          // allyRequestNumber = (
+          //   n.ally_invitations !==[] &&
+          //   n.ally_accepts !==[] &&
+          //   n.ally_cancels !==[] &&
+          //   n.likes !== {} &&
+          //   n.replies !== {}
+          // ) ? (<div className="invites">{ally_invitations_received.length}</div>) : '';
+          allyRequestNumber = (
+            n.read ==false
+          ) ? (<div className="invites">{ally_invitations_received.length}</div>) : '';
+        }
+        //user ally
+
 
 //ally request dropdown
         if(potential_allies.length>0 && potential_allies[0].hasOwnProperty('userid')){
@@ -370,6 +408,7 @@ function mapStateToProps(state){
   let users = state.allReducers.mainApp.users;
   let authenticated = state.allReducers.mainApp.authenticated;
   let token = state.allReducers.mainApp.token;
+  let notifications = state.allReducers.mainApp.notifications;
   return{
     previewingAlly,
     affiliation,
@@ -380,7 +419,8 @@ function mapStateToProps(state){
     profile,
     loggedIn,
     users,
-    token
+    token,
+    notifications
   }
 }
 
@@ -392,7 +432,9 @@ function mapDispatchToProps(dispatch){
     acceptAlly,
     login,
     doAuthentication,
-    push
+    push,
+    fetchNotifications,
+    notificationsSeen
   },dispatch);
 }
 

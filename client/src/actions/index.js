@@ -37,10 +37,10 @@ export const setActivePost = (postid) =>({
 })
 
 export const EDIT_POST = "EDIT_POST";
-export const editPost = (postid) =>({
+export const editPost = (postid,boolean) =>({
   type:EDIT_POST,
   post:postid,
-  editing:true
+  editing:boolean
 })
 
 export const SET_STORY_LINK = "SET_STORY_LINK";
@@ -148,38 +148,15 @@ let postApiCall = (reqType, recType, url1,url2) => {
     return postFunc;
 }
 
+//update post:
+export const REQUEST_UPDATE_POST = 'REQUEST_UPDATE_POST';
+export const RECEIVE_UPDATE_POST = 'RECEIVE_UPDATE_POST';
+
+export const updatePost= postApiCall(REQUEST_UPDATE_POST,RECEIVE_UPDATE_POST,apiRoot+"updatepost/","");
+
 //get link metadata:
 export const REQUEST_LINK_METADATA = 'REQUEST_LINK_METADATA';
 export const RECEIVE_LINK_METADATA = 'RECEIVE_LINK_METADATA';
-
-let apiDataCall = (reqType, recType, url1,url2) => {
-    const reqFunc = (arg) => ({
-        type: reqType,
-        arg
-    })
-
-    const recFunc = (arg, data) => ({
-        type: recType,
-        arg,
-        results:data,
-        receivedAt:Date.now()
-    })
-
-    const fetchFunc = arg => dispatch =>{
-      console.log('action creator go');
-        dispatch(reqFunc(arg))
-        console.log('argument: ',arg);
-        return axios.get(url1,
-          {
-            params:{
-              word:arg
-            }
-          })
-        .then(response => response.json())
-        .then((json) => {console.log('action creator json: ',json); dispatch(recFunc(arg,json))})
-    }
-    return fetchFunc;
-}
 
 // export const getMetadata = apiDataCall(REQUEST_LINK_METADATA, RECEIVE_LINK_METADATA,apiRoot+'getmetadata/','');
 export const getMetadata= postApiCall(REQUEST_LINK_METADATA,RECEIVE_LINK_METADATA,apiRoot+"getmetadata/","");
@@ -243,8 +220,17 @@ export const REQUEST_ACCEPT_ALLY = "REQUEST_ACCEPT_ALLY"
 export const RETRIEVE_ACCEPT_ALLY = "RETRIEVE_ACCEPT_ALLY"
 export const acceptAlly = postApiCall(REQUEST_ACCEPT_ALLY, RETRIEVE_ACCEPT_ALLY,apiRoot+"acceptally");
 
+export const REQUEST_GET_NOTIFICATIONS = "REQUEST_GET_NOTIFICATIONS";
+export const RECEIVE_GET_NOTIFICATIONS = "RECEIVE_GET_NOTIFICATIONS";
+
+export const fetchNotifications = apiCall(REQUEST_GET_NOTIFICATIONS, RECEIVE_GET_NOTIFICATIONS,apiRoot+'notifications/','');
+
 export const REQUEST_USER_INFO = "REQUEST_USER_INFO";
 export const RECEIVE_USER_INFO = "RECEIVE_USER_INFO";
+
+export const REQUEST_NOTIFICATIONS_SEEN = "REQUEST_NOTIFICATIONS_SEEN"
+export const RETRIEVE_NOTIFICATIONS_SEEN = "RETRIEVE_NOTIFICATIONS_SEEN"
+export const notificationsSeen = postApiCall(REQUEST_NOTIFICATIONS_SEEN, RETRIEVE_NOTIFICATIONS_SEEN,apiRoot+"notificationsseen");
 
 export const fetchUserInfo = apiCall(REQUEST_USER_INFO, RECEIVE_USER_INFO,apiRoot+'user/','');
 
