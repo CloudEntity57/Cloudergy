@@ -11,13 +11,12 @@ import jquery from 'jquery';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
-import { socialApp, toggleAffiliation, fetchUserInfo, acceptAlly,login,doAuthentication,fetchNotifications,fetchGlobalNotifications,notificationsSeen,globalNotificationsSeen } from '../actions/index';
+import { socialApp, toggleAffiliation, fetchUserInfo,fetchPosts, acceptAlly,login,doAuthentication,fetchNotifications,fetchGlobalNotifications,notificationsSeen,globalNotificationsSeen,clearLikeNotify } from '../actions/index';
 
 class Header extends Component{
   constructor(props){
     super(props);
     this.props.doAuthentication();
-    // this.props.fetchUserInfo();
     this.state={
       affiliation:'',
       previewingAlly:false,
@@ -82,6 +81,9 @@ class Header extends Component{
       });
     }
 
+
+    let likeposts = (nextProps.posts) ? nextProps.posts : '';
+    console.log('likeposts: ',likeposts);
 
     // let potential_allies = this.getPotentialAllies();
     // this.setState({
@@ -161,35 +163,7 @@ class Header extends Component{
     //create redux for ^^^^
 
   }
-  toggleAllyRequest(e){
-    let user = this.props.user[0].userid
-    console.log('toggling',user);
-    e.preventDefault();
-    let previewingAlly = (this.state.previewingAlly) ? false : true;
-    this.setState({
-      previewingAlly:previewingAlly,
-      previewingGlobal:false
-    });
-    // if(this.state.previewingAlly){
-    //   jquery('.invites').remove();
-    // }
-    this.props.notificationsSeen(user);
-  }
 
-  toggleAlert(e){
-    let user = this.props.user[0].userid
-    console.log('toggling',user);
-    e.preventDefault();
-    let previewingGlobal = (this.state.previewingGlobal) ? false : true;
-    this.setState({
-      previewingGlobal:previewingGlobal,
-      previewingAlly:false
-    });
-    // if(this.state.previewingAlly){
-    //   jquery('.invites').remove();
-    // }
-    this.props.globalNotificationsSeen(user);
-  }
 
   acceptAlly(e){
     e.preventDefault();
@@ -230,16 +204,59 @@ class Header extends Component{
   goToNews(e){
     this.props.push('/');
   }
+
+  toggleAllyRequest(e){
+    let user = this.props.user[0].userid
+    console.log('toggling',user);
+    e.preventDefault();
+    let previewingAlly = (this.state.previewingAlly) ? false : true;
+    this.setState({
+      previewingAlly:previewingAlly,
+      previewingGlobal:false
+    });
+    // if(this.state.previewingAlly){
+    //   jquery('.invites').remove();
+    // }
+    this.props.globalNotificationsSeen(user);
+  }
+
+  toggleAlert(e){
+    let user = this.props.user[0].userid
+    console.log('toggling',user);
+    e.preventDefault();
+    let previewingGlobal = (this.state.previewingGlobal) ? false : true;
+    this.setState({
+      previewingGlobal:previewingGlobal,
+      previewingAlly:false
+    });
+
+    this.props.notificationsSeen(user);
+  }
+
+  clearLikeNotify(e){
+    e.preventDefault();
+    console.log('clearing like notify: ',e.target.id);
+    this.setState({
+      previewingGlobal:false,
+      previewingAlly:false
+    });
+    let data = {
+      liked_id:e.target.id,
+      userid:this.props.user[0].userid
+    }
+    this.props.clearLikeNotify(data);
+  }
   render(){
 
+    let likeposts = (this.props.posts !==undefined) ? this.props.posts : '';
       let token = this.state.token;
       console.log('token in header: ',token);
     // let user = (this.state.user) ? this.state.user : '';
     // if(this.props.user !==''){
       let user, uid, userpic, ally_invitations_received, allyRequestNumber,globalUpdateNumber,username, affiliation,allyReqs;
       user = (this.props.user !=='' && this.props.token) ? this.props.user : [{userid:'',ally_invitations_received:[], allyRequestNumber,username, affiliation,allyReqs,potential_allies}];
-      let likenumber = 0;
       ally_invitations_received = user[0].ally_invitations_received;
+      let likeNotifications;
 
       uid = '123456';
       userpic = "http://ijmhometutors.com/tutor/server/php/files/51b855e98abd7a5143c4d0176c119c0e/picture/avatar.png";
@@ -257,7 +274,8 @@ class Header extends Component{
       let potential_allies = this.getPotentialAllies();
         console.log('potential allies render: ',potential_allies);
 
-        //user ally notifications
+        //red user ally notifications icon:
+
         if(this.state.notifications !==''){
           let notifications = this.state.notifications;
           console.log('notifications in render: ',notifications);
@@ -269,55 +287,166 @@ class Header extends Component{
           ) ? (<div className="invites">{invites}</div>) : '';
 
         }
-        //user global notifications
-        if(this.state.globalNotifications !==''){
+        //red user global notifications icon:
+
+        let likenumber=0;
+        let replynumber=0;
+
+        let liker_list = [];
+        let replier_list = [];
+        let likes_list = [];
+        if(this.state.globalNotifications !=='' && this.props.token){
           let globalNotifications = this.state.globalNotifications;
           console.log('globalNotifications in render: ',globalNotifications);
           let n = globalNotifications;
-          let ally_invitations_received = n.ally_invitations;
           let likes = n.likes;
+          let replies = n.replies;
+          console.log('replies in render',replies);
           console.log('likes in render: ',likes);
-          for(let val in likes){
-            console.log('like val: ',val);
-            likenumber++;
+          //make a list of liker objects and find number of likes:
+          likes.map((val)=>{
+            // console.log('like val: ',val);
+            if(val.read ==false){
+              likenumber++;
+            }
+            // console.log('users in header render: ',this.props.users);
+            liker_list= this.props.users.filter((user)=>{
+              if(user.userid == val.liker){
+                user.thing_liked = val.id
+                return user;
+              }
+              // return user.userid == val.liker;
+            });
+          //get the list of likes instead:
+            likes_list = n.likes;
+            // console.log('liker in render: ',liker);
+          });
+          // console.log('liker list in render: ',liker_list);
+          for(let val in replies){
+            // console.log('like val: ',val);
+            replynumber++;
           };
+          let updatesnumber = likenumber;
           globalUpdateNumber = (
-            n.read==false
-          ) ? (<div className="invites">{likenumber}</div>) : '';
+            updatesnumber>0
+          ) ? (<div className="global-invites">{updatesnumber}</div>) : '';
         }
-        //user ally
 
 
-//ally request dropdown
-        if(potential_allies.length>0 && potential_allies[0].hasOwnProperty('userid')){
-        allyReqs = potential_allies.map((val)=>{
-          console.log('user val: ',val);
-          if(!val) return '';
-            return (
-              <div id={val.userid} className="ally-invitation-tab clearfix">
-                <div className="col-xs-12">
-                  {val.username} would like to be your ally!
-                </div>
-                <div className="col-xs-12">
-        {/* Accept button */}
-                <a onClick={this.acceptAlly.bind(this)} href="#">
-                  <span id={val.userid} className='accept-button'>
-                    Accept
-                  </span>
-                </a>
-        {/* Ignore button */}
-                <a onClick={this.ignoreRequest.bind(this)} href="#">
-                  <span id={val.userid} className='accept-button'>
-                    Ignore
-                  </span>
-                </a>
-                <UserPic userid={val.userid} />
-              </div>
-            </div>
-            );
-        });
-      }
-        console.log('allyreqs: ',allyReqs);
+        //global like alerts dropdown:
+              //   if(likenumber>0 && liker_list[0].hasOwnProperty('userid')){
+              //   likeNotifications = liker_list.map((val)=>{
+              //     console.log('user val: ',val);
+              //     if(!val) return '';
+              //       return (
+              //         <div id={val.userid} className="ally-invitation-tab clearfix">
+              //           <div className="col-xs-12">
+              //             {val.username} likes
+              //           </div>
+              //           <div className="col-xs-12">
+              //           <a onClick={this.clearLikeNotify.bind(this)} href="#">
+              //             <span id={val.thing_liked} className='accept-button'>
+              //               Ok
+              //             </span>
+              //           </a>
+              //           <UserPic userid={val.userid} />
+              //         </div>
+              //       </div>
+              //       );
+              //   });
+              // }
+              console.log('likeposts: ',likeposts);
+              if(likes_list.length>0 && this.props.token){
+              likeNotifications = likes_list.map((val)=>{
+                let username = this.props.users.filter((user)=>{
+                  return user.userid == val.liker;
+                });
+
+                let thing_liked = this.props.posts.filter((foo)=>{
+                  // console.log('thinglist: ',foo);
+                  if(foo._id == val.post){
+                    // console.log('thinglist match',foo);
+                     return foo;
+                   }
+                });
+                thing_liked = thing_liked[0];
+                // console.log('thing liked: ',thing_liked);
+                // console.log('username: ',username);
+                // console.log('like val: ',val);
+                if(!val) return '';
+                  return (
+                    <div id={val.liker} className="ally-invitation-tab clearfix">
+                    <div className="col-xs-3"></div>
+                      <div className="like-notification col-xs-12">
+                        {username[0].username} likes {thing_liked.text}
+                      </div>
+                      <div className="col-xs-12">
+                      <a onClick={this.clearLikeNotify.bind(this)} href="#">
+                        <span id={val.id} className='ok-button'>
+                          Ok
+                        </span>
+                      </a>
+                      <UserPic userid={val.liker} />
+                    </div>
+                  </div>
+                  );
+              });
+            }
+
+        //ally request dropdown
+                if(potential_allies.length>0 && potential_allies[0].hasOwnProperty('userid') && this.props.token){
+                allyReqs = potential_allies.map((val)=>{
+                  console.log('user val: ',val);
+                  if(!val) return '';
+                    return (
+                      <div id={val.userid} className="ally-invitation-tab clearfix">
+                        <div className="col-xs-12">
+                          {val.username} would like to be your ally!
+                        </div>
+                        <div className="col-xs-12">
+                {/* Accept button */}
+                        <a onClick={this.acceptAlly.bind(this)} href="#">
+                          <span id={val.userid} className='accept-button'>
+                            Accept
+                          </span>
+                        </a>
+                {/* Ignore button */}
+                        <a onClick={this.ignoreRequest.bind(this)} href="#">
+                          <span id={val.userid} className='accept-button'>
+                            Ignore
+                          </span>
+                        </a>
+                        <UserPic userid={val.userid} />
+                      </div>
+                    </div>
+                    );
+                });
+              }
+                console.log('allyreqs: ',allyReqs);
+
+
+        let allyPreviewText = (ally_invitations_received.length>0) ? 'Ally Requests' : 'No New Ally Requests';
+        let globalPreviewText = (likenumber>0) ? 'Latest Activity' : 'All caught up!';
+        let globalPreview = (this.state.previewingAlly) ?
+        (
+          <div key="./Header" className="ally-request-dropdown">
+            {globalPreviewText}
+            {likeNotifications}
+          </div>
+        ) : '';
+        let allyPreview = (this.state.previewingGlobal) ?
+        (
+          <div key="./Header" className="ally-request-dropdown">
+            {allyPreviewText}
+            {allyReqs}
+          </div>
+        ) : '';
+        console.log('aff in render: ',affiliation);
+        console.log('user pic: ',userpic);
+        let userlink = "/user/"+uid;
+
+
+
 
 
   // potential_allies = this.props.user[0].potential_allies;
@@ -326,24 +455,7 @@ class Header extends Component{
 
     console.log('userpic render: ',userpic);
 
-    let previewText = (ally_invitations_received.length>0) ? 'Ally Requests' : 'No New Updates';
-    let allyPreview = (this.state.previewingAlly) ?
-    (
-      <div key="./Header" className="ally-request-dropdown">
-        {previewText}
-        {allyReqs}
-      </div>
-    ) : '';
-    let globalPreview = (this.state.previewingGlobal) ?
-    (
-      <div key="./Header" className="ally-request-dropdown">
-        {previewText}
-        {allyReqs}
-      </div>
-    ) : '';
-    console.log('aff in render: ',affiliation);
-    console.log('user pic: ',userpic);
-    let userlink = "/user/"+uid;
+
     // let userimg = (this.props.profile.hasOwnProperty('name')) ? ( <img className="user-pic" src={userpic} alt="user pic" /> ) : '';
 
     let loginlinks = (this.state.displaylogin) ? (
@@ -377,14 +489,14 @@ class Header extends Component{
         <div className="ally-request-holder">
           <a onClick={this.toggleAllyRequest.bind(this)} href="#" className="fa fa-globe">
           </a>
-          {allyRequestNumber}
-          {allyPreview}
+          {globalUpdateNumber}
+          {globalPreview}
         </div>
         <div className="ally-request-holder">
           <a onClick={this.toggleAlert.bind(this)} href="#" className="fa fa-handshake-o">
           </a>
-          {globalUpdateNumber}
-          {globalPreview}
+          {allyRequestNumber}
+          {allyPreview}
         </div>
       </span>
     );
@@ -432,6 +544,7 @@ function mapStateToProps(state){
   let token = state.allReducers.mainApp.token;
   let notifications = state.allReducers.mainApp.notifications;
   let globalNotifications = state.allReducers.mainApp.globalNotifications;
+  let posts = state.allReducers.mainApp.posts;
   return{
     previewingAlly,
     affiliation,
@@ -444,7 +557,8 @@ function mapStateToProps(state){
     users,
     token,
     notifications,
-    globalNotifications
+    globalNotifications,
+    posts
   }
 }
 
@@ -452,6 +566,7 @@ function mapDispatchToProps(dispatch){
   return bindActionCreators({
     socialApp,
     toggleAffiliation,
+    fetchPosts,
     fetchUserInfo,
     acceptAlly,
     login,
@@ -460,7 +575,8 @@ function mapDispatchToProps(dispatch){
     fetchNotifications,
     fetchGlobalNotifications,
     notificationsSeen,
-    globalNotificationsSeen
+    globalNotificationsSeen,
+    clearLikeNotify
   },dispatch);
 }
 

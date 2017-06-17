@@ -183,7 +183,7 @@ class UserHeader extends Component{
         </div>
         <ul className="user-nav">
         <a href="#"><li>Posts</li></a>
-        <a href="#"><li>About</li></a>
+        {/* <a href="#"><li>About</li></a> */}
         {/* <a href="#"><li>Allies</li></a> */}
         { allybutton }
         </ul>

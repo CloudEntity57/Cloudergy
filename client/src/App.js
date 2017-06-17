@@ -25,7 +25,7 @@ console.log('auth : ', auth);
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { socialApp, fetchUserInfo, fetchPosts, saveProfile,createNewUser, fetchAllUsers,doAuthentication,logoutUser } from './actions/index';
+import { socialApp, fetchUserInfo, fetchPosts, saveProfile,createNewUser, fetchAllUsers,doAuthentication,logoutUser,createNotifications } from './actions/index';
 import { push } from 'connected-react-router';
 
 // validate authentication for private routes
@@ -206,7 +206,8 @@ function mapDispatchToProps(dispatch){
     fetchAllUsers,
     doAuthentication,
     fetchPosts,
-    logoutUser
+    logoutUser,
+    createNotifications
   },dispatch);
 }
 

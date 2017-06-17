@@ -148,6 +148,13 @@ let postApiCall = (reqType, recType, url1,url2) => {
     return postFunc;
 }
 
+//clear like notify:
+export const REQUEST_CLEAR_LIKE_NOTIFY = 'REQUEST_CLEAR_LIKE_NOTIFY';
+export const RECEIVE_CLEAR_LIKE_NOTIFY = 'RECEIVE_CLEAR_LIKE_NOTIFY';
+
+export const clearLikeNotify= postApiCall(REQUEST_CLEAR_LIKE_NOTIFY,RECEIVE_CLEAR_LIKE_NOTIFY,apiRoot+"clearlike/","");
+
+
 //update post:
 export const REQUEST_UPDATE_POST = 'REQUEST_UPDATE_POST';
 export const RECEIVE_UPDATE_POST = 'RECEIVE_UPDATE_POST';
@@ -233,6 +240,8 @@ export const fetchGlobalNotifications = apiCall(REQUEST_GET_GLOBAL_NOTIFICATIONS
 export const REQUEST_USER_INFO = "REQUEST_USER_INFO";
 export const RECEIVE_USER_INFO = "RECEIVE_USER_INFO";
 
+export const fetchUserInfo = apiCall(REQUEST_USER_INFO, RECEIVE_USER_INFO,apiRoot+'user/','');
+
 export const REQUEST_NOTIFICATIONS_SEEN = "REQUEST_NOTIFICATIONS_SEEN"
 export const RETRIEVE_NOTIFICATIONS_SEEN = "RETRIEVE_NOTIFICATIONS_SEEN"
 export const notificationsSeen = postApiCall(REQUEST_NOTIFICATIONS_SEEN, RETRIEVE_NOTIFICATIONS_SEEN,apiRoot+"notificationsseen");
@@ -241,7 +250,13 @@ export const REQUEST_GLOBAL_NOTIFICATIONS_SEEN = "REQUEST_GLOBAL_NOTIFICATIONS_S
 export const RETRIEVE_GLOBAL_NOTIFICATIONS_SEEN = "RETRIEVE_GLOBAL_NOTIFICATIONS_SEEN"
 export const globalNotificationsSeen = postApiCall(REQUEST_GLOBAL_NOTIFICATIONS_SEEN, RETRIEVE_GLOBAL_NOTIFICATIONS_SEEN,apiRoot+"globalnotificationsseen");
 
-export const fetchUserInfo = apiCall(REQUEST_USER_INFO, RECEIVE_USER_INFO,apiRoot+'user/','');
+//create notifications:
+export const REQUEST_CREATE_NOTIFICATIONS = 'REQUEST_CREATE_NOTIFICATIONS';
+export const CREATE_NOTIFICATIONS_CONFIRMATION = 'CREATE_NOTIFICATIONS_CONFIRMATION';
+
+export const createNotifications =
+postApiCall(REQUEST_CREATE_NOTIFICATIONS,CREATE_NOTIFICATIONS_CONFIRMATION,apiRoot+"createnotifications/","");
+
 
 export const REQUEST_ALL_USERS = "REQUEST_ALL_USERS";
 export const RECEIVE_ALL_USERS = "RECEIVE_ALL_USERS";

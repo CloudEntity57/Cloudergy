@@ -20,17 +20,23 @@ header{
   .invites:nth-child(1){
     background-color:orange !important;
   }
-  .invites{
+  .invites,.global-invites{
     height:15px;
     background-color:red;
     font-size:.75em;
     color:white;
     position:absolute;
-    top:0px;
-    right:8px;
     padding:3px;
     line-height:1em;
     border-radius:15px;
+  }
+  .invites{
+    top:0px;
+    right:5px;
+  }
+  .global-invites{
+    top:0px;
+    right:0px;
   }
   .site-title{
     font-family:'Baloo Paaji',cursive;
@@ -131,17 +137,32 @@ body{
   z-index: 5;
 }
 .post-to-edit{
+  .edit-post-header{
+    background-color: #f7f7f7;
+    height:50px;
+    padding:1em 1em;
+    border-bottom: 1px solid lightgrey;
+    font-weight: bold;
+  }
+  border-radius: 2.5px;
   position: absolute;
-  padding: 10px;
+  padding: 0px;
   top:25vh;
   left:30vw;
   min-height: 30vh;
   width: 40vw;
   z-index: 10;
-  background-color: lightgrey;
+  background-color: white;
   textarea{
-    width: 100%;
+    width: 90%;
     height:30vh;
+    border:none;
+    margin:10px;
+  }
+  .button-area{
+    display: flex;
+    justify-content: space-between;
+    padding:1em;
   }
 }
 .comment-edit{
@@ -172,6 +193,10 @@ body{
 }
 .ally-request-holder{
   position: relative;
+  // .fa-globe{
+  //   position: absolute;
+  //   right:0px;
+  // }
   a{
     &:hover{
       color:black;
@@ -251,6 +276,8 @@ body{
 }
 .ally-request-dropdown{
   min-height:50px;
+  max-height: 90vh;
+  overflow-y:scroll;
   color:black;
   box-shadow: 5px 5px 5px gray;
   position:absolute;
@@ -294,6 +321,22 @@ body{
     background-color:gray;
     color:white;
   }
+}
+.ok-button{
+  width:75px;
+  height: 25px;
+  background-color:#c1bebe;
+  padding:2px 5px;
+  margin-right: 0px;
+  border:1px solid gray;
+  &:hover{
+    background-color:gray;
+    color:white;
+  }
+}
+.like-notification{
+  padding-right:100px !important;
+  word-wrap: break-word;
 }
 .post-header-deleteicon{
   position: relative;
@@ -483,6 +526,9 @@ body{
 .story-source{
   font-size:.6em;
   margin-left:5px;
+  .fa-share{
+    margin-right:2px;
+  }
 }
 .story-title{
   margin-bottom:20px;

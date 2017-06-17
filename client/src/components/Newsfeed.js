@@ -95,6 +95,7 @@ class Newsfeed extends Component{
       let result;
       this.props.fetchNotifications(user[0].userid);
       this.props.fetchGlobalNotifications(user[0].userid);
+      // this.props.fetchAllUsers('');
     //editing posts:
     let post = nextProps.post;
     let id = post;
@@ -248,8 +249,8 @@ class Newsfeed extends Component{
     console.log('there are ',num_users,' users on CouchPolitics and user has ',num_allies,' allies');
 
     console.log('ally rank: ',ally_rank);
-    let allies_barheight = (100/(num_users-1))*num_allies;
-    let users_barheight = (100/(num_users-1))*((num_users-1)-num_allies);
+    let allies_barheight = ((100/(num_users-1))*num_allies <101) ? (100/(num_users-1))*num_allies : 0;
+    let users_barheight = ((100/(num_users-1))*((num_users-1)-num_allies) <101) ? ((100/(num_users-1))*((num_users-1)-num_allies)) : 0;
     let usersClass='users-bar '+this.props.user[0].affiliation;
     let usersBar = (<div className={usersClass} style={{height:allies_barheight+"px"}}></div>);
     let alliesBar = (<div className='allies-bar' style={{height:users_barheight+"px"}}></div>);
@@ -283,10 +284,13 @@ class Newsfeed extends Component{
     ) : '';
     let post_edit_modal = (this.state.postedit) ? (
       <div className="post-to-edit">
+        <div className="edit-post-header">Edit Post</div>
         <form>
           <textarea ref="editing" />
-          <div onClick = {this.cancelEdit.bind(this)} className = "btn btn-default">Cancel</div>
-          <div id={this.state.post[0]._id} onClick = {this.updatePost.bind(this)} className = "btn btn-primary">Update</div>
+          <div className='button-area'>
+            <div onClick = {this.cancelEdit.bind(this)} className = "btn btn-default">Cancel</div>
+            <div id={this.state.post[0]._id} onClick = {this.updatePost.bind(this)} className = "btn btn-primary">Update</div>
+          </div>
         </form>
       </div>
     ) : '';
