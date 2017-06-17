@@ -49,7 +49,7 @@ router.get('/user/:userid',function(req,res,next){
 
 //create user
 router.post('/user',function(req,res,next){
-  let user = req.body;
+  let user = req.body.payload;
   let newPost = new User(user);
   newPost.save(function(err,success){
     if(err) console.log('error: ',err);
@@ -57,19 +57,21 @@ router.post('/user',function(req,res,next){
   console.log('data you sent DB: ',user);
 });
 
-//create user
+//create notifications for new user
 router.post('/notification',function(req,res,next){
-  let user = req.body;
+  let user = req.body.payload;
   let newPost = new User(user);
+  console.log('new user: ',newPost);
   newPost.save(function(err,success){
     if(err) console.log('error: ',err);
+    res.json(success);
   });
   console.log('data you sent DB: ',user);
 });
 
-//create user
+//create global notifications for new user
 router.post('/globalnotification',function(req,res,next){
-  let user = req.body;
+  let user = req.body.payload;
   let newPost = new User(user);
   newPost.save(function(err,success){
     if(err) console.log('error: ',err);
@@ -293,20 +295,38 @@ router.post('/likepost',function(req,res,next){
   let post = req.body.payload;
   console.log('post: ',post.post,', ',post.liker);
   let liker = post.liker;
+  let newpal = post.liker;
+  let likedpost = post.post;
   //find post, check if user already likes post and either add user to 'likers' array or remove user; thus toggling the like.
   Post.find({_id:post.post},'',(err,entry)=>{
+    console.log('entry: ',entry);
     if(err) console.log('error: ',err);
     let likers = entry[0].likers;
     let index=likers.indexOf(liker);
     console.log('liker: ',index);
     if(index === -1){
-      Post.findOneAndUpdate({_id:post.post},{$push:{likers:post.liker}},(err,post)=>{
-        console.log('post is now: ',post);
+      Post.findOneAndUpdate({_id:likedpost},{$push:{likers:liker}},(err,nextpost)=>{
+        console.log('post found: ',nextpost.uid);
+        let random = Math.random();
+        let data = {
+          id:random,
+          liker:newpal,
+          post:likedpost,
+          read:false
+        }
+        GlobalNotification.findOneAndUpdate({userid:nextpost.uid},{$push:{likes:data}},function(err,note){
+          if(err) console.log('error: ',err);
+          console.log('liked notification: ',note);
+        });
         getPosts(res);
       });
     }else{
-      Post.findOneAndUpdate({_id:post.post},{$pull:{likers:post.liker}},(err,post)=>{
-        console.log('post is now: ',post);
+      Post.findOneAndUpdate({_id:likedpost},{$pull:{likers:liker}},(err,newpost)=>{
+        console.log('post is now: ',newpost);
+        GlobalNotification.findOneAndUpdate({userid:newpost.uid},{$pull:{likes:{liker:liker}}},function(err,note){
+          if(err) console.log('error: ',err);
+          console.log('unliked notification: ',note);
+        });
         getPosts(res);
       });
     }
@@ -405,7 +425,11 @@ User.findOneAndUpdate(
      console.log('user: ',friend);
      res.json([friend]);
    });
-  // res.send('success');
+//send them an ally notification
+  Notification.findOneAndUpdate({"userid":target_ally},{"$push":{"ally_invitations":userId},"$set":{"read":false}},{"new":true,"upsert":true},function(err,notification){
+    if(err) console.log('error! ',err);
+    console.log('potential ally notifications: ',notification);
+  });
 });
 
 //get notifications:
@@ -430,7 +454,7 @@ router.get('/globalnotifications/:userid',function(req,res,next){
   console.log('user to update: ',req.params.userid);
   GlobalNotification.find({"userid":req.params.userid},'',function(err,results){
     if(err) console.log('error: ',err);
-    console.log("this user's global notifications are: ",results[0]);
+    // console.log("this user's global notifications are: ",results[0]);
     res.json(results[0]);
   });
   // console.log('posts: ',posts);
@@ -444,7 +468,7 @@ router.post('/notificationsseen',function(req,res,next){
   console.log('user to update: ',req.body.payload);
   Notification.findOneAndUpdate({"userid":req.body.payload},{"read":true},function(err,results){
     if(err) console.log('error: ',err);
-    console.log('notifications are: ',results);
+    // console.log('notifications are: ',results);
     res.json(results);
   });
 });
@@ -452,11 +476,65 @@ router.post('/notificationsseen',function(req,res,next){
 //global notifications seen:
 
 router.post('/globalnotificationsseen',function(req,res,next){
-  console.log('user to update: ',req.body.payload);
-  GlobalNotification.findOneAndUpdate({"userid":req.body.payload},{"read":true},function(err,results){
+  // console.log('user to update: ',req.body.payload);
+  // GlobalNotification.findOneAndUpdate({"userid":req.body.payload},{"read":true},function(err,results){
+  //   if(err) console.log('error: ',err);
+  //   // console.log('global notifications are: ',results);
+  //   res.json(results);
+  // });
+  GlobalNotification.find({userid:req.body.payload},{},function(err,notes){
+    if(err) console.log('error - ',err);
+    console.log('notes: ',notes);
+    likes = notes[0].likes.map((val)=>{
+      console.log('like: ',val);
+      val.read=true;
+      return val;
+    });
+      GlobalNotification.findOneAndUpdate({userid:req.body.payload},{$set:{likes:likes}},{new:true,upsert:true},function(err,results){
+        if(err) console.log('error: ',err);
+        console.log('global notifications are: ',results);
+        res.json(results);
+      });
+    });
+  });
+
+//create notifications:
+
+router.post('/createnotifications',function(req,res,next){
+  console.log('notification to create: ',req.body.payload);
+  let data = req.body.payload;
+  let newNote = new Notification(data);
+  newNote.save(function(err,note){
+    if(err) console.log('error - ',err);
+    console.log('notification created: ',note);
+    res.json(note);
+  });
+});
+
+//create notifications:
+router.post('/createglobalnotifications',function(req,res,next){
+  console.log('notification to create: ',req.body.payload);
+  let data = req.body.payload;
+  let newNote = new GlobalNotification(data);
+  newNote.save(function(err,note){
+    if(err) console.log('error - ',err);
+    console.log('notification created: ',note);
+    res.json(note);
+  });
+});
+
+
+//remove (clear) like notify for individual instance:
+
+router.post('/clearlike',function(req,res,next){
+  console.log('like to clear: ',req.body.payload);
+  let likedid = parseFloat(req.body.payload.liked_id);
+  console.log('likedid: ',likedid);
+  let userid = req.body.payload.userid;
+  GlobalNotification.findOneAndUpdate({userid:userid},{$pull:{likes:{id:likedid}}},function(err,note){
     if(err) console.log('error: ',err);
-    console.log('global notifications are: ',results);
-    res.json(results);
+    console.log('remaining notes now: ',note);
+    res.json(note);
   });
 });
 
@@ -480,6 +558,10 @@ router.post('/cancelalliance/',function(req,res,next){
          if(err) {console.log('error! ',err);}
          console.log('updated ally list: ',ally.allies);
        });
+  });
+  Notification.findOneAndUpdate({"userid":allyid},{"$push":{"ally_cancels":userid},"read":false},{"new":true,"upsert":true},function(err,res){
+    if(err) console.log('error! ',err);
+    console.log('friendship canceled with ',allyid,', ',res);
   });
   //remove ally from your list:
   User.find({"userid":userid},'allies',(err,val)=>{
@@ -538,6 +620,11 @@ router.post('/acceptally',function(req,res,next){
           });
       }
     }
+  });
+  //notify new ally of invitation acceptance:
+  Notification.findOneAndUpdate({"userid":newAlly},{"$push":{"ally_accepts":userId}},{"new":true,"upsert":true},function(err,res){
+    if(err) console.log('error: ',err);
+    console.log('new ally ',newAlly,' notified of your acceptance');
   });
 //remove ally's id from your received invitations list:
   User.find({"userid":userId},'ally_invitations_received',(err,val)=>{

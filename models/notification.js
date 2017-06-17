@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 
 var schema = new mongoose.Schema({
     userid: {type:String, required:true},
-    ally_invitation: {type:Array},
+    ally_invitations: {type:Array},
     ally_accepts: {type:Array},
     ally_cancels: {type:Array},
     read: {type:Boolean}

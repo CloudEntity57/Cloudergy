@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 
 var schema = new mongoose.Schema({
     userid: {type:String, required:true},
-    likes: {type:Object},
+    likes: {type:Array},
     replies: {type:Object},
     read: {type:Boolean}
 });
