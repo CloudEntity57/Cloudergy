@@ -244,7 +244,10 @@ class Posts extends Component{
         "likes":0
       }]
     }
-    this.scourMetadata(postText);
+    this.setState({
+      submit_post:post
+    });
+    this.scourMetadata(post);
     console.log('post: ',post);
     // if(this.props.token){
     //   this.props.submitPost(post);
