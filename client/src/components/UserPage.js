@@ -12,7 +12,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { mainApp,fetchPosts, fetchAllUsers,
 fetchUserInfo,
-saveProfile, clearUserPageId, setWallState } from '../actions/index';
+saveProfile, clearUserPageId, setWallState, fetchNotifications,fetchGlobalNotifications } from '../actions/index';
 
 class UserPage extends Component{
   constructor(props){
@@ -49,6 +49,7 @@ class UserPage extends Component{
     this.configureUser(clientID,userid);
 
   }
+
   updatePosts(){
     let posts=this.props.posts;
     console.log('updating!!!');
@@ -82,6 +83,11 @@ class UserPage extends Component{
     let nextAccountId = (this.props.user.length > 0) ? this.props.user[0].userid : '';
     this.configureUser(userPageid,nextAccountId);
     //remove currentUserId
+    let user = nextProps.user;
+    this.props.fetchNotifications(user[0].userid);
+    this.props.fetchGlobalNotifications(user[0].userid);
+    let notifications = nextProps.notifications;
+    let globalNotifications = nextProps.globalNotifications;
 }
 configureUser(postUserId,currentuser){
 
@@ -218,6 +224,8 @@ function mapStateToProps(state,ownProps){
   let wall = state.wall;
   let auth = state.auth;
   let profile = state.profile;
+  let notifications = state.notifications;
+  let globalNotifications = state.globalNotifications;
   return{
     user,
     users,
@@ -235,7 +243,9 @@ function mapDispatchToProps(dispatch){
     fetchUserInfo,
     saveProfile,
     clearUserPageId,
-    setWallState
+    setWallState,
+    fetchNotifications,
+    fetchGlobalNotifications
   },dispatch);
 }
 
