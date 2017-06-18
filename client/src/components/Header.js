@@ -313,6 +313,8 @@ class Header extends Component{
           //make a list of liker objects and find number of likes:
           likes.map((val)=>{
             // console.log('like val: ',val);
+
+            //  likenumber is based on the number of UNREAD likes, not the total number
             if(val.read ==false){
               likenumber++;
             }
@@ -372,20 +374,42 @@ class Header extends Component{
               //   });
               // }
               console.log('likeposts: ',likeposts);
+              let thing_liked;
               if(likes_list.length>0 && this.props.token){
               likeNotifications = likes_list.map((val)=>{
-                let username = this.props.users.filter((user)=>{
+                console.log('like notification filtered: ',val);
+                let liker = this.props.users.filter((user)=>{
                   return user.userid == val.liker;
                 });
-
-                let thing_liked = this.props.posts.filter((foo)=>{
+              //  determine if thing liked is a comment or a post:
+              if(val.comment && val.comment == "NA"){
+                console.log('thing val: ',val);
+                thing_liked = this.props.posts.filter((foo)=>{
                   // console.log('thinglist: ',foo);
-                  if(foo._id == val.post){
+                  if(foo._id === val.post){
                     // console.log('thinglist match',foo);
                      return foo;
                    }
                 });
-                thing_liked = thing_liked[0];
+                console.log('thing_liked: ',thing_liked);
+                thing_liked = 'your post: '+thing_liked[0].text;
+              }else if(val.comment && val.comment !==''){
+                thing_liked = this.props.posts.filter((foo)=>{
+                  // console.log('thinglist: ',foo);
+                  if(foo._id === val.post){
+                    // console.log('thinglist match',foo);
+                    // console.log('comment liked: ',foo);
+
+                     return foo;
+                   }
+                });
+                thing_liked = thing_liked[0].comments.filter((comment)=>{
+                  console.log('comment filtered: ',comment.id, 'vs ',val.comment);
+                  return comment.id == val.comment;
+                });
+                console.log('comment liked: ',thing_liked);
+                thing_liked = 'your comment: '+thing_liked[0].text;
+              }
                 // console.log('thing liked: ',thing_liked);
                 // console.log('username: ',username);
                 // console.log('like val: ',val);
@@ -394,7 +418,7 @@ class Header extends Component{
                     <div id={val.liker} className="ally-invitation-tab clearfix">
                     <div className="col-xs-3"></div>
                       <div className="like-notification col-xs-12">
-                        {username[0].username} likes {thing_liked.text}
+                        {liker[0].username} likes {thing_liked}
                       </div>
                       <div className="col-xs-12">
                       <a onClick={this.clearLikeNotify.bind(this)} href="#">

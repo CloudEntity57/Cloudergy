@@ -268,6 +268,19 @@ router.post('/likecomment',function(req,res,next){
       console.log('likers: ',likers);
       Post.findOneAndUpdate({_id:data.post},{$set:{comments:comments}},(err,post)=>{
         console.log('post is now: ',post);
+        let random = Math.random();
+        let info = {
+          id:random,
+          liker:liker,
+          comment:data.comment,
+          post:post._id,
+          read:false
+        }
+        GlobalNotification.findOneAndUpdate({userid:post.uid},{$push:{likes:info}},function(err,note){
+          if(err) console.log('error: ',err);
+          console.log('liked notification: ',note);
+        });
+
         getPosts(res);
       });
     }else{
@@ -311,6 +324,7 @@ router.post('/likepost',function(req,res,next){
         let data = {
           id:random,
           liker:newpal,
+          comment:"NA",
           post:likedpost,
           read:false
         }
