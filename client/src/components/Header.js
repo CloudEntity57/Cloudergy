@@ -295,42 +295,42 @@ class Header extends Component{
         let liker_list = [];
         let replier_list = [];
         let likes_list = [];
-        if(this.state.globalNotifications !=='' && this.props.token){
-          let globalNotifications = this.state.globalNotifications;
-          console.log('globalNotifications in render: ',globalNotifications);
-          let n = globalNotifications;
-          let likes = n.likes;
-          let replies = n.replies;
-          console.log('replies in render',replies);
-          console.log('likes in render: ',likes);
-          //make a list of liker objects and find number of likes:
-          likes.map((val)=>{
-            // console.log('like val: ',val);
-            if(val.read ==false){
-              likenumber++;
-            }
-            // console.log('users in header render: ',this.props.users);
-            liker_list= this.props.users.filter((user)=>{
-              if(user.userid == val.liker){
-                user.thing_liked = val.id
-                return user;
-              }
-              // return user.userid == val.liker;
-            });
-          //get the list of likes instead:
-            likes_list = n.likes;
-            // console.log('liker in render: ',liker);
-          });
-          // console.log('liker list in render: ',liker_list);
-          for(let val in replies){
-            // console.log('like val: ',val);
-            replynumber++;
-          };
-          let updatesnumber = likenumber;
-          globalUpdateNumber = (
-            updatesnumber>0
-          ) ? (<div className="global-invites">{updatesnumber}</div>) : '';
-        }
+        // if(this.state.globalNotifications !=='' && this.props.token){
+        //   let globalNotifications = this.state.globalNotifications;
+        //   console.log('globalNotifications in render: ',globalNotifications);
+        //   let n = globalNotifications;
+        //   let likes = n.likes;
+        //   let replies = n.replies;
+        //   console.log('replies in render',replies);
+        //   console.log('likes in render: ',likes);
+        //   //make a list of liker objects and find number of likes:
+        //   likes.map((val)=>{
+        //     // console.log('like val: ',val);
+        //     if(val.read ==false){
+        //       likenumber++;
+        //     }
+        //     // console.log('users in header render: ',this.props.users);
+        //     liker_list= this.props.users.filter((user)=>{
+        //       if(user.userid == val.liker){
+        //         user.thing_liked = val.id
+        //         return user;
+        //       }
+        //       // return user.userid == val.liker;
+        //     });
+        //   //get the list of likes instead:
+        //     likes_list = n.likes;
+        //     // console.log('liker in render: ',liker);
+        //   });
+        //   // console.log('liker list in render: ',liker_list);
+        //   for(let val in replies){
+        //     // console.log('like val: ',val);
+        //     replynumber++;
+        //   };
+        //   let updatesnumber = likenumber;
+        //   globalUpdateNumber = (
+        //     updatesnumber>0
+        //   ) ? (<div className="global-invites">{updatesnumber}</div>) : '';
+        // }
 
 
         //global like alerts dropdown:
