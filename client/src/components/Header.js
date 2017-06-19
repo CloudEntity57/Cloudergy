@@ -82,58 +82,11 @@ class Header extends Component{
 
 
     console.log('affiliation display: ',nextProps.affiliation_display);
-    console.log('will receive notifications: ',nextProps.notifications.ally_invitations);
-
-    let potential_allies = nextProps.notifications.ally_invitations;
-
-    if(potential_allies !==undefined){
-    let potential_allies = this.getPotentialAllies(nextProps.notifications.ally_invitations);
-        console.log('potential_allies: ',potential_allies);
 
     this.setState({
-      affiliation:nextProps.affiliation_display,
-      potential_allies
+      affiliation:nextProps.affiliation_display
     });
-  }
 
-    // let potential_allies = this.getPotentialAllies();
-    // this.setState({
-    //   affiliation:this.props.affiliation,
-    //   potential_allies
-    // });
-  //   let user = (nextProps.user) ? nextProps.user : {};
-  //   console.log('user in header: ',user);
-  //   let potential_allies = [];
-  //   if(user[0].hasOwnProperty('userid')){user[0].ally_invitations_received.map((ally)=>{
-  //     let newally = nextProps.users[ally];
-  //     potential_allies.push(newally);
-  //   });
-  // }
-  //   this.setState({
-  //     user:user,
-  //     potential_allies:potential_allies,
-  //     ally_invitations_received:user[0].ally_invitations_received
-  //   });
-
-    // Functions.getUser(userid).then((val)=>{
-    //   let user = nextProps.user;
-    //   console.log('user in header: ',user);
-    //   let potential_allies = [];
-    //   user[0].ally_invitations_received.map((ally)=>{
-    //     Functions.getUser(ally).then((val)=>{
-    //       potential_allies.push(val);
-    //       if(potential_allies.length==user[0].ally_invitations_received.length){
-    //         this.setState({
-    //           potential_allies:potential_allies
-    //         });
-    //       }
-    //     });
-    //   });
-    //   this.setState({
-    //     user:user,
-    //     ally_invitations_received:user[0].ally_invitations_received
-    //   });
-    // });
   }
   getPotentialAllies(reqslist){
     let user, users, uid, userpic, allyRequestNumber,username, affiliation,allyReqs,potential_allies;
@@ -294,7 +247,7 @@ class Header extends Component{
 
         //red user ally notifications icon:
 
-        if(this.state.notifications !==''){
+        if(this.state.notifications && this.state.notifications !==''){
           let notifications = this.state.notifications;
           console.log('notifications in render: ',notifications);
           let n = notifications;
@@ -445,7 +398,7 @@ class Header extends Component{
             }
 
             let potential_allies = [];
-            if(this.props.notifications.ally_invitations !==undefined){
+            if(this.props.notifications !==null && this.props.notifications.ally_invitations !==undefined){
               potential_allies = this.getPotentialAllies(this.props.notifications.ally_invitations);
             }
                 console.log('potential_allies render: ',potential_allies);

@@ -33,7 +33,7 @@ class UserPage extends Component{
     // this.props.saveProfile(profile);
     // //find and store all users and posts currently in the API database:
     this.props.fetchAllUsers('');
-    this.props.fetchUserInfo('');
+    // this.props.fetchUserInfo('');
     this.props.fetchPosts('');
 
     let user;

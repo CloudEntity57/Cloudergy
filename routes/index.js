@@ -617,9 +617,16 @@ router.post('/cancelalliance/',function(req,res,next){
 //=================================Route for accepting an alliance invitation:
 
 router.post('/acceptally',function(req,res,next){
-  console.log('req: ',req.body);
+
+//   console.log('req: ',req.body);
   let newAlly = req.body.payload.allyId;
   let userId = req.body.payload.userId;
+
+//remove the ally's request from your notifications:
+  Notification.findOneAndUpdate({"userid":userId},{"$pull":{"ally_invitations":newAlly}},{"new":true,"upsert":true},function(err,res){
+    if(err) console.log('error: ',err);
+    console.log('new ally ',newAlly,' cleared from your notifictions: ',res);
+  });
   let result;
   console.log('new ally: ',newAlly);
   console.log('current user: ',userId);
@@ -650,10 +657,10 @@ router.post('/acceptally',function(req,res,next){
   });
   //notify new ally of invitation acceptance:
   Notification.findOneAndUpdate({"userid":newAlly},{"$push":{"ally_accepts":userId},"$inc":{"read":1}},{"new":true,"upsert":true},function(err,res){
-    if(err) console.log('error: ',err);
+    if(err) console.log('error --- ',err);
     console.log('new ally ',newAlly,' notified of your acceptance');
   });
-//remove ally's id from your received invitations list:
+// remove ally's id from your received invitations list:
   User.find({"userid":userId},'ally_invitations_received',(err,val)=>{
     if(err){
       console.log('error! ',err);
@@ -676,12 +683,6 @@ router.post('/acceptally',function(req,res,next){
         User.findOneAndUpdate({"userid":userId},{"$push":{"allies":newAlly}},{"new": true, "upsert": true },function(err,user){
             if(err) {console.log('error! ',err);}
             console.log('user: ',user);
-
-            Notification.findOneAndUpdate({"userid":userId},{"$pull":{"ally_invitations":newAlly}},{"new":true,"upsert":true},function(err,res){
-              if(err) console.log('error: ',err);
-              console.log('new ally ',newAlly,' cleared from your notifictions: ',res);
-            });
-
             res.json([user]);
           });
       }
