@@ -12,7 +12,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { mainApp,fetchPosts, fetchAllUsers,
 fetchUserInfo,
-saveProfile, clearUserPageId, setWallState, fetchNotifications,fetchGlobalNotifications } from '../actions/index';
+saveProfile, clearUserPageId, setWallState, fetchNotifications,fetchGlobalNotifications,updatePost,editPost } from '../actions/index';
 
 class UserPage extends Component{
   constructor(props){
@@ -20,7 +20,9 @@ class UserPage extends Component{
     // const profile = this.props.auth.getProfile();
     this.state={
       updated:false,
-      posts:[]
+      posts:[],
+      editing:false,
+      post:''
     }
   }
   componentWillMount(){
@@ -48,6 +50,33 @@ class UserPage extends Component{
     });
     this.configureUser(clientID,userid);
 
+  }
+
+  componentDidUpdate(){
+    let post = this.state.post;
+    console.log('filtered post: ',post);
+    if(this.state.postedit){
+      this.refs.editing.value = post[0].text;
+    }
+  }
+
+  updatePost(e){
+    console.log('we are updating: ',e.target);
+    let data = {
+      id:e.target.id,
+      post:this.refs.editing.value
+    }
+    this.props.updatePost(data);
+    this.setState({
+      postedit:false
+    });
+    this.props.editPost('',false);
+  }
+  cancelEdit(){
+    this.setState({
+      postedit:false
+    });
+    this.props.editPost('',false);
   }
 
   updatePosts(){
@@ -88,7 +117,28 @@ class UserPage extends Component{
     this.props.fetchGlobalNotifications(user[0].userid);
     let notifications = nextProps.notifications;
     let globalNotifications = nextProps.globalNotifications;
-}
+
+    //editing posts:
+    let post = nextProps.post;
+    let id = post;
+    let editing = nextProps.editing;
+    if(editing == true && post !==''){
+      console.log('post editing in newsfeed');
+      this.setState({
+        postedit:true
+      });
+
+      window.scrollTo(0, 0);
+      post = nextProps.posts.filter((val)=>{
+        return val._id == id;
+      });
+      console.log('filtered post: ',post);
+      this.setState({
+        post:post
+      });
+    }
+  }
+
 configureUser(postUserId,currentuser){
 
   this.setState({
@@ -186,8 +236,27 @@ configureUser(postUserId,currentuser){
     console.log('user allies: ',this.state.allies);
     // const userpic = user.picture;
     // console.log('user pic: ',userpic);
+    //post editing modal:
+    let post_edit_background = (this.state.postedit) ? (
+      <div className="post-editing-modal">
+      </div>
+    ) : '';
+    let post_edit_modal = (this.state.postedit) ? (
+      <div className="post-to-edit">
+        <div className="edit-post-header">Edit Post</div>
+        <form>
+          <textarea ref="editing" />
+          <div className='button-area'>
+            <div onClick = {this.cancelEdit.bind(this)} className = "btn btn-default">Cancel</div>
+            <div id={this.state.post[0]._id} onClick = {this.updatePost.bind(this)} className = "btn btn-primary">Update</div>
+          </div>
+        </form>
+      </div>
+    ) : '';
     return(
       <div>
+        {post_edit_background}
+        {post_edit_modal}
       <div className="outer-wrapper">
       </div>
       <div className="wrapper">
@@ -226,11 +295,15 @@ function mapStateToProps(state,ownProps){
   let profile = state.profile;
   let notifications = state.notifications;
   let globalNotifications = state.globalNotifications;
+  let editing = state.editing;
+  let post = state.post;
   return{
     user,
     users,
     usersObject,
     posts,
+    post,
+    editing,
     userPageId:ownProps.match.params.userid,
     auth,
     wall
@@ -245,7 +318,9 @@ function mapDispatchToProps(dispatch){
     clearUserPageId,
     setWallState,
     fetchNotifications,
-    fetchGlobalNotifications
+    fetchGlobalNotifications,
+    updatePost,
+    editPost
   },dispatch);
 }
 
