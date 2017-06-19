@@ -196,6 +196,9 @@ body{
     width: 100%;
   }
 }
+.white{
+  color:white !important;
+}
 .ally-request-holder{
   position: relative;
   // .fa-globe{
@@ -210,6 +213,10 @@ body{
       text-decoration:none;
       color:black;
     }
+    // &:blur{
+    //   text-decoration:none;
+    //   color:black;
+    // }
   }
 }
 .user-post{
@@ -284,13 +291,16 @@ body{
   max-height: 90vh;
   overflow-y:scroll;
   color:black;
-  box-shadow: 5px 5px 5px gray;
+  box-shadow: 0px 3px 8px rgba(0,0,0,.25);
   position:absolute;
   top:30px;
   left:-360px;
   background-color:lightgray;
   width:400px;
   padding: 0px 10px;
+  &::-webkit-scrollbar {
+    display: none;
+  }
   .ally-invitation-tab{
     .user-pic-stripe,.userpic-pic{
       height:50px;
@@ -350,7 +360,7 @@ body{
 .privacyicon,.my-privacyicon{
   color:gray;
   padding:2px 8px;
-  font-size: 1.05em;
+  font-size: 1.25em;
   margin-left:5px;
   // border:1px solid lightgrey;
   &:hover{
@@ -909,7 +919,7 @@ body{
   left:-50vw;
   width:160vw;
   height:250vh;
-  opacity:.65;
+  opacity:.6;
   z-index: 4 !important;
   background-color: white;
   -webkit-transition: background-color 1s; /* Safari */
@@ -1138,7 +1148,7 @@ body{
   background-color:#fff;
   width:325px;
   height:225px;
-  box-shadow: 5px 5px 5px gray;
+  box-shadow: 0px 3px 8px rgba(0,0,0,.25);
   .user-preview-header{
     height:50%;
     position: relative;

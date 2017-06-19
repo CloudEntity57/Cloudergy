@@ -531,16 +531,18 @@ class Header extends Component{
       <div><a className="log-out" onClick={()=>this.handleClick()} href="#">Join/login</a></div>
     );
 
+    let globeClass = (this.state.previewingAlly) ? 'white fa fa-globe' : 'black fa fa-globe';
+    let handshakeClass = (this.state.previewingGlobal) ? 'white fa fa-handshake-o' : 'black fa fa-handshake-o';
     let usercontrols = (
       <span>
         <div className="ally-request-holder">
-          <a onClick={this.toggleAllyRequest.bind(this)} href="#" className="fa fa-globe">
+          <a onClick={this.toggleAllyRequest.bind(this)} href="#" className={globeClass}>
           </a>
           {globalUpdateNumber}
           {globalPreview}
         </div>
         <div className="ally-request-holder">
-          <a onClick={this.toggleAlert.bind(this)} href="#" className="fa fa-handshake-o">
+          <a onClick={this.toggleAlert.bind(this)} href="#" className={handshakeClass}>
           </a>
           {allyRequestNumber}
           {allyPreview}
@@ -548,7 +550,7 @@ class Header extends Component{
       </span>
     );
     return(
-      <header /*onClick={()=>this.clearDisplay()}*/ className={this.props.affiliation_display}>
+      <header onBlur={this.clearLikeNotify.bind(this)} className={this.props.affiliation_display}>
 
         <div className="outer-nav-wrapper">
           <div className="nav">

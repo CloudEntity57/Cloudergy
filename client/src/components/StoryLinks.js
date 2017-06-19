@@ -56,9 +56,9 @@ class StoryLinks extends Component{
     let featuresPanel = (this.state.featuresPanel) ?
     (<ul>
       <li>Three separate public news feeds (Liberal, Conservative, Moderate) filter above</li>
-      <li>Share any story from any site, anywhere, or click 'share' button anywhere in this site</li>
-      <li>Edit your user profile in the 'account' section, choose your affiliation and more</li>
-      <li>Send ally requests to other members and increase your rank!</li>
+      <li>Share any story or website by typing the URL, or click 'share' button on news on this page</li>
+      <li>Edit your user profile in the 'account' section, choose your political affiliation</li>
+      <li>Create allegiances with other members</li>
     </ul>)
      : '';
     return(

@@ -279,10 +279,10 @@ class PostHeader extends Component{
       break;
       case 'allies':
         privacyicon = (myPost) ? (
-          <span onClick={this.togglePrivacy.bind(this)} className="fa my-privacyicon fa-users">{privacybar}<span className="fa fa-sort-desc"></span></span>
+          <span onClick={this.togglePrivacy.bind(this)} className="fa my-privacyicon fa-handshake-o">{privacybar}<span className="fa fa-sort-desc"></span></span>
         ) :
         (
-          <span className="fa privacyicon fa-users"></span>
+          <span className="fa privacyicon fa-handshake-o"></span>
         )
       break;
       case 'private':
