@@ -92,7 +92,7 @@ class App extends React.Component{
            ally_invitations_received:['J20zp56UZbPRlZ9eB1u41sBs9qXJxBVY']
          };
 
-         //  this.props.createNewUser(userData);
+          this.props.createNewUser(userData);
 
   //create notifications, ally & global:
       let notifications = {
@@ -102,13 +102,14 @@ class App extends React.Component{
           ],
           "ally_accepts": [],
           "ally_cancels": [],
-          "read": false
+          "read": 0
       };
-      //  this.props.createNotifications(notifications);
+       this.props.createNotifications(notifications);
+
       let globalnotifications = {
           "userid": this.props.profile.clientID,
-          "likes": {},
-          "replies": {},
+          "likes": [],
+          "replies": [],
           "read": false
       };
       //  this.props.createGlobalNotifications(userData);

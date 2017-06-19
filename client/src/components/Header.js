@@ -11,7 +11,7 @@ import jquery from 'jquery';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
-import { socialApp, toggleAffiliation, fetchUserInfo,fetchPosts, acceptAlly,login,doAuthentication,fetchNotifications,fetchGlobalNotifications,notificationsSeen,globalNotificationsSeen,clearLikeNotify } from '../actions/index';
+import { socialApp, toggleAffiliation, fetchUserInfo,fetchPosts, acceptAlly,login,doAuthentication,fetchNotifications,fetchGlobalNotifications,notificationsSeen,globalNotificationsSeen,ignoreAlly,clearLikeNotify } from '../actions/index';
 
 class Header extends Component{
   constructor(props){
@@ -30,12 +30,7 @@ class Header extends Component{
     console.log('mounting header');
     // let user = Functions.getCurrentUser();
     // console.log('user in header: ',user);
-    console.log('affiliation display: ',this.props.affiliation_display);
-    let potential_allies = this.getPotentialAllies();
-    this.setState({
-      affiliation:this.props.affiliation_display,
-      potential_allies
-    });
+
   }
   componentWillReceiveProps(nextProps){
     let token = localStorage.getItem('id_token');
@@ -85,6 +80,22 @@ class Header extends Component{
     let likeposts = (nextProps.posts) ? nextProps.posts : '';
     console.log('likeposts: ',likeposts);
 
+
+    console.log('affiliation display: ',nextProps.affiliation_display);
+    console.log('will receive notifications: ',nextProps.notifications.ally_invitations);
+
+    let potential_allies = nextProps.notifications.ally_invitations;
+
+    if(potential_allies !==undefined){
+    let potential_allies = this.getPotentialAllies(nextProps.notifications.ally_invitations);
+        console.log('potential_allies: ',potential_allies);
+
+    this.setState({
+      affiliation:nextProps.affiliation_display,
+      potential_allies
+    });
+  }
+
     // let potential_allies = this.getPotentialAllies();
     // this.setState({
     //   affiliation:this.props.affiliation,
@@ -104,28 +115,28 @@ class Header extends Component{
   //     ally_invitations_received:user[0].ally_invitations_received
   //   });
 
-    Functions.getUser(userid).then((val)=>{
-      let user = nextProps.user;
-      console.log('user in header: ',user);
-      let potential_allies = [];
-      user[0].ally_invitations_received.map((ally)=>{
-        Functions.getUser(ally).then((val)=>{
-          potential_allies.push(val);
-          if(potential_allies.length==user[0].ally_invitations_received.length){
-            this.setState({
-              potential_allies:potential_allies
-            });
-          }
-        });
-      });
-      this.setState({
-        user:user,
-        ally_invitations_received:user[0].ally_invitations_received
-      });
-    });
+    // Functions.getUser(userid).then((val)=>{
+    //   let user = nextProps.user;
+    //   console.log('user in header: ',user);
+    //   let potential_allies = [];
+    //   user[0].ally_invitations_received.map((ally)=>{
+    //     Functions.getUser(ally).then((val)=>{
+    //       potential_allies.push(val);
+    //       if(potential_allies.length==user[0].ally_invitations_received.length){
+    //         this.setState({
+    //           potential_allies:potential_allies
+    //         });
+    //       }
+    //     });
+    //   });
+    //   this.setState({
+    //     user:user,
+    //     ally_invitations_received:user[0].ally_invitations_received
+    //   });
+    // });
   }
-  getPotentialAllies(){
-    let user, users, uid, userpic, ally_invitations_received, allyRequestNumber,username, affiliation,allyReqs,potential_allies;
+  getPotentialAllies(reqslist){
+    let user, users, uid, userpic, allyRequestNumber,username, affiliation,allyReqs,potential_allies;
     user = (this.props.user !=='') ? this.props.user : [{userid:'',ally_invitations_received:[], allyRequestNumber,username, affiliation,allyReqs,potential_allies}];
     console.log('user in header: ',user);
     users = (this.props.users.length > 0) ? this.props.users : [];
@@ -133,10 +144,11 @@ class Header extends Component{
     userpic = user[0].photo;
     username = user[0].username;
     affiliation = user[0].affiliation;
-    ally_invitations_received = user[0].ally_invitations_received;
-    console.log('invites: ',ally_invitations_received);
+    let ally_invitations_received = []
+    ally_invitations_received = reqslist;
+    console.log('gpa invites: ',ally_invitations_received);
     potential_allies = [];
-    if (ally_invitations_received.length>0){
+    if (ally_invitations_received.length>0 && ally_invitations_received !==undefined){
       ally_invitations_received.map((ally)=>{
         // this.props.fetchUserInfo(ally).then((val)=>{
         //   potential_allies.push(val);
@@ -185,7 +197,14 @@ class Header extends Component{
   }
   ignoreRequest(e){
     e.preventDefault();
-    console.log('ignoring request');
+    let ally = e.target.id;
+    let user = this.props.user[0].userid;
+    console.log('ignoring request:', ally);
+    let data = {
+      ally,
+      user
+    }
+    this.props.ignoreAlly(data);
   }
   toggleLogin(e){
     e.preventDefault();
@@ -271,8 +290,7 @@ class Header extends Component{
       }
       console.log('user in header render: ',user);
       // let potential_allies = this.state.potential_allies;
-      let potential_allies = this.getPotentialAllies();
-        console.log('potential allies render: ',potential_allies);
+
 
         //red user ally notifications icon:
 
@@ -281,9 +299,9 @@ class Header extends Component{
           console.log('notifications in render: ',notifications);
           let n = notifications;
           let ally_invitations_received = n.ally_invitations
-          let invites = (n.ally_invitations.length !==0) ? n.ally_invitations.length : '';
+          let invites = (n.read >0) ? n.read : '';
           allyRequestNumber = (
-            n.read ==false
+            n.read >0
           ) ? (<div className="invites">{invites}</div>) : '';
 
         }
@@ -387,7 +405,6 @@ class Header extends Component{
                 thing_liked = this.props.posts.filter((foo)=>{
                   // console.log('thinglist: ',foo);
                   if(foo._id === val.post){
-                    // console.log('thinglist match',foo);
                      return foo;
                    }
                 });
@@ -395,10 +412,7 @@ class Header extends Component{
                 thing_liked = 'your post: '+thing_liked[0].text;
               }else if(val.comment && val.comment !==''){
                 thing_liked = this.props.posts.filter((foo)=>{
-                  // console.log('thinglist: ',foo);
                   if(foo._id === val.post){
-                    // console.log('thinglist match',foo);
-                    // console.log('comment liked: ',foo);
 
                      return foo;
                    }
@@ -410,9 +424,6 @@ class Header extends Component{
                 console.log('comment liked: ',thing_liked);
                 thing_liked = 'your comment: '+thing_liked[0].text;
               }
-                // console.log('thing liked: ',thing_liked);
-                // console.log('username: ',username);
-                // console.log('like val: ',val);
                 if(!val) return '';
                   return (
                     <div id={val.liker} className="ally-invitation-tab clearfix">
@@ -433,9 +444,16 @@ class Header extends Component{
               });
             }
 
+            let potential_allies = [];
+            if(this.props.notifications.ally_invitations !==undefined){
+              potential_allies = this.getPotentialAllies(this.props.notifications.ally_invitations);
+            }
+                console.log('potential_allies render: ',potential_allies);
+
         //ally request dropdown
                 if(potential_allies.length>0 && potential_allies[0].hasOwnProperty('userid') && this.props.token){
                 allyReqs = potential_allies.map((val)=>{
+
                   console.log('user val: ',val);
                   if(!val) return '';
                     return (
@@ -451,7 +469,7 @@ class Header extends Component{
                           </span>
                         </a>
                 {/* Ignore button */}
-                        <a onClick={this.ignoreRequest.bind(this)} href="#">
+                        <a id={val.userid} onClick={this.ignoreRequest.bind(this)} href="#">
                           <span id={val.userid} className='accept-button'>
                             Ignore
                           </span>
@@ -616,7 +634,8 @@ function mapDispatchToProps(dispatch){
     fetchGlobalNotifications,
     notificationsSeen,
     globalNotificationsSeen,
-    clearLikeNotify
+    clearLikeNotify,
+    ignoreAlly
   },dispatch);
 }
 

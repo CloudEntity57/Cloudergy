@@ -5,7 +5,7 @@ var schema = new mongoose.Schema({
     ally_invitations: {type:Array},
     ally_accepts: {type:Array},
     ally_cancels: {type:Array},
-    read: {type:Boolean}
+    read: {type:Number}
 });
 
 var model = mongoose.model('Notification', schema);

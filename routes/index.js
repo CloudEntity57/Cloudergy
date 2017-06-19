@@ -413,6 +413,19 @@ User.findOneAndUpdate(
   res.json(results);
 });
 
+//ignore ally request:
+
+router.post('/ignoreally', function(req,res,next){
+  console.log('ally to ignore: ',req.body.payload);
+  let ally = req.body.payload.ally;
+  let user = req.body.payload.user;
+  Notification.findOneAndUpdate({"userid":user},{"$pull":{"ally_invitations":ally}},{"new":true,"upsert":true},function(err,notes){
+    if(err) console.log('error- ',err);
+    console.log('notifications now: ',notes);
+    res.json(notes);
+  });
+});
+
 //redux route for ally request:
 router.post('/allyrequest', function(req,res,next){
   console.log('request: ',req.body);
@@ -440,7 +453,7 @@ User.findOneAndUpdate(
      res.json([friend]);
    });
 //send them an ally notification
-  Notification.findOneAndUpdate({"userid":target_ally},{"$push":{"ally_invitations":userId},"$set":{"read":false}},{"new":true,"upsert":true},function(err,notification){
+  Notification.findOneAndUpdate({"userid":target_ally},{"$push":{"ally_invitations":userId},"$inc":{"read":1}},{"new":true,"upsert":true},function(err,notification){
     if(err) console.log('error! ',err);
     console.log('potential ally notifications: ',notification);
   });
@@ -480,7 +493,7 @@ router.get('/globalnotifications/:userid',function(req,res,next){
 
 router.post('/notificationsseen',function(req,res,next){
   console.log('user to update: ',req.body.payload);
-  Notification.findOneAndUpdate({"userid":req.body.payload},{"read":true},function(err,results){
+  Notification.findOneAndUpdate({"userid":req.body.payload},{"read":0},function(err,results){
     if(err) console.log('error: ',err);
     // console.log('notifications are: ',results);
     res.json(results);
@@ -636,7 +649,7 @@ router.post('/acceptally',function(req,res,next){
     }
   });
   //notify new ally of invitation acceptance:
-  Notification.findOneAndUpdate({"userid":newAlly},{"$push":{"ally_accepts":userId}},{"new":true,"upsert":true},function(err,res){
+  Notification.findOneAndUpdate({"userid":newAlly},{"$push":{"ally_accepts":userId},"$inc":{"read":1}},{"new":true,"upsert":true},function(err,res){
     if(err) console.log('error: ',err);
     console.log('new ally ',newAlly,' notified of your acceptance');
   });
@@ -663,6 +676,12 @@ router.post('/acceptally',function(req,res,next){
         User.findOneAndUpdate({"userid":userId},{"$push":{"allies":newAlly}},{"new": true, "upsert": true },function(err,user){
             if(err) {console.log('error! ',err);}
             console.log('user: ',user);
+
+            Notification.findOneAndUpdate({"userid":userId},{"$pull":{"ally_invitations":newAlly}},{"new":true,"upsert":true},function(err,res){
+              if(err) console.log('error: ',err);
+              console.log('new ally ',newAlly,' cleared from your notifictions: ',res);
+            });
+
             res.json([user]);
           });
       }
