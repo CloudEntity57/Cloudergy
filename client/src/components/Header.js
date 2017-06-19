@@ -11,7 +11,7 @@ import jquery from 'jquery';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
-import { socialApp, toggleAffiliation, fetchUserInfo,fetchPosts, acceptAlly,login,doAuthentication,fetchNotifications,fetchGlobalNotifications,notificationsSeen,globalNotificationsSeen,ignoreAlly,clearLikeNotify } from '../actions/index';
+import { socialApp, toggleAffiliation, fetchUserInfo,fetchPosts, acceptAlly,login,doAuthentication,fetchNotifications,fetchGlobalNotifications,notificationsSeen,globalNotificationsSeen,ignoreAlly,clearLikeNotify,clearAccept } from '../actions/index';
 
 class Header extends Component{
   constructor(props){
@@ -218,6 +218,17 @@ class Header extends Component{
     }
     this.props.clearLikeNotify(data);
   }
+  clearAccept(e){
+    e.preventDefault();
+    let ally = e.target.id;
+    let user = this.props.user[0].userid;
+    console.log('clearing request:', ally);
+    let data = {
+      ally,
+      user
+    }
+    this.props.clearAccept(data);
+  }
   render(){
 
     let likeposts = (this.props.posts !==undefined) ? this.props.posts : '';
@@ -398,8 +409,11 @@ class Header extends Component{
             }
 
             let potential_allies = [];
+            let ally_accepts = [];
             if(this.props.notifications !==null && this.props.notifications.ally_invitations !==undefined){
               potential_allies = this.getPotentialAllies(this.props.notifications.ally_invitations);
+              ally_accepts = this.getPotentialAllies(this.props.notifications.ally_accepts);
+              console.log('ally_accepts_render: ',ally_accepts);
             }
                 console.log('potential_allies render: ',potential_allies);
 
@@ -435,6 +449,26 @@ class Header extends Component{
               }
                 console.log('allyreqs: ',allyReqs);
 
+              let allyAccepts = ally_accepts.map((val)=>{
+                if(!val) return '';
+                  return (
+                    <div id={val.userid} className="ally-invitation-tab clearfix">
+                      <div className="col-xs-12">
+                        {val.username} accepted your ally request!
+                      </div>
+                      <div className="col-xs-12">
+              {/* Ok button */}
+                      <a onClick={this.clearAccept.bind(this)} href="#">
+                        <span id={val.userid} className='accept-button'>
+                          Ok
+                        </span>
+                      </a>
+                      <UserPic userid={val.userid} />
+                    </div>
+                  </div>
+                  );
+              });
+
 
         let allyPreviewText = (ally_invitations_received.length>0) ? 'Ally Requests' : 'No New Ally Requests';
         let globalPreviewText = (likenumber>0) ? 'Latest Activity' : 'All caught up!';
@@ -450,6 +484,8 @@ class Header extends Component{
           <div key="./Header" className="ally-request-dropdown">
             {allyPreviewText}
             {allyReqs}
+            {allyAccepts}
+            {/* <div className="highbar">More stuff</div> */}
           </div>
         ) : '';
         console.log('aff in render: ',affiliation);
@@ -588,7 +624,8 @@ function mapDispatchToProps(dispatch){
     notificationsSeen,
     globalNotificationsSeen,
     clearLikeNotify,
-    ignoreAlly
+    ignoreAlly,
+    clearAccept
   },dispatch);
 }
 

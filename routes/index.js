@@ -413,6 +413,17 @@ User.findOneAndUpdate(
   res.json(results);
 });
 
+router.post('/clearaccept', function(req,res,next){
+  console.log('ally to clear: ',req.body.payload);
+  let ally = req.body.payload.ally;
+  let user = req.body.payload.user;
+  Notification.findOneAndUpdate({"userid":user},{"$pull":{"ally_accepts":ally}},{"new":true,"upsert":true},function(err,notes){
+    if(err) console.log('error- ',err);
+    console.log('notifications now: ',notes);
+    res.json(notes);
+  });
+});
+
 //ignore ally request:
 
 router.post('/ignoreally', function(req,res,next){
