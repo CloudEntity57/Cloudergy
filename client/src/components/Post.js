@@ -38,6 +38,8 @@ class Post extends Component{
       user:user
     });
   }
+  componentWillReceiveProps(){
+  }
   displayUser(){
     let postid = this.props.post._id
     console.log('displaying');
@@ -157,6 +159,18 @@ class Post extends Component{
     console.log('sharing post: ',e.target.id);
     this.props.sharePost(e.target.id);
   }
+  sizeInput(e){
+    e.preventDefault();
+    console.log('id = ',e.target.id);
+    let target = '#'+e.target.id;
+    var size = parseInt(jquery(target).attr('size'));
+    var chars = jquery(target).val().length;
+    console.log('chars: ',chars);
+    if(chars >= size){
+      console.log('greater');
+      jquery(target).attr('size', chars);
+    }
+  }
   render(){
     let user = (this.state.user) ? this.state.user : '';
     let myId = (this.state.myId) ? this.state.myId : '';
@@ -262,6 +276,7 @@ class Post extends Component{
     if(!this.props.token){
       myId=null;
     }
+    let random = Math.random();
     return(
       <div className="user-post">
       <div id={id} className="post-panel">
@@ -296,7 +311,7 @@ class Post extends Component{
         {commentSection}
         <UserPic userid={myId} />
         <form info={postId} onSubmit={this.postComment.bind(this)}>
-          <input ref="comment" id={postId} placeholder=" Comment here..." />
+          <input ref="comment" size="20" id={postId} onKeyUp={this.sizeInput.bind(this)} placeholder=" Comment here..." />
         </form>
       </div>
     </div>

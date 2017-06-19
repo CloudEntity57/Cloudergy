@@ -471,7 +471,7 @@ class Header extends Component{
 
 
         let allyPreviewText = (ally_invitations_received.length>0) ? 'Ally Requests' : 'No New Ally Requests';
-        let globalPreviewText = (likenumber>0) ? 'Latest Activity' : 'All caught up!';
+        let globalPreviewText = (likes_list.length>0) ? 'Latest Activity' : 'All caught up!';
         let globalPreview = (this.state.previewingAlly) ?
         (
           <div key="./Header" className="ally-request-dropdown">
@@ -481,7 +481,7 @@ class Header extends Component{
         ) : '';
         let allyPreview = (this.state.previewingGlobal) ?
         (
-          <div key="./Header" className="ally-request-dropdown">
+          <div key="./Header" tabIndex="0" onBlur={this.clearLikeNotify.bind(this)} className="ally-request-dropdown">
             {allyPreviewText}
             {allyReqs}
             {allyAccepts}
