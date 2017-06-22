@@ -34,6 +34,7 @@ class Posts extends Component{
   }
   componentWillReceiveProps(nextProps){
     let user = nextProps.user;
+    console.log('user in posts: ',user);
     console.log('users privacy: ',user[0].privacy);
     this.setState({
       privacy:user[0].privacy

@@ -28,7 +28,7 @@ class UserPic extends Component{
     });
   }
   render(){
-    let user = (this.state.user[0]) ? this.state.user[0] : '';
+    let user = (this.props.user[0]) ? this.props.user[0] : '';
     let teamcolor = (user !=='') ? user.affiliation + "stripe user-pic-stripe" : "nonestripe user-pic-stripe";
     let photo = (user !=='') ? (<img id={user.id} className='userpic-pic' src={user.photo} alt='user image' />) : (<img id={user.id} className='userpic-pic' src="http://ijmhometutors.com/tutor/server/php/files/51b855e98abd7a5143c4d0176c119c0e/picture/avatar.png" alt='user image' />);
       return(

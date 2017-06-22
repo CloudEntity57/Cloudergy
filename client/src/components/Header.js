@@ -11,7 +11,7 @@ import jquery from 'jquery';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
-import { socialApp, toggleAffiliation, fetchUserInfo,fetchPosts, acceptAlly,login,doAuthentication,fetchNotifications,fetchGlobalNotifications,notificationsSeen,globalNotificationsSeen,ignoreAlly,clearLikeNotify,clearAccept } from '../actions/index';
+import { socialApp, toggleAffiliation, fetchUserInfo,fetchPosts, acceptAlly,login,doAuthentication,fetchNotifications,fetchGlobalNotifications,notificationsSeen,globalNotificationsSeen,clearLikeNotify } from '../actions/index';
 
 class Header extends Component{
   constructor(props){
@@ -30,7 +30,6 @@ class Header extends Component{
     console.log('mounting header');
     // let user = Functions.getCurrentUser();
     // console.log('user in header: ',user);
-
   }
   componentWillReceiveProps(nextProps){
     let token = localStorage.getItem('id_token');
@@ -75,21 +74,58 @@ class Header extends Component{
         globalNotifications
       });
     }
-
-
     let likeposts = (nextProps.posts) ? nextProps.posts : '';
     console.log('likeposts: ',likeposts);
 
-
+    //user ally notifications:
     console.log('affiliation display: ',nextProps.affiliation_display);
-
+    let potential_allies = this.getPotentialAllies();
     this.setState({
-      affiliation:nextProps.affiliation_display
+      affiliation:nextProps.affiliation_display,
+      potential_allies
     });
 
+    // let potential_allies = this.getPotentialAllies();
+    // this.setState({
+    //   affiliation:this.props.affiliation,
+    //   potential_allies
+    // });
+  //   let user = (nextProps.user) ? nextProps.user : {};
+  //   console.log('user in header: ',user);
+  //   let potential_allies = [];
+  //   if(user[0].hasOwnProperty('userid')){user[0].ally_invitations_received.map((ally)=>{
+  //     let newally = nextProps.users[ally];
+  //     potential_allies.push(newally);
+  //   });
+  // }
+  //   this.setState({
+  //     user:user,
+  //     potential_allies:potential_allies,
+  //     ally_invitations_received:user[0].ally_invitations_received
+  //   });
+
+    Functions.getUser(userid).then((val)=>{
+      let user = nextProps.user;
+      console.log('user in header: ',user);
+      let potential_allies = [];
+      user[0].ally_invitations_received.map((ally)=>{
+        Functions.getUser(ally).then((val)=>{
+          potential_allies.push(val);
+          if(potential_allies.length==user[0].ally_invitations_received.length){
+            this.setState({
+              potential_allies:potential_allies
+            });
+          }
+        });
+      });
+      this.setState({
+        user:user,
+        ally_invitations_received:user[0].ally_invitations_received
+      });
+    });
   }
-  getPotentialAllies(reqslist){
-    let user, users, uid, userpic, allyRequestNumber,username, affiliation,allyReqs,potential_allies;
+  getPotentialAllies(){
+    let user, users, uid, userpic, ally_invitations_received, allyRequestNumber,username, affiliation,allyReqs,potential_allies;
     user = (this.props.user !=='') ? this.props.user : [{userid:'',ally_invitations_received:[], allyRequestNumber,username, affiliation,allyReqs,potential_allies}];
     console.log('user in header: ',user);
     users = (this.props.users.length > 0) ? this.props.users : [];
@@ -97,11 +133,11 @@ class Header extends Component{
     userpic = user[0].photo;
     username = user[0].username;
     affiliation = user[0].affiliation;
-    let ally_invitations_received = []
-    ally_invitations_received = reqslist;
-    console.log('gpa invites: ',ally_invitations_received);
+    // ally_invitations_received = user[0].ally_invitations_received;
+    ally_invitations_received = (this.props.notifications !== '') ? this.props.notifications.ally_invitations : '';
+    console.log('invites: ',ally_invitations_received);
     potential_allies = [];
-    if (ally_invitations_received.length>0 && ally_invitations_received !==undefined){
+    if (ally_invitations_received.length>0){
       ally_invitations_received.map((ally)=>{
         // this.props.fetchUserInfo(ally).then((val)=>{
         //   potential_allies.push(val);
@@ -137,6 +173,9 @@ class Header extends Component{
     let invitations_list;
     console.log('ally accepted: ',allyId);
     this.props.acceptAlly({allyId,userId});
+    this.setState({
+      previewingAlly:false
+    });
   }
 
   updateInvitesList(invitations_list){
@@ -150,14 +189,17 @@ class Header extends Component{
   }
   ignoreRequest(e){
     e.preventDefault();
-    let ally = e.target.id;
-    let user = this.props.user[0].userid;
-    console.log('ignoring request:', ally);
+    const allyId = e.target.id;
+    const userId = this.state.user[0].userid;
+    console.log('ignoring request');
     let data = {
-      ally,
-      user
+      allyId,
+      userId
     }
     this.props.ignoreAlly(data);
+    this.setState({
+      previewingAlly:false
+    });
   }
   toggleLogin(e){
     e.preventDefault();
@@ -218,16 +260,12 @@ class Header extends Component{
     }
     this.props.clearLikeNotify(data);
   }
-  clearAccept(e){
-    e.preventDefault();
-    let ally = e.target.id;
-    let user = this.props.user[0].userid;
-    console.log('clearing request:', ally);
-    let data = {
-      ally,
-      user
+  checkAuth(){
+    if(this.props.token){
+      console.log('checking');
+    }else{
+      this.props.login()
     }
-    this.props.clearAccept(data);
   }
   render(){
 
@@ -254,18 +292,23 @@ class Header extends Component{
       }
       console.log('user in header render: ',user);
       // let potential_allies = this.state.potential_allies;
-
+      let potential_allies = this.getPotentialAllies();
+        console.log('potential allies render: ',potential_allies);
 
         //red user ally notifications icon:
 
-        if(this.state.notifications && this.state.notifications !==''){
+        if(this.state.notifications !==''){
           let notifications = this.state.notifications;
           console.log('notifications in render: ',notifications);
           let n = notifications;
           let ally_invitations_received = n.ally_invitations
-          let invites = (n.read >0) ? n.read : '';
+          // let invites = (n.ally_invitations.length !==0) ? n.ally_invitations.length : '';
+          let invites = n.read;
+          // allyRequestNumber = (
+          //   n.read ==false
+          // ) ? (<div className="invites">{invites}</div>) : '';
           allyRequestNumber = (
-            n.read >0
+            n.read > 0
           ) ? (<div className="invites">{invites}</div>) : '';
 
         }
@@ -277,14 +320,8 @@ class Header extends Component{
         let liker_list = [];
         let replier_list = [];
         let likes_list = [];
-
-
-
-
-
-//June 18 - this is the latest version of global notifications with a bug in it================================================
-
         if(this.state.globalNotifications !=='' && this.props.token){
+
           let globalNotifications = this.state.globalNotifications;
           console.log('globalNotifications in render: ',globalNotifications);
           let n = globalNotifications;
@@ -294,13 +331,11 @@ class Header extends Component{
           console.log('likes in render: ',likes);
           //make a list of liker objects and find number of likes:
           likes.map((val)=>{
-            // console.log('like val: ',val);
-
-            //  likenumber is based on the number of UNREAD likes, not the total number
+            console.log('like val: ',val);
             if(val.read ==false){
               likenumber++;
             }
-            // console.log('users in header render: ',this.props.users);
+            console.log('users in header render: ',this.props.users);
             liker_list= this.props.users.filter((user)=>{
               if(user.userid == val.liker){
                 user.thing_liked = val.id
@@ -324,76 +359,31 @@ class Header extends Component{
         }
 
 
-
-//==================================================================================================================
-
-
-
-
-
-
-
-        //global like alerts dropdown:
-              //   if(likenumber>0 && liker_list[0].hasOwnProperty('userid')){
-              //   likeNotifications = liker_list.map((val)=>{
-              //     console.log('user val: ',val);
-              //     if(!val) return '';
-              //       return (
-              //         <div id={val.userid} className="ally-invitation-tab clearfix">
-              //           <div className="col-xs-12">
-              //             {val.username} likes
-              //           </div>
-              //           <div className="col-xs-12">
-              //           <a onClick={this.clearLikeNotify.bind(this)} href="#">
-              //             <span id={val.thing_liked} className='accept-button'>
-              //               Ok
-              //             </span>
-              //           </a>
-              //           <UserPic userid={val.userid} />
-              //         </div>
-              //       </div>
-              //       );
-              //   });
-              // }
-              console.log('likeposts: ',likeposts);
-              let thing_liked;
+              console.log('likes_list: ',likes_list);
               if(likes_list.length>0 && this.props.token){
+                console.log('likes_listGlobeNotes: ',likes_list);
               likeNotifications = likes_list.map((val)=>{
-                console.log('like notification filtered: ',val);
-                let liker = this.props.users.filter((user)=>{
+                let username = this.props.users.filter((user)=>{
                   return user.userid == val.liker;
                 });
-              //  determine if thing liked is a comment or a post:
-              if(val.comment && val.comment == "NA"){
-                console.log('thing val: ',val);
-                thing_liked = this.props.posts.filter((foo)=>{
-                  // console.log('thinglist: ',foo);
-                  if(foo._id === val.post){
+                console.log('likes_posts: ',this.props.posts);
+                let thing_liked = this.props.posts.filter((foo)=>{
+                  console.log('thing_list: ',foo);
+                  if(foo._id == val.post){
+                    // console.log('thinglist match',foo);
                      return foo;
                    }
                 });
+                thing_liked = thing_liked[0];
                 console.log('thing_liked: ',thing_liked);
-                thing_liked = 'your post: '+thing_liked[0].text;
-              }else if(val.comment && val.comment !==''){
-                thing_liked = this.props.posts.filter((foo)=>{
-                  if(foo._id === val.post){
-
-                     return foo;
-                   }
-                });
-                thing_liked = thing_liked[0].comments.filter((comment)=>{
-                  console.log('comment filtered: ',comment.id, 'vs ',val.comment);
-                  return comment.id == val.comment;
-                });
-                console.log('comment liked: ',thing_liked);
-                thing_liked = 'your comment: '+thing_liked[0].text;
-              }
+                console.log('username_header: ',username);
+                console.log('like val: ',val);
                 if(!val) return '';
                   return (
                     <div id={val.liker} className="ally-invitation-tab clearfix">
                     <div className="col-xs-3"></div>
                       <div className="like-notification col-xs-12">
-                        {liker[0].username} likes {thing_liked}
+                        {username[0].username} likes {thing_liked.text}
                       </div>
                       <div className="col-xs-12">
                       <a onClick={this.clearLikeNotify.bind(this)} href="#">
@@ -406,21 +396,12 @@ class Header extends Component{
                   </div>
                   );
               });
+              console.log('likeNotifications: ',likeNotifications);
             }
-
-            let potential_allies = [];
-            let ally_accepts = [];
-            if(this.props.notifications !==null && this.props.notifications.ally_invitations !==undefined){
-              potential_allies = this.getPotentialAllies(this.props.notifications.ally_invitations);
-              ally_accepts = this.getPotentialAllies(this.props.notifications.ally_accepts);
-              console.log('ally_accepts_render: ',ally_accepts);
-            }
-                console.log('potential_allies render: ',potential_allies);
 
         //ally request dropdown
-                if(potential_allies.length>0 && potential_allies[0].hasOwnProperty('userid') && this.props.token){
+                if(potential_allies !==undefined && potential_allies.length>0 && potential_allies[0].hasOwnProperty('userid') && this.props.token){
                 allyReqs = potential_allies.map((val)=>{
-
                   console.log('user val: ',val);
                   if(!val) return '';
                     return (
@@ -430,7 +411,7 @@ class Header extends Component{
                         </div>
                         <div className="col-xs-12">
                 {/* Accept button */}
-                        <a onClick={this.acceptAlly.bind(this)} href="#">
+                        <a id={val.userid} onClick={this.acceptAlly.bind(this)} href="#">
                           <span id={val.userid} className='accept-button'>
                             Accept
                           </span>
@@ -449,29 +430,9 @@ class Header extends Component{
               }
                 console.log('allyreqs: ',allyReqs);
 
-              let allyAccepts = ally_accepts.map((val)=>{
-                if(!val) return '';
-                  return (
-                    <div id={val.userid} className="ally-invitation-tab clearfix">
-                      <div className="col-xs-12">
-                        {val.username} accepted your ally request!
-                      </div>
-                      <div className="col-xs-12">
-              {/* Ok button */}
-                      <a onClick={this.clearAccept.bind(this)} href="#">
-                        <span id={val.userid} className='accept-button'>
-                          Ok
-                        </span>
-                      </a>
-                      <UserPic userid={val.userid} />
-                    </div>
-                  </div>
-                  );
-              });
-
 
         let allyPreviewText = (ally_invitations_received.length>0) ? 'Ally Requests' : 'No New Ally Requests';
-        let globalPreviewText = (likes_list.length>0) ? 'Latest Activity' : 'All caught up!';
+        let globalPreviewText = (likenumber>0) ? 'Latest Activity' : 'All caught up!';
         let globalPreview = (this.state.previewingAlly) ?
         (
           <div key="./Header" className="ally-request-dropdown">
@@ -481,11 +442,9 @@ class Header extends Component{
         ) : '';
         let allyPreview = (this.state.previewingGlobal) ?
         (
-          <div key="./Header" tabIndex="0" onBlur={this.clearLikeNotify.bind(this)} className="ally-request-dropdown">
+          <div key="./Header" className="ally-request-dropdown">
             {allyPreviewText}
             {allyReqs}
-            {allyAccepts}
-            {/* <div className="highbar">More stuff</div> */}
           </div>
         ) : '';
         console.log('aff in render: ',affiliation);
@@ -531,18 +490,16 @@ class Header extends Component{
       <div><a className="log-out" onClick={()=>this.handleClick()} href="#">Join/login</a></div>
     );
 
-    let globeClass = (this.state.previewingAlly) ? 'white fa fa-globe' : 'black fa fa-globe';
-    let handshakeClass = (this.state.previewingGlobal) ? 'white fa fa-handshake-o' : 'black fa fa-handshake-o';
     let usercontrols = (
       <span>
         <div className="ally-request-holder">
-          <a onClick={this.toggleAllyRequest.bind(this)} href="#" className={globeClass}>
+          <a onClick={this.toggleAllyRequest.bind(this)} href="#" className="fa fa-globe">
           </a>
           {globalUpdateNumber}
           {globalPreview}
         </div>
         <div className="ally-request-holder">
-          <a onClick={this.toggleAlert.bind(this)} href="#" className={handshakeClass}>
+          <a onClick={this.toggleAlert.bind(this)} href="#" className="fa fa-handshake-o">
           </a>
           {allyRequestNumber}
           {allyPreview}
@@ -550,7 +507,7 @@ class Header extends Component{
       </span>
     );
     return(
-      <header onBlur={this.clearLikeNotify.bind(this)} className={this.props.affiliation_display}>
+      <header /*onClick={()=>this.clearDisplay()}*/ className={this.props.affiliation_display}>
 
         <div className="outer-nav-wrapper">
           <div className="nav">
@@ -625,9 +582,7 @@ function mapDispatchToProps(dispatch){
     fetchGlobalNotifications,
     notificationsSeen,
     globalNotificationsSeen,
-    clearLikeNotify,
-    ignoreAlly,
-    clearAccept
+    clearLikeNotify
   },dispatch);
 }
 

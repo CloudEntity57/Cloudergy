@@ -29,7 +29,7 @@ class Newsfeed extends Component{
   constructor(props){
     super(props);
     const profile = this.props.auth.getProfile();
-    this.props.fetchUserInfo(profile.clientID);
+    this.props.fetchUserInfo(profile.third_party_id);
     //save user's third party info to store:
     this.props.saveProfile(profile);
     // //find and store all users and posts currently in the API database:

@@ -63,6 +63,7 @@ class App extends React.Component{
     console.log('mounting App.js!!!');
     let targetURL = "http://localhost:3001/user/"
     console.log('app js auth: ',auth);
+    // this.props.fetchUserInfo(
   }
 
   componentWillUpdate(){
