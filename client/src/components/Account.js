@@ -49,7 +49,7 @@ class Account extends Component{
     let work = this.refs.work.value;
     let bio = this.refs.bio.value;
     //submit information to DB:
-    let uid = profile.clientID;
+    let uid = profile.third_party_id;
     let data ={
       userinfo:{
         username:username,

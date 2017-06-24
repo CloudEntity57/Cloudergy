@@ -79,23 +79,23 @@ class Newsfeed extends Component{
     console.log('receiving newsfeed');
     const profile = this.props.auth.getProfile();
     console.log('newsfeed profile: ',profile);
-      console.log('newsfeed receive props');
-      let user = nextProps.user;
-      console.log('user in cdm newsfeed: ',user);
-      this.setState({
-        user:user
-      });
-      this.setState({
-        editing:false
-      });
-      console.log('api key: ',nytkey);
-      let affiliation = user.affiliation;
-      console.log('affiliation in newsfeed: ',affiliation);
-      let fullfeed=[];
-      let result;
-      this.props.fetchNotifications(user[0].userid);
-      this.props.fetchGlobalNotifications(user[0].userid);
-      // this.props.fetchAllUsers('');
+    console.log('newsfeed receive props');
+    let user = nextProps.user;
+    console.log('user in cdm newsfeed: ',user);
+    this.setState({
+      user:user
+    });
+    this.setState({
+      editing:false
+    });
+    console.log('api key: ',nytkey);
+    let affiliation = user.affiliation;
+    console.log('affiliation in newsfeed: ',affiliation);
+    let fullfeed=[];
+    let result;
+    this.props.fetchNotifications(user[0].userid);
+    this.props.fetchGlobalNotifications(user[0].userid);
+    // this.props.fetchAllUsers('');
     //editing posts:
     let post = nextProps.post;
     let id = post;

@@ -20,15 +20,20 @@ class UserPic extends Component{
     if(!userid){
       console.log('no userid!');
     }
+    let user = this.props.users.filter((val)=>{
+      if(val.userid===userid){
+        return val;
+      }
+    });
     Functions.getUser(userid).then((user)=>{
       console.log('user in userpic: ',user);
       this.setState({
-        user:user
+        user
       });
     });
   }
   render(){
-    let user = (this.props.user[0]) ? this.props.user[0] : '';
+    let user = (this.state.user[0]) ? this.state.user[0] : '';
     let teamcolor = (user !=='') ? user.affiliation + "stripe user-pic-stripe" : "nonestripe user-pic-stripe";
     let photo = (user !=='') ? (<img id={user.id} className='userpic-pic' src={user.photo} alt='user image' />) : (<img id={user.id} className='userpic-pic' src="http://ijmhometutors.com/tutor/server/php/files/51b855e98abd7a5143c4d0176c119c0e/picture/avatar.png" alt='user image' />);
       return(
@@ -50,8 +55,10 @@ class UserPic extends Component{
 
 function mapStateToProps(state){
   let user = state.allReducers.mainApp.user;
+  let users = state.allReducers.mainApp.users;
   return{
-    user
+    user,
+    users
   }
 }
 

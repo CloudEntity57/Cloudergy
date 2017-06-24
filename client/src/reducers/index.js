@@ -161,6 +161,7 @@ const mainApp = (state = initialState, action) => {
   }
 }
 
+
 const clearAccept = (state={isPosting:false,postsUpdated:false,notifications:[]},action) => {
   switch(action.type){
     case REQUEST_CLEAR_ACCEPT:
@@ -199,6 +200,26 @@ const ignoreAlly = (state={isPosting:false,postsUpdated:false,notifications:[]},
       return state;
   }
 }
+//
+// //create notifications on new user creation:
+// const createNotifications = (state={isPosting:false,postsUpdated:false,notifications:[]},action) => {
+//   switch(action.type){
+//     case REQUEST_CREATE_NOTIFICATIONS:
+//       return {
+//         ...state,
+//         isPosting:true
+//       }
+//     case CREATE_NOTIFICATIONS_CONFIRMATION:
+//       return {
+//         ...state,
+//         isPosting:false,
+//         postsUpdated:true,
+//         notifications:action.results
+//       }
+//     default:
+//       return state;
+//   }
+// }
 
 //create notifications on new user creation:
 const createNotifications = (state={isPosting:false,postsUpdated:false,notifications:[]},action) => {
@@ -759,6 +780,7 @@ const logoutSuccess = (state={lockShowing:false},action) =>{
        ...state,
        isFetching: true,
        authenticated: false,
+       token:'',
        user:[{
          "_id": {
              "$oid": "58f66b22a53d2954c9f580fb"

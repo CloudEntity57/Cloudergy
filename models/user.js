@@ -10,10 +10,12 @@ var schema = new mongoose.Schema({
   updates:{type:Object},
   photo:String,
   largephoto:String,
+  privacy:String,
   affiliation:String,
   education:String,
   work:String,
   location:String,
+  updated:String,
   user_story:String,
   allies: { type : Array , default : '' },
   ally_requests_sent:[{

@@ -5,7 +5,7 @@ const getAllUsers = (state={users:{}},action) => {
     case REQUEST_ALL_USERS:
       return {
         ...state,
-        isFetching:true
+        isFetchingUsers:true
       }
     case RECEIVE_ALL_USERS:
       let usersObject = {};
@@ -16,8 +16,9 @@ const getAllUsers = (state={users:{}},action) => {
       };
       return {
         ...state,
-        isFetching: false,
+        isFetchingUsers: false,
         users:action.results,
+        didFetchUsers:true,
         usersObject
       }
       default:

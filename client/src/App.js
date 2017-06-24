@@ -25,7 +25,7 @@ console.log('auth : ', auth);
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { socialApp, fetchUserInfo, fetchPosts, saveProfile,createNewUser, fetchAllUsers,doAuthentication,logoutUser,createNotifications } from './actions/index';
+import { socialApp, fetchUserInfo, fetchPosts, saveProfile,createNewUser, fetchAllUsers,doAuthentication,logoutUser,createNotifications,createGlobalNotifications } from './actions/index';
 import { push } from 'connected-react-router';
 
 // validate authentication for private routes
@@ -49,10 +49,10 @@ const requireAuth = (nextState, replace) => {
 
 class App extends React.Component{
 
-
   constructor(props){
     super(props);
     this.props.doAuthentication();
+    this.props.fetchAllUsers('');
     this.state={
       profile:{},
       updated:false,
@@ -71,53 +71,74 @@ class App extends React.Component{
   }
   componentWillReceiveProps(nextProps){
     let user = this.props.user;
-    let profile = this.props.profile;
-    let authenticated = this.props.authenticated;
-    console.log('user authenticated: ',authenticated);
     console.log('user in willreceive: ',user);
-    console.log('profile in willreceive: ',profile);
-    console.log('user after fetching info: ',this.props.user[0]);
-    //if user is new, save auth username, affiliation, first, last, pic, big pic, userid, requests sent, received in STORE:
-    //all of this is already saved in store under 'user'
-    if(user !=='' && user.length===0){
-       console.log('user empty! Not on file.');
-       //create redux action to save new user in API:
-       let userData = {
-           first_name:this.props.profile.given_name,
-           last_name:this.props.profile.family_name,
-           photo:this.props.profile.picture,
-           largephoto:this.props.profile.picture_large,
-           userid:this.props.profile.clientID,
-           ally_requests_sent:[],
-           //give every new user a friend invitation from me:
-           ally_invitations_received:['J20zp56UZbPRlZ9eB1u41sBs9qXJxBVY']
-         };
 
-          this.props.createNewUser(userData);
+    //needs current profile to see if a corresponding user exists in database
+    let profile = this.props.profile;
+    console.log('profile in willreceive: ',profile);
+    //send profile information to backend to test, and if user doesn't exist under third_party_id, create a user with
+    // name,photo,largephoto,userid.
+
+     //create redux action and test user in API:
+     let userData = {
+         first_name:profile.given_name,
+         last_name:profile.family_name,
+         username:profile.given_name+' '+profile.family_name,
+         photo:profile.picture,
+         largephoto:profile.picture_large,
+         userid:profile.third_party_id,
+         privacy:"public",
+         affiliation:"none",
+         allies:[],
+         ally_requests_sent:[],
+         //give every new user a friend invitation from me:
+         ally_invitations_received:['zBcuAef0F8bv7o-IAGnDXX4LJBA']
+       };
+       let notifications = {
+           "userid": profile.third_party_id,
+           "ally_invitations": [
+               "zBcuAef0F8bv7o-IAGnDXX4LJBA"
+           ],
+           "ally_accepts": [],
+           "ally_cancels": [],
+           "read": false
+       };
+
+       let globalNotifications = {
+           "userid": profile.third_party_id,
+           "likes": [],
+           "replies": [],
+           "read": true
+       };
+      //  let name = this.props.users.filter((val)=>{
+      //     return val.userid==user[0].userid;
+      //  });
+      let name=[];
+       if(this.props.users.length>0){
+         let the_users = this.props.users;
+         for(let i=0; i<the_users.length; i++){
+           console.log('filtering user: ',the_users[i],' vs ', user[0].userid);
+           if(the_users[i].userid==profile.third_party_id){
+            name.push(the_users[i]);
+            console.log(the_users[i], ' is a match!! ',name);
+          };
+            if(i==the_users.length-1 && name.length==0){
+              console.log('testing user: ',userData, 'name: ',name);
+              if(userData.first_name !== undefined){
+                console.log('creating user: ',userData);
+                 this.props.createNewUser(userData);
+                 this.props.createGlobalNotifications(globalNotifications);
+                 this.props.createNotifications(notifications);
+              }
+            }
+        };
+       }
 
   //create notifications, ally & global:
-      let notifications = {
-          "userid": this.props.profile.clientID,
-          "ally_invitations": [
-              "J20zp56UZbPRlZ9eB1u41sBs9qXJxBVY"
-          ],
-          "ally_accepts": [],
-          "ally_cancels": [],
-          "read": 0
-      };
-       this.props.createNotifications(notifications);
 
-      let globalnotifications = {
-          "userid": this.props.profile.clientID,
-          "likes": [],
-          "replies": [],
-          "read": false
-      };
-      //  this.props.createGlobalNotifications(userData);
-       this.props.push('/');
-     }else{
-       console.log('app.js has confirmed user exists');
-     }
+    //  this.props.createGlobalNotifications(userData);
+    //  this.props.push('/');
+
 
   }
   logOut(){
@@ -189,12 +210,14 @@ function mapStateToProps(state){
   let users = state.allReducers.mainApp.users;
   let token = state.allReducers.mainApp.token;
   let authenticated = state.allReducers.mainApp.authenticated;
+  let didFetchUsers = state.allReducers.mainApp.didFetchUsers;
   return{
     user,
     users,
     profile,
     token,
-    authenticated
+    authenticated,
+    didFetchUsers
   }
 }
 
@@ -209,7 +232,8 @@ function mapDispatchToProps(dispatch){
     doAuthentication,
     fetchPosts,
     logoutUser,
-    createNotifications
+    createNotifications,
+    createGlobalNotifications
   },dispatch);
 }
 

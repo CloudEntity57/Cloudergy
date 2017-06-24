@@ -28,7 +28,7 @@ router.get('/test', function(req, res, next) {
 
 router.get('/user',function(req,res,next){
   // let profile=req;
-  console.log('getting user');
+  console.log('getting every user');
   User.find({},'', function(err,profile){
     // console.log('profile: ',profile);
     res.json(profile);
@@ -47,37 +47,94 @@ router.get('/user/:userid',function(req,res,next){
   // User.find({req.},''
 });
 
-//create user
-router.post('/user',function(req,res,next){
-  let user = req.body.payload;
-  let newPost = new User(user);
-  newPost.save(function(err,success){
-    if(err) console.log('error: ',err);
-  });
-  console.log('data you sent DB: ',user);
-});
-
+//create user SAVE THIS
+// router.post('/user',function(req,res,next){
+//   let user = req.body.payload;
+//   let newPost = new User(user);
+//   newPost.save(function(err,success){
+//     if(err) console.log('error: ',err);
+//   });
+//   console.log('data you sent DB: ',user);
+// });
 //create notifications for new user
-router.post('/notification',function(req,res,next){
-  let user = req.body.payload;
-  let newPost = new User(user);
-  console.log('new user: ',newPost);
-  newPost.save(function(err,success){
-    if(err) console.log('error: ',err);
-    res.json(success);
+router.post('/createnotifications',function(req,res,next){
+  let note = req.body.payload;
+  // console.log('note: ',note);
+  Notification.update({"userid":note.userid},{$setOnInsert:note},
+    {upsert: true},function(err,result){
+    if(err) console.log('error! ',err);
+    // console.log('note returned: ',result);
+    res.json(result);
   });
-  console.log('data you sent DB: ',user);
+  // let newPost = new Notification(note);
+  // console.log('new notification: ',newPost);
+  // newPost.save(function(err,success){
+  //   if(err) console.log('error: ',err);
+  //   res.json(success);
+  // });
+  // console.log('note you sent DB: ',user);
 });
 
 //create global notifications for new user
-router.post('/globalnotification',function(req,res,next){
-  let user = req.body.payload;
-  let newPost = new User(user);
-  newPost.save(function(err,success){
-    if(err) console.log('error: ',err);
+router.post('/createglobalnotifications',function(req,res,next){
+  let note = req.body.payload;
+  // console.log('global note: ',note);
+  GlobalNotification.update({"userid":note.userid},{$setOnInsert:note},
+    {upsert: true},function(err,result){
+    if(err) console.log('error! ',err);
+    // console.log('global note returned: ',result);
+    res.json(result);
   });
-  console.log('data you sent DB: ',user);
+  // let newPost = new GlobalNotification(note);
+  // newPost.save(function(err,success){
+  //   if(err) console.log('error: ',err);
+  // });
+  // console.log('data you sent DB: ',user);
 });
+
+//create user if no user exists:
+router.post('/user',function(req,res,next){
+  console.log('creating user: ',req.body.payload.username);
+  let data = req.body.payload;
+  // let newUser = new User(data);
+  // newUser.save(function(err,user){
+  //   if(err) console.log('err! ',err);
+  //   res.json(user);
+  // });
+  // let updated=new Date();
+  // let output = {};
+  User.update({"userid":data.userid},{$setOnInsert:data},
+    {upsert: true},function(err,result){
+      if(err) console.log('error! ',err);
+      console.log('user returned: ',data);
+      res.json(data);
+      // User.find({},'',function(err,user){
+      //   if(err) console.log('error: ',err);
+      //   console.log(
+      //   res.json(user);
+      //   // output.user = user;
+      // });
+      // res.json(result);
+    });
+  });
+
+
+  // User.find({"userid":data.userid},'',function(err,info){
+  //   if(err) console.log('err');
+  //   if(!info){
+  //     User.update({"userid":data.userid},{$setOnInsert:data},
+  //       {upsert: true},function(err,user){
+  //       if(err) console.log('error! ',err);
+  //       res.json(user);
+  //     });
+  //   }else{
+  //     res.json(info);
+  //   }
+  // });
+  //
+  // res.json(data);
+// });
+
 
 //set specific user data:
 
@@ -478,8 +535,8 @@ router.get('/notifications/:userid',function(req,res,next){
   Notification.find({"userid":req.params.userid},'',function(err,results){
     if(err) console.log('error: ',err);
     console.log("this user's notifications are: ",results[0]);
-    res.json(results[0]);
-  });
+      res.json(results[0]);
+    });
   // console.log('posts: ',posts);
     // profile=profile.reverse();
     // res.json(posts);
@@ -492,7 +549,7 @@ router.get('/globalnotifications/:userid',function(req,res,next){
   console.log('user to update: ',req.params.userid);
   GlobalNotification.find({"userid":req.params.userid},'',function(err,results){
     if(err) console.log('error: ',err);
-    // console.log("this user's global notifications are: ",results[0]);
+    console.log("this user's global notifications are: ",results[0]);
     res.json(results[0]);
   });
   // console.log('posts: ',posts);
@@ -536,30 +593,33 @@ router.post('/globalnotificationsseen',function(req,res,next){
     });
   });
 
-//create notifications:
 
-router.post('/createnotifications',function(req,res,next){
-  console.log('notification to create: ',req.body.payload);
-  let data = req.body.payload;
-  let newNote = new Notification(data);
-  newNote.save(function(err,note){
-    if(err) console.log('error - ',err);
-    console.log('notification created: ',note);
-    res.json(note);
-  });
-});
+
 
 //create notifications:
-router.post('/createglobalnotifications',function(req,res,next){
-  console.log('notification to create: ',req.body.payload);
-  let data = req.body.payload;
-  let newNote = new GlobalNotification(data);
-  newNote.save(function(err,note){
-    if(err) console.log('error - ',err);
-    console.log('notification created: ',note);
-    res.json(note);
-  });
-});
+
+// router.post('/createnotifications',function(req,res,next){
+//   console.log('notification to create: ',req.body.payload);
+//   let data = req.body.payload;
+//   let newNote = new Notification(data);
+//   newNote.save(function(err,note){
+//     if(err) console.log('error - ',err);
+//     console.log('notification created: ',note);
+//     res.json(note);
+//   });
+// });
+//
+// //create notifications:
+// router.post('/createglobalnotifications',function(req,res,next){
+//   console.log('notification to create: ',req.body.payload);
+//   let data = req.body.payload;
+//   let newNote = new GlobalNotification(data);
+//   newNote.save(function(err,note){
+//     if(err) console.log('error - ',err);
+//     console.log('notification created: ',note);
+//     res.json(note);
+//   });
+// });
 
 
 //remove (clear) like notify for individual instance:

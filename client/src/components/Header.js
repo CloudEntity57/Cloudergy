@@ -11,12 +11,13 @@ import jquery from 'jquery';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
-import { socialApp, toggleAffiliation, fetchUserInfo,fetchPosts, acceptAlly,login,doAuthentication,fetchNotifications,fetchGlobalNotifications,notificationsSeen,globalNotificationsSeen,clearLikeNotify } from '../actions/index';
+import { socialApp, toggleAffiliation, fetchUserInfo,fetchPosts, acceptAlly,login,doAuthentication,fetchNotifications,fetchGlobalNotifications,notificationsSeen,globalNotificationsSeen,clearLikeNotify,fetchAllUsers } from '../actions/index';
 
 class Header extends Component{
   constructor(props){
     super(props);
     this.props.doAuthentication();
+    this.props.fetchAllUsers('');
     this.state={
       affiliation:'',
       previewingAlly:false,
@@ -582,7 +583,8 @@ function mapDispatchToProps(dispatch){
     fetchGlobalNotifications,
     notificationsSeen,
     globalNotificationsSeen,
-    clearLikeNotify
+    clearLikeNotify,
+    fetchAllUsers
   },dispatch);
 }
 

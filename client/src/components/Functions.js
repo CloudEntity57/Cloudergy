@@ -5,7 +5,7 @@ const auth = new AuthService(authid, authdomain);
 import AuthService from '../utils/AuthService';
 import { hashHistory } from 'react-router';
 // let targetURL = "https://couchpolitics.herokuapp.com/user/";
-let targetURL = "https://localhost:8080/";
+let targetURL = "http://localhost:8080/user/";
 import Metascraper from 'metascraper';
 
 function myFunctions(){

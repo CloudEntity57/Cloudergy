@@ -194,7 +194,7 @@ class PostHeader extends Component{
     let postId = (this.state.postId) ? this.state.postId : '';
 
     let user=this.props.user[0];
-    console.log('user in postheader render: ',user);
+    // console.log('user in postheader render: ',user);
     let myPost=false;
     if(this.props.post.uid == this.props.user[0].userid) {myPost=true;}
     console.log("it's ",myPost," that ", this.props.post.text, " is my post");
