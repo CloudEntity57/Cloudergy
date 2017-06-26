@@ -12,7 +12,6 @@ header{
     margin-right:5px;
     color:black;
     margin-top:-1px;
-
   }
   .site-title{
     cursor: pointer;
@@ -70,9 +69,9 @@ header{
   select{
     color:grey;
   }
-  @media(max-width: 650px){
-    height: 75px;
-  }
+  // @media(max-width: 650px){
+  //   height: 75px;
+  // }
 }
 input:focus,
 select:focus,

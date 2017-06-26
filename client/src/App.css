@@ -80,12 +80,6 @@ header select {
   color: grey;
 }
 
-@media (max-width: 650px) {
-  header {
-    height: 75px;
-  }
-}
-
 input:focus,
 select:focus,
 textarea:focus,
