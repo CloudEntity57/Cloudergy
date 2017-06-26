@@ -25,11 +25,14 @@ class UserPic extends Component{
         return val;
       }
     });
-    Functions.getUser(userid).then((user)=>{
-      console.log('user in userpic: ',user);
-      this.setState({
-        user
-      });
+    // Functions.getUser(userid).then((user)=>{
+    //   console.log('user in userpic: ',user);
+    //   this.setState({
+    //     user
+    //   });
+    // });
+    this.setState({
+      user:[this.props.usersObject.userid]
     });
   }
   render(){
@@ -56,9 +59,11 @@ class UserPic extends Component{
 function mapStateToProps(state){
   let user = state.allReducers.mainApp.user;
   let users = state.allReducers.mainApp.users;
+  let usersObject = state.allReducers.mainApp.usersObject;
   return{
     user,
-    users
+    users,
+    usersObject
   }
 }
 
