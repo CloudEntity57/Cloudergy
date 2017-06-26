@@ -25,15 +25,18 @@ class UserPic extends Component{
         return val;
       }
     });
+    this.setState({
+      user
+    });
     // Functions.getUser(userid).then((user)=>{
     //   console.log('user in userpic: ',user);
     //   this.setState({
     //     user
     //   });
     // });
-    this.setState({
-      user:[this.props.usersObject.userid]
-    });
+    // this.setState({
+    //   user:[this.props.usersObject.userid]
+    // });
   }
   render(){
     let user = (this.state.user[0]) ? this.state.user[0] : '';
