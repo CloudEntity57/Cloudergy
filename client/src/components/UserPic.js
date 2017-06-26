@@ -15,7 +15,7 @@ class UserPic extends Component{
       user:{}
     }
   }
-  componentWillMount(){
+  componentWillReceiveProps(){
     let userid = this.props.userid;
     if(!userid){
       console.log('no userid!');
