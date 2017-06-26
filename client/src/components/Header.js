@@ -40,7 +40,7 @@ class Header extends Component{
     });
     let uid= this.props.uid;
     let user = {};
-    if(nextProps.user.length>0){
+    if(nextProps.user && nextProps.user.length>0){
       user = (nextProps.user[0].hasOwnProperty('userid')) ? nextProps.user : {};
     }
     let affiliation = user.affiliation;
@@ -127,18 +127,19 @@ class Header extends Component{
   }
   getPotentialAllies(){
     let user, users, uid, userpic, ally_invitations_received, allyRequestNumber,username, affiliation,allyReqs,potential_allies;
-    user = (this.props.user !=='') ? this.props.user : [{userid:'',ally_invitations_received:[], allyRequestNumber,username, affiliation,allyReqs,potential_allies}];
+    user = (this.props.user && this.props.user.length>0) ? this.props.user : [{userid:'',ally_invitations_received:[], allyRequestNumber,username, affiliation,allyReqs,potential_allies}];
     console.log('user in header: ',user);
-    users = (this.props.users.length > 0) ? this.props.users : [];
-    uid = user[0].userid;
-    userpic = user[0].photo;
-    username = user[0].username;
-    affiliation = user[0].affiliation;
+
+    users = (this.props.user && this.props.users.length > 0) ? this.props.users : [];
+    uid = (this.props.user && this.props.user.length>0) ? user[0].userid : '';
+    userpic = (this.props.user && this.props.user.length>0) ? user[0].photo : '';
+    username = (this.props.user && this.props.user.length>0) ? user[0].username : '';
+    affiliation = (this.props.user && this.props.user.length>0) ? user[0].affiliation : '';
     // ally_invitations_received = user[0].ally_invitations_received;
-    ally_invitations_received = (this.props.notifications !== '') ? this.props.notifications.ally_invitations : '';
+    ally_invitations_received = (this.props.notifications && this.props.notifications.length>0) ? this.props.notifications.ally_invitations : [];
     console.log('invites: ',ally_invitations_received);
     potential_allies = [];
-    if (ally_invitations_received.length>0){
+    if (ally_invitations_received){
       ally_invitations_received.map((ally)=>{
         // this.props.fetchUserInfo(ally).then((val)=>{
         //   potential_allies.push(val);
@@ -276,7 +277,7 @@ class Header extends Component{
     // let user = (this.state.user) ? this.state.user : '';
     // if(this.props.user !==''){
       let user, uid, userpic, ally_invitations_received, allyRequestNumber,globalUpdateNumber,username, affiliation,allyReqs;
-      user = (this.props.user !=='' && this.props.token) ? this.props.user : [{userid:'',ally_invitations_received:[], allyRequestNumber,username, affiliation,allyReqs,potential_allies}];
+      user = (this.props.user && this.props.user.length>0 && this.props.token) ? this.props.user : [{userid:'',ally_invitations_received:[], allyRequestNumber,username, affiliation,allyReqs,potential_allies}];
       ally_invitations_received = user[0].ally_invitations_received;
       let likeNotifications;
 
@@ -298,7 +299,7 @@ class Header extends Component{
 
         //red user ally notifications icon:
 
-        if(this.state.notifications !==''){
+        if(this.state.notifications && this.state.notifications !==''){
           let notifications = this.state.notifications;
           console.log('notifications in render: ',notifications);
           let n = notifications;
@@ -321,7 +322,7 @@ class Header extends Component{
         let liker_list = [];
         let replier_list = [];
         let likes_list = [];
-        if(this.state.globalNotifications !=='' && this.props.token){
+        if(this.state.globalNotifications && this.state.globalNotifications !=='' && this.props.token){
 
           let globalNotifications = this.state.globalNotifications;
           console.log('globalNotifications in render: ',globalNotifications);
@@ -331,6 +332,7 @@ class Header extends Component{
           console.log('replies in render',replies);
           console.log('likes in render: ',likes);
           //make a list of liker objects and find number of likes:
+          if(likes){
           likes.map((val)=>{
             console.log('like val: ',val);
             if(val.read ==false){
@@ -348,6 +350,7 @@ class Header extends Component{
             likes_list = n.likes;
             // console.log('liker in render: ',liker);
           });
+        }
           // console.log('liker list in render: ',liker_list);
           for(let val in replies){
             // console.log('like val: ',val);

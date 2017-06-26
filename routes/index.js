@@ -30,7 +30,12 @@ router.get('/user',function(req,res,next){
   // let profile=req;
   console.log('getting every user');
   User.find({},'', function(err,profile){
-    // console.log('profile: ',profile);
+    console.log('profile: ',profile);
+    // if(profile.length>1){
+    //   profile.filter((val)=>{
+    //     return profile.userid !==undefined;
+    //   });
+    // }
     res.json(profile);
   });
 
@@ -42,7 +47,35 @@ router.get('/user/:userid',function(req,res,next){
   User.find({userid:userid},'', function(err,profile){
     if(err)console.log('error: ',err);
     // console.log('current user profile: ',profile);
-    res.json(profile);
+    if(profile !==undefined){
+      res.json(profile);
+    }else{
+      res.json([{
+        "_id": {
+            "$oid": "58f66b22a53d2954c9f580fb"
+        },
+        "first_name": "Joe",
+        "last_name": "User",
+        "photo": "http://ijmhometutors.com/tutor/server/php/files/51b855e98abd7a5143c4d0176c119c0e/picture/avatar.png",
+        "largephoto": "http://ijmhometutors.com/tutor/server/php/files/51b855e98abd7a5143c4d0176c119c0e/picture/avatar.png",
+        "userid": "123456",
+        "__v": 0,
+        "username": "Guest",
+        "privacy":"everyone",
+        "affiliation": "liberal",
+        "education": "Bachelor's",
+        "location": "Houston, TX",
+        "work": "Artist/Musician/Web Developer",
+        "user_story": "I'm an all-around renaissance man, living life to the fullest and doing the best I can. And I have a radical plan.",
+        "allies": [
+            "54321",
+            "J20zp56UZbPRlZ9eB1u41sBs9qXJxBVY",
+            "12345"
+        ],
+        "ally_requests_sent": [],
+        "ally_invitations_received": []
+    }]);
+    }
   });
   // User.find({req.},''
 });
@@ -63,8 +96,8 @@ router.post('/createnotifications',function(req,res,next){
   Notification.update({"userid":note.userid},{$setOnInsert:note},
     {upsert: true},function(err,result){
     if(err) console.log('error! ',err);
-    // console.log('note returned: ',result);
-    res.json(result);
+    console.log('note returned: ',note);
+    res.json(note);
   });
   // let newPost = new Notification(note);
   // console.log('new notification: ',newPost);
@@ -82,8 +115,8 @@ router.post('/createglobalnotifications',function(req,res,next){
   GlobalNotification.update({"userid":note.userid},{$setOnInsert:note},
     {upsert: true},function(err,result){
     if(err) console.log('error! ',err);
-    // console.log('global note returned: ',result);
-    res.json(result);
+    console.log('global note returned: ',note);
+    res.json(note);
   });
   // let newPost = new GlobalNotification(note);
   // newPost.save(function(err,success){
@@ -107,7 +140,7 @@ router.post('/user',function(req,res,next){
     {upsert: true},function(err,result){
       if(err) console.log('error! ',err);
       console.log('user returned: ',data);
-      res.json(data);
+      res.json([data]);
       // User.find({},'',function(err,user){
       //   if(err) console.log('error: ',err);
       //   console.log(
@@ -115,6 +148,7 @@ router.post('/user',function(req,res,next){
       //   // output.user = user;
       // });
       // res.json(result);
+
     });
   });
 
@@ -535,7 +569,16 @@ router.get('/notifications/:userid',function(req,res,next){
   Notification.find({"userid":req.params.userid},'',function(err,results){
     if(err) console.log('error: ',err);
     console.log("this user's notifications are: ",results[0]);
-      res.json(results[0]);
+      if(results[0] !==undefined){
+        console.log('Nnotes: ',results);
+        res.json(results);
+      }else{
+        Notification.find({"userid":"123456"},'',function(err,notes){
+          if(err) console.log('err: ',err);
+          console.log('notes: ',notes);
+          res.json(notes);
+        });
+      }
     });
   // console.log('posts: ',posts);
     // profile=profile.reverse();
@@ -550,7 +593,16 @@ router.get('/globalnotifications/:userid',function(req,res,next){
   GlobalNotification.find({"userid":req.params.userid},'',function(err,results){
     if(err) console.log('error: ',err);
     console.log("this user's global notifications are: ",results[0]);
-    res.json(results[0]);
+    if(results[0] !==undefined){
+      console.log('gnotes: ',results);
+      res.json(results);
+    }else{
+      GlobalNotification.find({"userid":"123456"},'',function(err,notes){
+        if(err) console.log('err: ',err);
+        console.log('globenotes: ',notes);
+        res.json(notes);
+      });
+    }
   });
   // console.log('posts: ',posts);
     // profile=profile.reverse();
@@ -682,6 +734,20 @@ router.post('/cancelalliance/',function(req,res,next){
            res.json(val);
          });
        });
+  });
+});
+
+router.post('/deleteall',function(req,res,next){
+  let user = req.body.user;
+  User.remove({userid:user},function(err,userid){
+    if(err) console.log('err! ',err);
+    Notification.remove({userid:user},function(err,note){
+      if(err) console.log('err! ',err);
+      GlobalNotification.remove({userid:user},function(err,gnote){
+        if(err) console.log('err! ',err);
+        res.json('success');
+      });
+    });
   });
 });
 

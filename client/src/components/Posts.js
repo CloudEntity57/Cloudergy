@@ -33,12 +33,14 @@ class Posts extends Component{
     // });
   }
   componentWillReceiveProps(nextProps){
-    let user = nextProps.user;
-    console.log('user in posts: ',user);
-    console.log('users privacy: ',user[0].privacy);
-    this.setState({
-      privacy:user[0].privacy
-    });
+    if(nextProps.user.length>0){
+      let user = nextProps.user;
+      console.log('user in posts: ',user);
+      console.log('users privacy: ',user[0].privacy);
+      this.setState({
+        privacy:user[0].privacy
+      });
+    }
 
     //after link metadata retrieved, the rest of post has been stored in state and full post is submitted:
     let metadata = (nextProps.metadata !=='') ? nextProps.metadata : '';
@@ -298,7 +300,7 @@ class Posts extends Component{
     console.log('wall state: ',this.props.wall);
     console.log('wall state: ',this.props.wall);
     // let user = (this.state.user) ? this.state.user : '';
-    let user = this.props.user;
+    let user = (this.props.user.length>0) ? this.props.user : [];
     let opaqueBackground = (this.state.editing) ?
     (
       <div onClick={this.emphasizeForm.bind(this)} className="opaqueBackground"></div>
@@ -358,15 +360,15 @@ class Posts extends Component{
 
 
     //filter for different post component locations:
-    if(this.props.wall === 'public'){
+    if(this.props.wall === 'public' && this.props.user.length>0){
     //show only global, personal and ally posts:
     let myPost = false;
     let userid = (this.props.user.length>0) ? this.props.user[0].userid : '';
     posts = posts.filter((val)=>{
       if(val.uid == userid) myPost = true;
       let isAllies = false;
-      this.props.user[0].allies.forEach((ally)=>{
-        if (ally == this.props.user[0].userid){isAllies=true};
+      user[0].allies.forEach((ally)=>{
+        if (ally == user[0].userid){isAllies=true};
       });
       return val.privacy=='public' || (val.privacy=='allies' && isAllies) || myPost;
     });

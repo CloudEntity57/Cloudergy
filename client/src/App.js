@@ -25,7 +25,7 @@ console.log('auth : ', auth);
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { socialApp, fetchUserInfo, fetchPosts, saveProfile,createNewUser, fetchAllUsers,doAuthentication,logoutUser,createNotifications,createGlobalNotifications } from './actions/index';
+import { socialApp, fetchUserInfo, fetchPosts, saveProfile,createNewUser, fetchAllUsers,doAuthentication,logoutUser,createNotifications,createGlobalNotifications,fetchNotifications,fetchGlobalNotifications,reportUserCreation } from './actions/index';
 import { push } from 'connected-react-router';
 
 // validate authentication for private routes
@@ -71,6 +71,7 @@ class App extends React.Component{
   }
   componentWillReceiveProps(nextProps){
     let user = this.props.user;
+
     console.log('user in willreceive: ',user);
 
     //needs current profile to see if a corresponding user exists in database
@@ -101,14 +102,14 @@ class App extends React.Component{
            ],
            "ally_accepts": [],
            "ally_cancels": [],
-           "read": false
+           "read": 1
        };
 
        let globalNotifications = {
            "userid": profile.third_party_id,
            "likes": [],
            "replies": [],
-           "read": true
+           "read": 0
        };
       //  let name = this.props.users.filter((val)=>{
       //     return val.userid==user[0].userid;
@@ -116,23 +117,28 @@ class App extends React.Component{
       let name=[];
        if(this.props.users.length>0){
          let the_users = this.props.users;
-         for(let i=0; i<the_users.length; i++){
-           console.log('filtering user: ',the_users[i],' vs ', user[0].userid);
-           if(the_users[i].userid==profile.third_party_id){
-            name.push(the_users[i]);
-            console.log(the_users[i], ' is a match!! ',name);
-          };
-            if(i==the_users.length-1 && name.length==0){
-              console.log('testing user: ',userData, 'name: ',name);
-              if(userData.first_name !== undefined){
-                console.log('creating user: ',userData);
-                 this.props.createNewUser(userData);
-                 this.props.createGlobalNotifications(globalNotifications);
-                 this.props.createNotifications(notifications);
+         if(user.length>0){
+           for(let i=0; i<the_users.length; i++){
+             console.log('filtering user: ',the_users[i],' vs ', user[0].userid);
+             if(the_users[i].userid==profile.third_party_id){
+              name.push(the_users[i]);
+              console.log(the_users[i], ' is a match!! ',name);
+            };
+              if(i==the_users.length-1 && name.length==0 && this.props.userCreated == false){
+                console.log('testing user: ',userData, 'name: ',name);
+                if(userData.first_name !== undefined){
+                  console.log('creating user: ',userData);
+                   this.props.reportUserCreation();
+                   this.props.createGlobalNotifications(globalNotifications);
+                   this.props.createNotifications(notifications);
+                   this.props.createNewUser(userData);
+                }
               }
-            }
-        };
+          };
+        }
+
        }
+
 
   //create notifications, ally & global:
 
@@ -140,6 +146,9 @@ class App extends React.Component{
     //  this.props.push('/');
 
 
+  }
+  update_app(){
+    this.forceUpdate();
   }
   logOut(){
     this.props.push('/');
@@ -181,6 +190,8 @@ class App extends React.Component{
    let username = (this.state.username) ? this.state.username : '';
    console.log('username app.js render: ',username);
    let users = this.props.users;
+   let notifications = this.state.notes;
+   let globalNotifications = this.state.globalNotes;
    let update = this.update.bind(this);
    return (
     <div>
@@ -211,13 +222,15 @@ function mapStateToProps(state){
   let token = state.allReducers.mainApp.token;
   let authenticated = state.allReducers.mainApp.authenticated;
   let didFetchUsers = state.allReducers.mainApp.didFetchUsers;
+  let userCreated = state.allReducers.mainApp.userCreated;
   return{
     user,
     users,
     profile,
     token,
     authenticated,
-    didFetchUsers
+    didFetchUsers,
+    userCreated
   }
 }
 
@@ -233,7 +246,10 @@ function mapDispatchToProps(dispatch){
     fetchPosts,
     logoutUser,
     createNotifications,
-    createGlobalNotifications
+    createGlobalNotifications,
+    fetchNotifications,
+    fetchGlobalNotifications,
+    reportUserCreation
   },dispatch);
 }
 

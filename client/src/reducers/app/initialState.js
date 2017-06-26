@@ -25,6 +25,7 @@ const initialState = {
   storyLink:'',
   post:'',
   didFetchUsers:false,
+  userCreated:false,
   //auth:
   auth:auth,
   token:token,

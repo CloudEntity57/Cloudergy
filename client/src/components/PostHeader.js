@@ -25,8 +25,8 @@ class PostHeader extends Component{
     }
   }
   componentDidMount(){
-    let user = this.props.user[0];
-    let userid = this.props.user[0].userid;
+    let user = (this.props.users.length>0) ? this.props.user[0] : [];
+    let userid = (this.props.users.length>0) ? this.props.user[0].userid : '';
     let currentUserId = this.props.currentId;
     // if(currentUserId == userid){
     //   // console.log('cuid true');
@@ -49,8 +49,8 @@ class PostHeader extends Component{
       postId:postId,
       privacy
     });
-    let user = this.props.user[0];
-    let userid = this.props.user[0].userid;
+    let user = (this.props.user.length>0) ? this.props.user[0] : [];
+    let userid = (this.props.user.length>0) ? this.props.user[0].userid : '';
     if(currentUserId == userid){
       // console.log('cuid true');
       this.setState({
@@ -62,6 +62,7 @@ class PostHeader extends Component{
         myPost:false,
       });
     }
+    if(user.length>0){
     let callback = (isFriend)=>{
       // console.log('this person is my friend - ',isFriend);
       this.setState({
@@ -72,6 +73,7 @@ class PostHeader extends Component{
     let friends = user.allies;
     let isFriend = false;
     // console.log('current friends: ',friends);
+
     for(let i=0; i<friends.length; i++){
       if(friends[i]==userid){
         isFriend = true;
@@ -89,6 +91,7 @@ class PostHeader extends Component{
         }
       }
     }
+  }
   }
   doNothing(e){
     e.preventDefault();
@@ -193,10 +196,10 @@ class PostHeader extends Component{
     let currentUserId = this.props.currentId;
     let postId = (this.state.postId) ? this.state.postId : '';
 
-    let user=this.props.user[0];
+    let user=(this.props.user.length > 0) ? this.props.user[0] : [];
     // console.log('user in postheader render: ',user);
     let myPost=false;
-    if(this.props.post.uid == this.props.user[0].userid) {myPost=true;}
+    if(this.props.user.length>0 && (this.props.post.uid == this.props.user[0].userid)) {myPost=true;}
     console.log("it's ",myPost," that ", this.props.post.text, " is my post");
     let userpic,
     teamcolor,

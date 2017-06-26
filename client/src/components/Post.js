@@ -33,7 +33,7 @@ class Post extends Component{
         myId:myId
       });
     });
-    let user = this.props.user;
+    let user = (this.props.user.length>0) ? this.props.user : [];
     this.setState({
       user:user
     });

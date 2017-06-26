@@ -12,12 +12,7 @@ export class Login extends Component {
     console.log('props: ',this.props);
     const { auth } = this.props
     return (
-      <div className='root'>
-        <h2>Login</h2>
-        <ButtonToolbar className='toolbar'>
-          <Button bsStyle="primary" onClick={auth.login.bind(this)}>Login</Button>
-        </ButtonToolbar>
-      </div>
+      <div></div>
     )
   }
 }

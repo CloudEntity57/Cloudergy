@@ -29,7 +29,9 @@ class Newsfeed extends Component{
   constructor(props){
     super(props);
     const profile = this.props.auth.getProfile();
-    this.props.fetchUserInfo(profile.third_party_id);
+    if(profile.third_party_id){
+      this.props.fetchUserInfo(profile.third_party_id)
+    };
     //save user's third party info to store:
     this.props.saveProfile(profile);
     // //find and store all users and posts currently in the API database:
@@ -52,7 +54,7 @@ class Newsfeed extends Component{
 
     this.props.clearUserPageId();
     console.log('newsfeed receive props');
-    let user = this.props.user;
+    let user = (this.props.user.length>0) ? this.props.user : [];
     console.log('user in cdm newsfeed: ',user);
     this.setState({
       user:user
@@ -76,11 +78,12 @@ class Newsfeed extends Component{
       this.getNews(callback);
   }
   componentWillReceiveProps(nextProps){
+    // this.props.fetchAllUsers('');
     console.log('receiving newsfeed');
     const profile = this.props.auth.getProfile();
     console.log('newsfeed profile: ',profile);
     console.log('newsfeed receive props');
-    let user = nextProps.user;
+    let user = (nextProps.user.length>0) ? nextProps.user : [];
     console.log('user in cdm newsfeed: ',user);
     this.setState({
       user:user
@@ -93,8 +96,10 @@ class Newsfeed extends Component{
     console.log('affiliation in newsfeed: ',affiliation);
     let fullfeed=[];
     let result;
-    this.props.fetchNotifications(user[0].userid);
-    this.props.fetchGlobalNotifications(user[0].userid);
+    // if(user.length>0){
+    //   this.props.fetchNotifications(user[0].userid);
+    //   this.props.fetchGlobalNotifications(user[0].userid);
+    // }
     // this.props.fetchAllUsers('');
     //editing posts:
     let post = nextProps.post;
@@ -230,7 +235,7 @@ class Newsfeed extends Component{
       case 'none':
       stories = stories.slice(0,10);
     }
-    let user = this.props.user;
+    let user = (this.props.user.length>0) ? this.props.user : [];
     let newstitle;
     switch(affiliation){
       case 'liberal':
@@ -244,14 +249,14 @@ class Newsfeed extends Component{
           break;
     }
     console.log('user in newsfeed render: ',user);
-    let num_users = this.props.users.length;
-    let num_allies = this.props.user[0].allies.length;
+    let num_users = (this.props.users.length>0) ? this.props.users.length : 0;
+    let num_allies = (this.props.user.length>0) ? this.props.user[0].allies.length : 0;
     console.log('there are ',num_users,' users on CouchPolitics and user has ',num_allies,' allies');
 
     console.log('ally rank: ',ally_rank);
     let allies_barheight = ((100/(num_users-1))*num_allies <101) ? (100/(num_users-1))*num_allies : 0;
     let users_barheight = ((100/(num_users-1))*((num_users-1)-num_allies) <101) ? ((100/(num_users-1))*((num_users-1)-num_allies)) : 0;
-    let usersClass='users-bar '+this.props.user[0].affiliation;
+    let usersClass=(this.props.user.length>0) ? 'users-bar '+this.props.user[0].affiliation : 'users-bar liberal';
     let usersBar = (<div className={usersClass} style={{height:allies_barheight+"px"}}></div>);
     let alliesBar = (<div className='allies-bar' style={{height:users_barheight+"px"}}></div>);
     let ally_rank;

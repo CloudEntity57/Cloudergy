@@ -92,7 +92,7 @@ class Comment extends Component{
     let users = (this.props.users) ? this.props.users : [];
     console.log('users in component: ',users);
     let user = (this.props.user.length>0) ? this.props.user[0] : {};
-    console.log('userid in comment: ',this.props.user[0].userid);
+    console.log('userid in comment: ',user.userid);
     let comment = (this.props.comment) ? this.props.comment : '';
     let comment_likes = (comment.likers && comment.likers.length>1) ? (
       <span>{comment.likers.length-1}</span>

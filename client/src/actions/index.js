@@ -43,6 +43,12 @@ export const editPost = (postid,boolean) =>({
   editing:boolean
 })
 
+export const USER_CREATED = "USER_CREATED";
+export const reportUserCreation= ()=>({
+  type:USER_CREATED,
+  userCreated:true
+});
+
 export const SET_STORY_LINK = "SET_STORY_LINK";
 export const setStoryLink = (link) =>({
   type:SET_STORY_LINK,
