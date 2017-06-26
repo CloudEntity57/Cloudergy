@@ -195,9 +195,9 @@ class PostHeader extends Component{
     let friendrequest = (this.state.friendrequest) ? this.state.friendrequest : '';
     let currentUserId = this.props.currentId;
     let postId = (this.state.postId) ? this.state.postId : '';
-
+    console.log('postId: ',postId, ' currentUserId: ',currentUserId);
     let user=(this.props.user.length > 0) ? this.props.user[0] : [];
-    // console.log('user in postheader render: ',user);
+    console.log('user in postheader render: ',user);
     let myPost=false;
     if(this.props.user.length>0 && (this.props.post.uid == this.props.user[0].userid)) {myPost=true;}
     console.log("it's ",myPost," that ", this.props.post.text, " is my post");
@@ -207,10 +207,12 @@ class PostHeader extends Component{
     largephoto;
 
     let userObj = this.props.usersObject;
-    if(this.props.usersObject !== undefined ){
-      user = this.props.usersObject[currentUserId];
-    }
+    // if(this.props.usersObject !== undefined ){
+    //   user = this.props.usersObject[currentUserId];
+    // }
+    user = (this.props.usersObject && this.props.usersObject[currentUserId]) ? this.props.usersObject[currentUserId] : user;
     teamcolor = user.affiliation + " user-stripe";
+    console.log('affiliation in postheader: ',teamcolor);
     userpic = (
         <div>
           <div className={teamcolor}></div>
@@ -221,7 +223,7 @@ class PostHeader extends Component{
     let date = this.props.date;
     let allies = (user !==undefined) ? user.allies : [];
     // let friendStatus= (this.state.isFriend=="invited" || this.state.isFriend==true || this.state.isFriend==false) ? this.state.isFriend : '';
-
+    console.log('allies in postheader: ',allies);
 
     let userdropdown = (postId==this.props.activePost && this.state.userpreview) ? (
       <UserDropdown this_user={user} />

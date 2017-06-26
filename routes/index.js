@@ -97,8 +97,14 @@ router.post('/createnotifications',function(req,res,next){
     {upsert: true},function(err,result){
     if(err) console.log('error! ',err);
     console.log('note returned: ',note);
-    res.json(note);
+    User.update({"userid":"zBcuAef0F8bv7o-IAGnDXX4LJBA"},{"$push":{"$setOnInsert":note.userid}},{"upsert": true },function(err,user){
+        if(err) console.log('error! ',err);
+        res.json(note);
+      });
   });
+
+  //add user's id to my ally requests sent list:
+
   // let newPost = new Notification(note);
   // console.log('new notification: ',newPost);
   // newPost.save(function(err,success){

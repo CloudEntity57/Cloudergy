@@ -136,7 +136,7 @@ class Header extends Component{
     username = (this.props.user && this.props.user.length>0) ? user[0].username : '';
     affiliation = (this.props.user && this.props.user.length>0) ? user[0].affiliation : '';
     // ally_invitations_received = user[0].ally_invitations_received;
-    ally_invitations_received = (this.props.notifications && this.props.notifications.length>0) ? this.props.notifications.ally_invitations : [];
+    ally_invitations_received = (this.props.notifications) ? this.props.notifications.ally_invitations : [];
     console.log('invites: ',ally_invitations_received);
     potential_allies = [];
     if (ally_invitations_received){

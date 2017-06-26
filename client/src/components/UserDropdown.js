@@ -80,6 +80,7 @@ class UserDropdown extends Component{
   }
   render(){
     //'user' = this post's user, not you
+    console.log('rendering userdropdown');
     let user = (this.props.this_user.hasOwnProperty('userid')) ? this.props.this_user : {};
     let this_user_id = user.userid;
     console.log('their id: ',this_user_id);
@@ -92,8 +93,10 @@ class UserDropdown extends Component{
     console.log('you are: ',you);
     console.log('the user in dropdown: ',user);
     let largephoto = user.largephoto;
+    console.log('largephoto:',largephoto);
 
     let isFriend = this.friendStatus(user,you);
+    console.log('isFriend:',isFriend);
 
     let offerAllegiance;
     let ally_status;
@@ -119,9 +122,12 @@ class UserDropdown extends Component{
         ally_status = ('');
 
     }
+    console.log('ally_status: ',ally_status);
+    console.log('offerAllegiance: ',offerAllegiance);
+    console.log('user story: ',user.user_story);
     let embedded_pic = (<img className="img-responsive user-preview-pic" src={largephoto} alt="user photo" />);
     let userlink = "/user";
-
+    let user_story = (user.user_story) ? user.user_story.slice(0,120) : '';
 
 // User Dropdown div:
   return (
@@ -131,7 +137,7 @@ class UserDropdown extends Component{
             {/* <div className="user-preview-pointer"></div> */}
             <div className="opaque-connector"></div>
             <div className="user-link"><span>{ user.username }</span></div>
-            <div className="user-story">{'"'+user.user_story.slice(0,120)+'"'}</div>
+            <div className="user-story">{'"'+user_story+'"'}</div>
           </div>
         </div>
 

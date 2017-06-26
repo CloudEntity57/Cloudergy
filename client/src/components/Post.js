@@ -173,7 +173,8 @@ class Post extends Component{
   }
   render(){
     let user = (this.state.user) ? this.state.user : '';
-    let myId = (this.state.myId) ? this.state.myId : '';
+    // let myId = (this.state.myId) ? this.state.myId : '';
+    let myId = (this.props.user) ? this.props.user[0].userid : '';
     // myId = (this.props.token) ? myId : 'none';
     // let user = this.state.user;
     // console.log('user in post render: ',user);
