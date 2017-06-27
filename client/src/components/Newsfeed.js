@@ -50,7 +50,7 @@ class Newsfeed extends Component{
   componentWillMount(){
     this.props.setWallState('public');
 
-  console.log('mounting newsfeed');
+    console.log('mounting newsfeed');
 
     this.props.clearUserPageId();
     console.log('newsfeed receive props');
@@ -84,6 +84,8 @@ class Newsfeed extends Component{
     console.log('newsfeed profile: ',profile);
     console.log('newsfeed receive props');
     let user = (nextProps.user.length>0) ? nextProps.user : [];
+      this.props.fetchNotifications(user[0].userid);
+      this.props.fetchGlobalNotifications(user[0].userid);
     console.log('user in cdm newsfeed: ',user);
     this.setState({
       user:user

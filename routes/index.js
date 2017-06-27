@@ -97,10 +97,7 @@ router.post('/createnotifications',function(req,res,next){
     {upsert: true},function(err,result){
     if(err) console.log('error! ',err);
     console.log('note returned: ',note);
-    User.update({"userid":"zBcuAef0F8bv7o-IAGnDXX4LJBA"},{"$push":{"$setOnInsert":note.userid}},{"upsert": true },function(err,user){
-        if(err) console.log('error! ',err);
-        res.json(note);
-      });
+    res.json(note);
   });
 
   //add user's id to my ally requests sent list:
@@ -622,7 +619,7 @@ router.post('/notificationsseen',function(req,res,next){
   Notification.findOneAndUpdate({"userid":req.body.payload},{"read":0},function(err,results){
     if(err) console.log('error: ',err);
     // console.log('notifications are: ',results);
-    res.json(results);
+    res.json([results]);
   });
 });
 
@@ -646,7 +643,7 @@ router.post('/globalnotificationsseen',function(req,res,next){
       GlobalNotification.findOneAndUpdate({userid:req.body.payload},{$set:{likes:likes}},{new:true,upsert:true},function(err,results){
         if(err) console.log('error: ',err);
         console.log('global notifications are: ',results);
-        res.json(results);
+        res.json([results]);
       });
     });
   });
