@@ -5,8 +5,8 @@ export const SET_INITIAL_STATE = "SET_INITIAL_STATE";
 export const SET_AUTH = "SET_AUTH";
 export const GET_PROFILE = "GET_PROFILE";
 
-// let apiRoot="http://localhost:8080/";
-let apiRoot = "https://couchpolitics.herokuapp.com/";
+let apiRoot="http://localhost:8080/";
+// let apiRoot = "https://couchpolitics.herokuapp.com/";
 // switch(process.env.REACT_APP_ENV){
 //   case 'dev':
 //     apiRoot = "http://localhost:8080/";

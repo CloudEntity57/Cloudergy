@@ -58,6 +58,7 @@ class UserPanel extends Component{
         {expandedColumn}
       </div>
     ) : '';
+    
     let users = (!this.props.users=='') ? this.props.users.map((user)=>{
       let color = user.affiliation + ' stripe user-panel-stripe';
       let userid = user.userid;

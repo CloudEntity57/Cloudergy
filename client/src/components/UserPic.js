@@ -15,12 +15,12 @@ class UserPic extends Component{
       user:{}
     }
   }
-  componentWillReceiveProps(){
+  componentWillReceiveProps(nextProps){
     let userid = this.props.userid;
     if(!userid){
       console.log('no userid!');
     }
-    let user = this.props.users.filter((val)=>{
+    let user = nextProps.users.filter((val)=>{
       if(val.userid===userid){
         return val;
       }
