@@ -406,7 +406,6 @@ const getPost = (state={posts:{},postsUpdated:false},action) => {
         isFetching:true
       }
     case RECEIVING_POSTS:
-      console.log('reducks');
       let posts = action.results;
       // posts = posts.filter((val)=>{
       //   return val.postedon=='NA';

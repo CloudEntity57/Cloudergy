@@ -12,7 +12,8 @@ module.exports = {
           let result={};
           let picurl;
           if(article.multimedia.length>0){
-            picurl=article.multimedia[4].url;
+            console.log('nyt api multimedia: ',article.multimedia);
+            picurl=(article.multimedia[4]) ? article.multimedia[4].url : article.multimedia[3].url;
           }
           result.url=article.url;
           result.photo=picurl;

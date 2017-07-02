@@ -26,7 +26,7 @@ router.get('/test', function(req, res, next) {
 
 });
 
-router.get('/user',function(req,res,next){
+router.get('/userinfo',function(req,res,next){
   // let profile=req;
   console.log('getting every user');
   User.find({},'', function(err,profile){
@@ -41,7 +41,7 @@ router.get('/user',function(req,res,next){
 
   // User.find({req.},''
 });
-router.get('/user/:userid',function(req,res,next){
+router.get('/userinfo/:userid',function(req,res,next){
   let userid=req.params.userid;
   // console.log('userid: ',userid);
   User.find({userid:userid},'', function(err,profile){
@@ -81,7 +81,7 @@ router.get('/user/:userid',function(req,res,next){
 });
 
 //create user SAVE THIS
-// router.post('/user',function(req,res,next){
+// router.post('/userinfo',function(req,res,next){
 //   let user = req.body.payload;
 //   let newPost = new User(user);
 //   newPost.save(function(err,success){
@@ -129,7 +129,7 @@ router.post('/createglobalnotifications',function(req,res,next){
 });
 
 //create user if no user exists:
-router.post('/user',function(req,res,next){
+router.post('/userinfo',function(req,res,next){
   console.log('creating user: ',req.body.payload.username);
   let data = req.body.payload;
   // let newUser = new User(data);
@@ -175,7 +175,7 @@ router.post('/user',function(req,res,next){
 
 //set specific user data:
 
-router.post('/user/:userid',function(req,res,next){
+router.post('/userinfo/:userid',function(req,res,next){
   let user = req.body;
   console.log('information: ',user);
   User.findOneAndUpdate(

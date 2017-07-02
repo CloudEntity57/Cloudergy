@@ -255,7 +255,7 @@ export const fetchGlobalNotifications = apiCall(REQUEST_GET_GLOBAL_NOTIFICATIONS
 export const REQUEST_USER_INFO = "REQUEST_USER_INFO";
 export const RECEIVE_USER_INFO = "RECEIVE_USER_INFO";
 
-export const fetchUserInfo = apiCall(REQUEST_USER_INFO, RECEIVE_USER_INFO,apiRoot+'user/','');
+export const fetchUserInfo = apiCall(REQUEST_USER_INFO, RECEIVE_USER_INFO,apiRoot+'userinfo/','');
 
 export const REQUEST_NOTIFICATIONS_SEEN = "REQUEST_NOTIFICATIONS_SEEN"
 export const RETRIEVE_NOTIFICATIONS_SEEN = "RETRIEVE_NOTIFICATIONS_SEEN"
@@ -283,7 +283,7 @@ postApiCall(REQUEST_CREATE_GLOBAL_NOTIFICATIONS,CREATE_GLOBAL_NOTIFICATIONS_CONF
 export const REQUEST_ALL_USERS = "REQUEST_ALL_USERS";
 export const RECEIVE_ALL_USERS = "RECEIVE_ALL_USERS";
 
-export const fetchAllUsers = apiCall(REQUEST_ALL_USERS,RECEIVE_ALL_USERS,apiRoot+'user/','');
+export const fetchAllUsers = apiCall(REQUEST_ALL_USERS,RECEIVE_ALL_USERS,apiRoot+'userinfo/','');
 
 //get all posts:
 
@@ -301,7 +301,7 @@ export const fetchPost = apiCall(REQUESTING_POST, RECEIVING_POST,apiRoot+'post',
 export const REQUESTING_TO_POST_PROFILE_INFO = "REQUESTING_TO_POST_PROFILE_INFO";
 export const RECEIVING_POST_CONFIRMATION = "RECEIVING_POST_CONFIRMATION";
 
-export const createNewUser = postApiCall(REQUESTING_TO_POST_PROFILE_INFO,RECEIVING_POST_CONFIRMATION,apiRoot+'user/','');
+export const createNewUser = postApiCall(REQUESTING_TO_POST_PROFILE_INFO,RECEIVING_POST_CONFIRMATION,apiRoot+'userinfo/','');
 
 //submit post:
 export const REQUEST_SUBMIT_POST = 'REQUEST_SUBMIT_POST';
