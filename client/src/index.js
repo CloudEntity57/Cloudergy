@@ -8,7 +8,7 @@ dotenv.config({ silent:true });
 //redux links
 import {Provider} from 'react-redux';
 import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
-import { connectRouter, ConnectedRouter, routerMiddleware } from 'connected-react-router';
+import { connectRouter, ConnectedRouter, routerReducer, routerMiddleware } from 'connected-react-router';
 import thunk from 'redux-thunk';
 import promise from 'redux-promise';
 import { createLogger } from 'redux-logger';
@@ -49,17 +49,12 @@ import {} from './actions';
 
 // old version without compose:
 const store = createStore(
-  connectRouter(history)(combineReducers({ allReducers })),
+  connectRouter(history)(combineReducers({
+    allReducers,
+    router:routerReducer
+  })),
   applyMiddleware( thunk, promise, logger, routerMiddleware(history))
 );
-console.log('state: ',store.getState());
-//
-// const store = createStore(
-//   connectRouter(history)(combineReducers({ allReducers })),
-//   composeEnhancer(
-//   applyMiddleware( thunk, promise, logger, routerMiddleware(history))
-// )
-// );
 console.log('state: ',store.getState());
 
 // const routes = makeMainRoutes();

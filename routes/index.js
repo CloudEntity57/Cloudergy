@@ -10,6 +10,7 @@ var Metascraper = require('metascraper');
 //   console.log('metadata is...: ',metadata);
 // });
 
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   console.log('in routes');
