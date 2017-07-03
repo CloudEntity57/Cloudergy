@@ -203,8 +203,8 @@ class App extends React.Component{
       {/* <Route path="/account" render = {(props)=>{this.updateRouter(); return(<Account />)}} /> */}
       <Route path="/account" render = {(props)=>{this.updateRouter(); return(<Account />)}} />
       {/* <Route path="/user" render = {(props)=>(<UserPage {...props} />)} /> */}
-      {/* <Route path="/user/:userid" render = {(props)=>{this.updateRouter(); return(<UserPage {...props} />)}} /> */}
-      <Route path="/user/:userid" component = {UserPage} />
+      <Route path="/user/:userid" render = {(props)=>{this.updateRouter(); return(<UserPage {...props} />)}} />
+      {/* <Route path="/user/:userid" component = {UserPage} /> */}
       <Route path="/signedin" component={SignedIn} />
       {/* <Route path="/newsfeed" render = {(props)=>(<Newsfeed {...props} />)} /> */}
       {/* <Route path="/newsfeed" component = {Newsfeed} onEnter={()=>this.requireAuth()} /> */}
