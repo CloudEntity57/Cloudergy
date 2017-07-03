@@ -198,11 +198,13 @@ class App extends React.Component{
       <Header uid={user.uid} affiliation={affiliation} logOut={this.logOut.bind(this)}/>
 
       {/* <Route exact path="/" render = {(props)=>(<LandingPage />)} /> */}
+      {/* <Route exact path="/" render = {(props)=>{this.updateRouter(); return(<Newsfeed />)}} /> */}
       <Route exact path="/" render = {(props)=>{this.updateRouter(); return(<Newsfeed />)}} />
+      {/* <Route path="/account" render = {(props)=>{this.updateRouter(); return(<Account />)}} /> */}
       <Route path="/account" render = {(props)=>{this.updateRouter(); return(<Account />)}} />
       {/* <Route path="/user" render = {(props)=>(<UserPage {...props} />)} /> */}
-      <Route path="/user/:userid" render = {(props)=>{this.updateRouter(); return(<UserPage {...props} />)}} />
-      {/* <Route path="/user" component = {UserPage} /> */}
+      {/* <Route path="/user/:userid" render = {(props)=>{this.updateRouter(); return(<UserPage {...props} />)}} /> */}
+      <Route path="/user/:userid" component = {UserPage} />
       <Route path="/signedin" component={SignedIn} />
       {/* <Route path="/newsfeed" render = {(props)=>(<Newsfeed {...props} />)} /> */}
       {/* <Route path="/newsfeed" component = {Newsfeed} onEnter={()=>this.requireAuth()} /> */}
