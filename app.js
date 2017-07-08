@@ -49,6 +49,7 @@ app.use(cors());
 
 app.use('/info', index);
 app.use('/',express.static('client/build'));
+app.use('/user/*',express.static('client/build'));
 // app.use('/users', users);
 // if (process.env.NODE_ENV === 'production') {
 //   app.use(express.static('./client/build'));
