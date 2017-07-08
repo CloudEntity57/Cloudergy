@@ -32,7 +32,7 @@ mongoose.connect(process.env.DB_CONN_TEST);
 
 app.set('views', path.join(__dirname, 'views'));
 
-app.use(express.static('client/build'));
+// app.use(express.static('client/build'));
 
 // app.set('views', path.join(__dirname, 'client/build'));
 
@@ -47,7 +47,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
-app.use('/', index);
+app.use('/info', index);
+app.use('/',express.static('client/build'));
 // app.use('/users', users);
 // if (process.env.NODE_ENV === 'production') {
 //   app.use(express.static('./client/build'));
