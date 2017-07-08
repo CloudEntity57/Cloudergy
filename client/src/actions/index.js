@@ -5,13 +5,13 @@ export const SET_INITIAL_STATE = "SET_INITIAL_STATE";
 export const SET_AUTH = "SET_AUTH";
 export const GET_PROFILE = "GET_PROFILE";
 
-<<<<<<< HEAD
+
 // let apiRoot="http://localhost:8080/";
-let apiRoot = "https://couchpolitics.herokuapp.com/";
-=======
-let apiRoot="http://localhost:8080/info/";
+let apiRoot = "https://couchpolitics.herokuapp.com/info/";
+
+// let apiRoot="http://localhost:8080/info/";
 // let apiRoot = "https://couchpolitics.herokuapp.com/";
->>>>>>> new_routing
+
 // switch(process.env.REACT_APP_ENV){
 //   case 'dev':
 //     apiRoot = "http://localhost:8080/";
