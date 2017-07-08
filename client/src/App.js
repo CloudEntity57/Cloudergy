@@ -59,12 +59,6 @@ class App extends React.Component{
       affiliation:''
     }
   }
-  componentWillMount(){
-    console.log('mounting App.js!!!');
-    let targetURL = "http://localhost:3001/user/"
-    console.log('app js auth: ',auth);
-    // this.props.fetchUserInfo(
-  }
 
   componentWillUpdate(){
     this.props.doAuthentication();
@@ -195,8 +189,8 @@ class App extends React.Component{
    let update = this.update.bind(this);
    return (
     <div>
-      <Header uid={user.uid} affiliation={affiliation} logOut={this.logOut.bind(this)}/>
-
+      {/* <Header uid={user.uid} logOut={this.logOut.bind(this)}/> */}
+      <Route exact path = "/*" component = {Header} />
       {/* <Route exact path="/" render = {(props)=>(<LandingPage />)} /> */}
       {/* <Route exact path="/" render = {(props)=>{this.updateRouter(); return(<Newsfeed />)}} /> */}
       <Route exact path="/" render = {(props)=>{this.updateRouter(); return(<Newsfeed />)}} />
@@ -210,7 +204,8 @@ class App extends React.Component{
       {/* <Route path="/newsfeed" component = {Newsfeed} onEnter={()=>this.requireAuth()} /> */}
       <Route path="/login" component={Login} />
 
-      <UserPanel/>
+      <Route exact path ="/*" component={UserPanel} />
+      {/* <UserPanel/> */}
 
     </div>
   )

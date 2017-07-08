@@ -11,7 +11,7 @@ import jquery from 'jquery';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
-import { socialApp, toggleAffiliation, fetchUserInfo,fetchPosts, acceptAlly,login,doAuthentication,fetchNotifications,fetchGlobalNotifications,notificationsSeen,globalNotificationsSeen,clearLikeNotify,ignoreAlly } from '../actions/index';
+import { socialApp, toggleAffiliation, fetchUserInfo,fetchPosts, acceptAlly,login,doAuthentication,fetchNotifications,fetchGlobalNotifications,notificationsSeen,globalNotificationsSeen,clearLikeNotify,ignoreAlly, logoutUser } from '../actions/index';
 
 class Header extends Component{
   constructor(props){
@@ -490,7 +490,7 @@ class Header extends Component{
     );
 
     let userlogout = (this.state.token !==null) ? (
-      <div><a className="log-out" onClick={this.props.logOut} href="#">Logout</a></div>
+      <div><a className="log-out" onClick={this.props.logoutUser} href="#">Logout</a></div>
     ) : (
       <div><a className="log-out" onClick={()=>this.handleClick()} href="#">Join/login</a></div>
     );
@@ -588,7 +588,8 @@ function mapDispatchToProps(dispatch){
     notificationsSeen,
     globalNotificationsSeen,
     clearLikeNotify,
-    ignoreAlly
+    ignoreAlly,
+    logoutUser
   },dispatch);
 }
 
