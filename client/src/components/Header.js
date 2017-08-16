@@ -18,7 +18,7 @@ class Header extends Component{
     super(props);
     this.props.doAuthentication();
     this.state={
-      affiliation:'liberal',
+      affiliation:'',
       previewingAlly:false,
       displaylogin:false,
       previewingGlobal:false,
@@ -517,7 +517,7 @@ class Header extends Component{
         <div className="outer-nav-wrapper">
           <div className="nav">
             <span onClick={this.goToNews.bind(this)} className="site-title">PhaceBook</span> &nbsp;
-            <div className="navbar-nav nav-right">
+            <div className="hidden-xs navbar-nav nav-right">
               {userlogout}
               <span>
                 <select ref="politics" onChange={this.toggle_affiliation.bind(this)} value={this.props.affiliation_display} className="header-toggle" name="user-affiliation" id="">
