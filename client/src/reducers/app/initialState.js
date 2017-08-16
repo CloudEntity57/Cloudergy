@@ -19,7 +19,7 @@ const initialState = {
   wall:'public',
   invites_sent:[],
   invites_received:[],
-  affiliation_display:'none',
+  affiliation_display:'liberal',
   metadata:'',
   users:[],
   storyLink:'',
@@ -35,7 +35,7 @@ const initialState = {
   //newsfeed:
   test:'',
   stories:[],
-  affiliation:'none',
+  affiliation:'liberal',
   //userpage:
   usrpg_updated:false,
   usrpg_posts:[],
@@ -44,7 +44,7 @@ const initialState = {
   //userPic:
   up_user:{},
   //header:
-  affiliation:'',
+  affiliation:'liberal',
   previewingAlly:false,
   //account:
   updated:false,

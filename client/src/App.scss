@@ -104,6 +104,12 @@ body{
   background-image:url('../public/sayagata-400px.png');
   background-attachment: fixed;
   overflow-x:hidden;
+  // @media only screen
+  // and (min-device-width : 375px)
+  // and (max-device-width : 667px)
+  // and (orientation : portrait) {
+  //   width:100vw;
+  //    /* STYLES GO HERE */ }
 }
 .body-background{
   background-image:url('../public/sayagata-400px.png');
@@ -543,6 +549,12 @@ body{
   padding-bottom:10px;
   border-bottom:1px solid lightgrey;
   margin-bottom:25px;
+  @media only screen
+  and (min-device-width : 375px)
+  and (max-device-width : 667px)
+  and (orientation : portrait) {
+    float:left;
+    width:20vw;  /* STYLES GO HERE */ }
 }
 .story-source{
   font-size:.6em;
@@ -568,6 +580,14 @@ body{
   width: 950px;
   margin: auto;
   display:flex;
+  // iphone 6 portrait
+ @media only screen
+ and (min-device-width : 375px)
+ and (max-device-width : 667px)
+ and (orientation : portrait) {
+   width:100vw;
+    /* STYLES GO HERE */ }
+
 }
 .navigation-panel, .live-posts-panel, .ads-panel, .friends-panel{
   padding:10px;
@@ -606,6 +626,14 @@ body{
     // position:-webkit-sticky !important;
     // top:44px !important;
   }
+  // iphone 6 portrait
+ @media only screen
+ and (min-device-width : 375px)
+ and (max-device-width : 667px)
+ and (orientation : portrait) {
+   display: none;
+    /* STYLES GO HERE */ }
+
 }
 .posts-wrapper{
   margin-left:0px;
@@ -614,6 +642,15 @@ body{
   width:440px;
   // display:inline-block;
   // margin-left:190px;
+  // iphone 6 portrait
+ @media only screen
+ and (min-device-width : 375px)
+ and (max-device-width : 667px)
+ and (orientation : portrait) {
+   width:100vw;
+    /* STYLES GO HERE */ }
+
+
 }
 .sticky{
   position: sticky !important;
@@ -638,17 +675,47 @@ body{
 .ads-panel,.sticky{
   width:300px;
 }
+.ads-panel{
+  @media only screen
+  and (min-device-width : 375px)
+  and (max-device-width : 667px)
+  and (orientation : portrait) {
+    display: none;
+    // position: fixed;
+    // background-color:#fff;
+    // bottom:0px;
+    // height:30vh;
+    // width:100%;
+    // overflow-x: scroll;
+    // overflow-y:hidden;
+    // z-index: 70000;
+     /* STYLES GO HERE */ }
+}
+.scrolly_scroller{
+  @media only screen
+  and (min-device-width : 375px)
+  and (max-device-width : 667px)
+  and (orientation : portrait) {
+    width:100%;
+     /* STYLES GO HERE */ }
+}
 .features-panel{
   position: relative;
   ul{
     margin-right:15px;
-    font-size: .85em;
+    font-size: 1.25em;
   }
   .post-header-deleteicon{
     position: absolute;
     top:10px;
     right:10px;
   }
+  @media only screen
+  and (min-device-width : 375px)
+  and (max-device-width : 667px)
+  and (orientation : portrait) {
+    display: none;
+     /* STYLES GO HERE */ }
 }
 .friends-panel-header{
     i{

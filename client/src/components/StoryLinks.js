@@ -55,25 +55,22 @@ class StoryLinks extends Component{
     let newstitle = this.props.newstitle;
     let featuresPanel = (this.state.featuresPanel) ?
     (<ul>
-      <li>Three separate public news feeds (Liberal, Conservative, Moderate) filter above</li>
-      <li>Share any story or website by typing the URL, or click 'share' button on news on this page</li>
-      <li>Edit your user profile in the 'account' section, choose your political affiliation</li>
-      <li>Create allegiances with other members</li>
+      <li>This website is fun and games only, not intended for serious use!</li>
+      <li>Share anything you want by typing a link, or click 'share' below stories.</li>
+      <li>Edit your user profile in the 'account' section.</li>
+      <li>Become allies with other members!</li>
     </ul>)
      : '';
     return(
       <div className="ads-panel">
         <div className="features-panel panel panel-default">
-          <h4>Site Features</h4><span onClick={this.displayPanel.bind(this)} className="fa fa-sort-desc pull-right post-header-deleteicon"></span>
+          <h4>About Phacebook</h4><span onClick={this.displayPanel.bind(this)} className="fa fa-sort-desc pull-right post-header-deleteicon"></span>
           {featuresPanel}
         </div>
         <div id="ads">
-          <div className="panel panel-default">
+          <div className="panel scrolly_scroller clearfix panel-default">
             <h4>{newstitle}</h4>
             {stories}
-          </div>
-          <div className="panel panel-default">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
           </div>
         </div>
 
