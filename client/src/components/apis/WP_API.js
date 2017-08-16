@@ -1,7 +1,8 @@
 import jquery from 'jquery';
 module.exports = {
   wp_feed: (wpkey,callback)=>{
-    let wpquery = 'https://newsapi.org/v1/articles?source=the-washington-post&sortBy=top&apiKey='+wpkey;
+    // let wpquery = 'https://newsapi.org/v1/articles?source=the-washington-post&sortBy=top&apiKey='+wpkey;
+    let wpquery = 'https://newsapi.org/v1/articles?source=espn&sortBy=top&apiKey='+wpkey;
     let storiesquery = jquery.ajax({
       url:wpquery,
       type:"GET",

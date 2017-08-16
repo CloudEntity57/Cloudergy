@@ -8,6 +8,27 @@ import { hashHistory } from 'react-router';
 let targetURL = "http://localhost:8080/userinfo/";
 import Metascraper from 'metascraper';
 
+export const loadState = () => {
+  try{
+    const serializedState = localStorage.getItem('state');
+    if (serializedState === null) {
+      return undefined;
+    }
+    return JSON.parse(serializedState);
+  } catch (err) {
+    return undefined;
+  }
+};
+
+export const saveState = (state) =>{
+  try{
+    const serializedState = JSON.stringify(state);
+    localStorage.setItem('state',serializedState);
+  }catch(err){
+    // ignore write errors
+  }
+}
+
 function myFunctions(){
   this.getCurrentUser = ()=>{
     let profile = auth.getProfile();

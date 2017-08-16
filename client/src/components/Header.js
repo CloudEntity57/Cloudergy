@@ -18,7 +18,7 @@ class Header extends Component{
     super(props);
     this.props.doAuthentication();
     this.state={
-      affiliation:'',
+      affiliation:'liberal',
       previewingAlly:false,
       displaylogin:false,
       previewingGlobal:false,
@@ -516,7 +516,7 @@ class Header extends Component{
 
         <div className="outer-nav-wrapper">
           <div className="nav">
-            <span onClick={this.goToNews.bind(this)} className="site-title">CouchPolitics</span> &nbsp;
+            <span onClick={this.goToNews.bind(this)} className="site-title">PhaceBook</span> &nbsp;
             <div className="navbar-nav nav-right">
               {userlogout}
               <span>

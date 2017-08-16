@@ -1,7 +1,7 @@
 import jquery from 'jquery';
 module.exports = {
   nyt_feed: (nytkey,callback)=>{
-    let nytquery = 'https://api.nytimes.com/svc/topstories/v2/politics.json?api-key='+nytkey;
+    let nytquery = 'https://api.nytimes.com/svc/topstories/v2/fashion.json?api-key='+nytkey;
     let storiesquery = jquery.ajax({
       url:nytquery,
       type:"GET",
