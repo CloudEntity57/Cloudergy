@@ -55,7 +55,7 @@ class StoryLinks extends Component{
     let newstitle = this.props.newstitle;
     let featuresPanel = (this.state.featuresPanel) ?
     (<ul>
-      <li>This website is fun and games only, not intended for serious use!</li>
+      <li>This website is not intended for serious use!</li>
       <li>Share anything you want by typing a link, or click 'share' below stories.</li>
       <li>Edit your user profile in the 'account' section.</li>
       <li>Become allies with other members!</li>
@@ -64,7 +64,7 @@ class StoryLinks extends Component{
     return(
       <div className="ads-panel">
         <div className="features-panel panel panel-default">
-          <h4>About Phacebook</h4><span onClick={this.displayPanel.bind(this)} className="fa fa-sort-desc pull-right post-header-deleteicon"></span>
+          <h4>About Cloudergy</h4><span onClick={this.displayPanel.bind(this)} className="fa fa-sort-desc pull-right post-header-deleteicon"></span>
           {featuresPanel}
         </div>
         <div id="ads">

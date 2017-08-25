@@ -241,13 +241,13 @@ class Newsfeed extends Component{
     let newstitle;
     switch(affiliation){
       case 'liberal':
-        newstitle = 'Phun Stuff';
+        newstitle = 'Stuff';
           break;
       case 'conservative':
-        newstitle = 'Phun Conservative Stuff';
+        newstitle = 'Conservative Stuff';
           break;
       case 'none':
-        newstitle = 'Phun Indie Stuff';
+        newstitle = 'Indie Stuff';
           break;
     }
     console.log('user in newsfeed render: ',user);

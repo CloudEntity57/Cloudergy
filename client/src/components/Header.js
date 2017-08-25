@@ -3,6 +3,8 @@ import NavLink from './NavLink';
 import UserPic from './UserPic';
 import DropButton from './DropButton';
 import { hashHistory } from 'react-router';
+import curls from '../images/vines-297394_1280.png';
+import curls2 from '../images/vines-297394_1280 copy.png';
 let functionsModule = require('./Functions');
 let Functions = new functionsModule();
 import jquery from 'jquery';
@@ -511,12 +513,15 @@ class Header extends Component{
         </div>
       </span>
     );
+
+    let curlies = (<span><img className="curlies" src={curls} alt="flourish" /></span>);
+    let curlies2 = (<span><img className="curlies" src={curls2} alt="flourish" /></span>);
     return(
       <header /*onClick={()=>this.clearDisplay()}*/ className={this.props.affiliation_display}>
 
         <div className="outer-nav-wrapper">
           <div className="nav">
-            <span onClick={this.goToNews.bind(this)} className="site-title">PhaceBook</span> &nbsp;
+            {curlies2}<span onClick={this.goToNews.bind(this)} className="site-title">Cloudergy</span> &nbsp;{curlies}
             <div className="hidden-xs navbar-nav nav-right">
               {userlogout}
               <span>
