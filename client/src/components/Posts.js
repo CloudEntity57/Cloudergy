@@ -19,6 +19,7 @@ class Posts extends Component{
       user:{},
       posts:'',
       updated:false,
+      privacy:'public',
       privacyshowing:false
     }
   }
