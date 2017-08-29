@@ -36,6 +36,12 @@ export const saveProfile = (profile) =>({
   type:GET_PROFILE,
   profile:profile
 })
+
+export const DESCRIPTION_SEEN = "DESCRIPTION_SEEN";
+export const descriptionSeen = () =>({
+  type:DESCRIPTION_SEEN
+});
+
 export const SET_ACTIVE_POST = "SET_ACTIVE_POST";
 export const setActivePost = (postid) =>({
   type:SET_ACTIVE_POST,

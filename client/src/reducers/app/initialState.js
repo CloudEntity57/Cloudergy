@@ -23,6 +23,7 @@ const initialState = {
   metadata:'',
   users:[],
   storyLink:'',
+  description:true,
   post:'',
   didFetchUsers:false,
   userCreated:false,

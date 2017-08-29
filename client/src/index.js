@@ -44,19 +44,33 @@ import createHistory from 'history/createBrowserHistory';
 const history = createHistory();
 import allReducers from './reducers';
 import {} from './actions';
+import { loadState, saveState } from './components/Functions';
 
 //create store
-
+let store;
+let current_state;
 // old version without compose:
-const store = createStore(
-  connectRouter(history)(combineReducers({
-    allReducers,
-    router:routerReducer
-  })),
-  applyMiddleware( thunk, promise, logger, routerMiddleware(history))
-);
-console.log('state: ',store.getState());
+let store_saved = localStorage.getItem('cloudergy_state');
+// if(store_saved){
+//   current_state = store_saved.getState();
+//   console.log('current_state:',current_state)
+// }
+console.log('store_saved: ',store_saved);
+   store = createStore(
+    connectRouter(history)(combineReducers({
+      allReducers,
+      router:routerReducer
+    })),
+    applyMiddleware( thunk, promise, logger, routerMiddleware(history))
+  );
+  // console.log('state: ',store.getState());
+  localStorage.setItem('cloudergy_state',store);
 
+
+
+// store.subscribe(() => {
+//   saveState(store.getState());
+// });
 // const routes = makeMainRoutes();
 let rand = Math.random();
 let props={

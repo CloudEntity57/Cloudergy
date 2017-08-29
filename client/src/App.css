@@ -1184,6 +1184,37 @@ body {
   height: 15vh;
 }
 
+.site_description {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 1000;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.description_text {
+  position: relative;
+  background-color: #5982ad;
+  color: #fff;
+  font-size: 1.5em;
+  width: 85vw;
+  margin: auto;
+  padding: 2em;
+  border-radius: 5px;
+}
+
+.description_text .description_close {
+  position: absolute;
+  top: 5px;
+  right: 15px;
+  cursor: pointer;
+  font-size: 1.75em;
+}
+
 .curlies {
   height: 3em;
   margin-bottom: 7px;

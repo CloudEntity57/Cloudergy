@@ -21,7 +21,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { mainApp, fetchPosts, fetchAllUsers,
 fetchUserInfo,
-saveProfile, clearUserPageId, setWallState,login,updatePost,editPost,fetchNotifications,fetchGlobalNotifications
+saveProfile, descriptionSeen, clearUserPageId, setWallState,login,updatePost,editPost,fetchNotifications,fetchGlobalNotifications
 } from '../actions/index';
 
 
@@ -43,7 +43,8 @@ class Newsfeed extends Component{
       stories:[],
       affiliation:this.props.affiliation_display,
       editing:false,
-      post:''
+      post:'',
+      // description:true
     }
   }
 
@@ -208,6 +209,12 @@ class Newsfeed extends Component{
     });
     this.props.editPost('',false);
   }
+  hideDescription(){
+    // this.setState({
+    //   description:false
+    // })
+    this.props.descriptionSeen();
+  }
   render(){
     console.log('rendering newsfeed');
 
@@ -301,13 +308,27 @@ class Newsfeed extends Component{
         </form>
       </div>
     ) : '';
-
+    let site_description = (this.props.description) ? (
+      <div className="site_description">
+        <div className="description_text">
+          <div className="description_close" onClick={
+            this.hideDescription.bind(this)
+          }>X</div>
+          <ul>
+            <li>The purpose of this site is to demonstrate how a simple social network app can easily be created using React/Redux, along with Node/Express.</li>
+            <li>By being able to store and manipulate information stored in a global state via Redux, complex components can be combined that are highly dependent on data that changes every time the user clicks on or types something in the browser.</li>
+            <li>Like buttons, comments, user dropdown frames and more become far easier to maintain with up to the minute accuracy.</li>
+          </ul>
+        </div>
+      </div>
+    ) : '';
     return(
       <div>
         {post_edit_background}
         {post_edit_modal}
         <div className="outer-wrapper">
             <div className="wrapper">
+              { site_description }
                 <div className="navigation-panel">
                   <div className="nav-content-wrapper">
                   <div className="navigation-content panel panel-default">
@@ -350,6 +371,7 @@ function mapStateToProps(state){
   let users=state.allReducers.mainApp.users;
   let post=state.allReducers.mainApp.post;
   let editing=state.allReducers.mainApp.editing;
+  let description=state.allReducers.mainApp.description;
   return{
     user,
     users,
@@ -360,6 +382,7 @@ function mapStateToProps(state){
     affiliation,
     affiliation_display,
     token,
+    description,
     editing,
     post,
     posts
@@ -380,7 +403,8 @@ function mapDispatchToProps(dispatch){
     updatePost,
     editPost,
     fetchNotifications,
-    fetchGlobalNotifications
+    fetchGlobalNotifications,
+    descriptionSeen
   },dispatch);
 }
 
