@@ -335,6 +335,12 @@ class Posts extends Component{
         userprivacy = (
           <span><i className = 'fa fa-lock'></i>&nbsp;Private</span>
         );
+      break;
+      default:
+        userprivacy = (
+          <span><i className = 'fa fa-users'></i>&nbsp;Everyone</span>
+        );
+      break;
     }
 
     let postEntry = (this.state.editing) ?

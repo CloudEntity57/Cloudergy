@@ -456,7 +456,7 @@ class Header extends Component{
         ) : '';
         console.log('aff in render: ',affiliation);
         console.log('user pic: ',userpic);
-        let userlink = "/user/"+uid;
+        let userlink = (this.props.token) ? "/user/"+uid : "/user/"+ 12345;
 
 
 
