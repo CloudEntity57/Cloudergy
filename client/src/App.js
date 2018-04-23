@@ -1,7 +1,7 @@
 import React, { PropTypes as T } from 'react'
 import jquery from 'jquery';
 import './App.css';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, IndexRoute } from 'react-router-dom';
 // import { hashHistory } from 'react-router';
 import createHistory from 'history/createBrowserHistory';
 const history = createHistory();
@@ -25,7 +25,20 @@ console.log('auth : ', auth);
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { socialApp, fetchUserInfo, fetchPosts, saveProfile,createNewUser, fetchAllUsers,doAuthentication,logoutUser,createNotifications,createGlobalNotifications,fetchNotifications,fetchGlobalNotifications,reportUserCreation } from './actions/index';
+import {
+  socialApp,
+  fetchUserInfo,
+  fetchPosts,
+  saveProfile,
+  createNewUser, fetchAllUsers,
+  doAuthentication,
+  logoutUser,
+  createNotifications,
+  createGlobalNotifications,
+  fetchNotifications,
+  fetchGlobalNotifications,
+  reportUserCreation
+} from './actions/index';
 import { push } from 'connected-react-router';
 
 // validate authentication for private routes

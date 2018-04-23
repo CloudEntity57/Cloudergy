@@ -19,9 +19,20 @@ const wpkey=process.env.REACT_APP_WP_API;
 //redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { mainApp, fetchPosts, fetchAllUsers,
-fetchUserInfo,
-saveProfile, descriptionSeen, clearUserPageId, setWallState,login,updatePost,editPost,fetchNotifications,fetchGlobalNotifications
+import {
+  mainApp,
+  fetchPosts,
+  fetchAllUsers,
+  fetchUserInfo,
+  saveProfile,
+  descriptionSeen,
+  clearUserPageId, 
+  setWallState,
+  login,
+  updatePost,
+  editPost,
+  fetchNotifications,
+  fetchGlobalNotifications
 } from '../actions/index';
 
 
