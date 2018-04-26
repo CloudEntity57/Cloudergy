@@ -1383,3 +1383,18 @@ body{
     display: block;
   }
 }
+.loading_spinner{
+  position: fixed;
+  top:50vh;
+  left:50vw;
+  color:#fff;
+  font-size:5vw;
+}
+.gray_bkgd{
+  position:fixed;
+  width:100vw;
+  height:100vh;
+  background-color:#000;
+  opacity:.5;
+  z-index: 100;
+}

@@ -7,6 +7,7 @@ const getAllUsers = (state={users:{}},action) => {
         ...state,
         isFetchingUsers:true
       }
+    break;
     case RECEIVE_ALL_USERS:
       let usersObject = {};
       for(let i=0; i<action.results.length; i++){
@@ -21,6 +22,7 @@ const getAllUsers = (state={users:{}},action) => {
         didFetchUsers:true,
         usersObject
       }
+      break;
       default:
       return state;
   }

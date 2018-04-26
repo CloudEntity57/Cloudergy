@@ -12,36 +12,48 @@ class UserPic extends Component{
   constructor(props){
     super(props);
     this.state={
-      user:{}
+      photo_status:400,
+      user:{
+        id:'x',
+        photo:'blah'
+      }
     }
   }
-  componentWillReceiveProps(nextProps){
+  componentWillMount(){
     let userid = this.props.userid;
     if(!userid){
       console.log('no userid!');
     }
-    let user = nextProps.users.filter((val)=>{
+    this.props.users.map((val)=>{
       if(val.userid===userid){
-        return val;
+        console.log('user in userpic: ',val.username)
+        this.setState({
+          user:val
+        });
       }
     });
-    this.setState({
-      user
+  }
+  componentDidMount(){
+    const user = this.state.user;
+    let photo_status;
+    fetch(user.photo).then((pic)=> {
+      console.log('photo status for ',user.photo,': ',pic.status)
+      console.log('and the pic ',user.photo, ' with status ',pic.status,'is: ',pic)
+      this.setState({
+        photo_type:pic.type,
+        photo_status:pic.status
+      });
     });
-    // Functions.getUser(userid).then((user)=>{
-    //   console.log('user in userpic: ',user);
-    //   this.setState({
-    //     user
-    //   });
-    // });
-    // this.setState({
-    //   user:[this.props.usersObject.userid]
-    // });
   }
   render(){
-    let user = (this.state.user[0]) ? this.state.user[0] : '';
+    let user = (this.state.user) ? this.state.user : '';
     let teamcolor = (user !=='') ? user.affiliation + "stripe user-pic-stripe" : "nonestripe user-pic-stripe";
-    let photo = (user !=='') ? (<img id={user.id} className='userpic-pic' src={user.photo} alt='user image' />) : (<img id={user.id} className='userpic-pic' src="http://ijmhometutors.com/tutor/server/php/files/51b855e98abd7a5143c4d0176c119c0e/picture/avatar.png" alt='user image' />);
+    //assigning dummy avatar to any photos that when tested in componentdidmount come back with failed status or don't return actual photos (response.type='basic' && response.status ==404):
+    let photo = (this.state.photo_type === 'cors' && this.state.photo_status ===200) ? (
+      <img id={user.id} className='userpic-pic' src={user.photo} alt='user image' />
+    ) : (
+      <img id={user.id} className='userpic-pic' src="http://ijmhometutors.com/tutor/server/php/files/51b855e98abd7a5143c4d0176c119c0e/picture/avatar.png" alt='user image' />
+    );
       return(
         <div className='user-pic-container'>
           <div className={teamcolor}></div>

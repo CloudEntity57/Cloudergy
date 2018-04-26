@@ -6,10 +6,9 @@ export const SET_AUTH = "SET_AUTH";
 export const GET_PROFILE = "GET_PROFILE";
 
 
-// let apiRoot="http://localhost:8080/";
-let apiRoot = "https://couchpolitics.herokuapp.com/info/";
+// let apiRoot = "https://couchpolitics.herokuapp.com/info/";
 
-// let apiRoot="http://localhost:8080/info/";
+let apiRoot="http://localhost:8080/info/";
 // let apiRoot = "https://couchpolitics.herokuapp.com/";
 
 // switch(process.env.REACT_APP_ENV){
@@ -75,13 +74,11 @@ export const clearActivePost = () =>({
 
 export const DISPLAY_USER_PREVIEW = "DISPLAY_USER_PREVIEW";
 export const displayUserPreview = () =>({
-  type:DISPLAY_USER_PREVIEW,
-  previewing:true
+  type:DISPLAY_USER_PREVIEW
 })
 export const HIDE_USER_PREVIEW = "HIDE_USER_PREVIEW";
 export const hideUserPreview = () =>({
-  type:HIDE_USER_PREVIEW,
-  previewing:false
+  type:HIDE_USER_PREVIEW
 })
 
 export const SET_USERPAGE_ID = "SET_USERPAGE_ID";
@@ -165,6 +162,17 @@ let postApiCall = (reqType, recType, url1,url2) => {
     }
     return postFunc;
 }
+
+
+export const REQUEST_ALL_USERS = "REQUEST_ALL_USERS";
+export const RECEIVE_ALL_USERS = "RECEIVE_ALL_USERS";
+
+export const fetchAllUsers = apiCall(REQUEST_ALL_USERS,RECEIVE_ALL_USERS,apiRoot+'userinfo/','');
+
+export const REQUEST_USER_INFO = "REQUEST_USER_INFO";
+export const RECEIVE_USER_INFO = "RECEIVE_USER_INFO";
+
+export const fetchUserInfo = apiCall(REQUEST_USER_INFO, RECEIVE_USER_INFO,apiRoot+'userinfo/','');
 
 //clear like notify:
 export const REQUEST_CLEAR_LIKE_NOTIFY = 'REQUEST_CLEAR_LIKE_NOTIFY';
@@ -263,11 +271,6 @@ export const RECEIVE_GET_GLOBAL_NOTIFICATIONS = "RECEIVE_GET_GLOBAL_NOTIFICATION
 
 export const fetchGlobalNotifications = apiCall(REQUEST_GET_GLOBAL_NOTIFICATIONS, RECEIVE_GET_GLOBAL_NOTIFICATIONS,apiRoot+'globalnotifications/','');
 
-export const REQUEST_USER_INFO = "REQUEST_USER_INFO";
-export const RECEIVE_USER_INFO = "RECEIVE_USER_INFO";
-
-export const fetchUserInfo = apiCall(REQUEST_USER_INFO, RECEIVE_USER_INFO,apiRoot+'userinfo/','');
-
 export const REQUEST_NOTIFICATIONS_SEEN = "REQUEST_NOTIFICATIONS_SEEN"
 export const RETRIEVE_NOTIFICATIONS_SEEN = "RETRIEVE_NOTIFICATIONS_SEEN"
 export const notificationsSeen = postApiCall(REQUEST_NOTIFICATIONS_SEEN, RETRIEVE_NOTIFICATIONS_SEEN,apiRoot+"notificationsseen");
@@ -289,12 +292,6 @@ export const CREATE_GLOBAL_NOTIFICATIONS_CONFIRMATION = 'CREATE_GLOBAL_NOTIFICAT
 
 export const createGlobalNotifications =
 postApiCall(REQUEST_CREATE_GLOBAL_NOTIFICATIONS,CREATE_GLOBAL_NOTIFICATIONS_CONFIRMATION,apiRoot+"createglobalnotifications/","");
-
-
-export const REQUEST_ALL_USERS = "REQUEST_ALL_USERS";
-export const RECEIVE_ALL_USERS = "RECEIVE_ALL_USERS";
-
-export const fetchAllUsers = apiCall(REQUEST_ALL_USERS,RECEIVE_ALL_USERS,apiRoot+'userinfo/','');
 
 //get all posts:
 

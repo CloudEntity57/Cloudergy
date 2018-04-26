@@ -21,9 +21,6 @@ const NonBlockApp = withRouter(App)
 import Header from './components/Header';
 import UserPanel from './components/UserPanel';
 import Login from './components/Login';
-import Newsfeed from './components/Newsfeed';
-import UserPage from './components/UserPage';
-import Account from './components/Account';
 import SignedIn from './components/SignedIn';
 import LandingPage from './components/LandingPage';
 

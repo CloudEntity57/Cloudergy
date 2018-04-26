@@ -34,6 +34,7 @@ class Header extends Component{
     // console.log('user in header: ',user);
   }
   componentWillReceiveProps(nextProps){
+    console.log('props change in header -' ,nextProps)
     let token = localStorage.getItem('id_token');
     console.log('user token for app: ',token);
     this.setState({

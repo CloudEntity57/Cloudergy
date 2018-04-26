@@ -9,9 +9,9 @@ const history = createHistory();
 import Header from './components/Header';
 import UserPanel from './components/UserPanel';
 import Login from './components/Login';
-import Newsfeed from './components/Newsfeed';
-import UserPage from './components/UserPage';
-import Account from './components/Account';
+import Newsfeed from './core_components/Newsfeed';
+import UserPage from './core_components/UserPage';
+import Account from './core_components/Account';
 import SignedIn from './components/SignedIn';
 import LandingPage from './components/LandingPage';
 
@@ -30,7 +30,8 @@ import {
   fetchUserInfo,
   fetchPosts,
   saveProfile,
-  createNewUser, fetchAllUsers,
+  createNewUser,
+  fetchAllUsers,
   doAuthentication,
   logoutUser,
   createNotifications,
@@ -66,19 +67,26 @@ class App extends React.Component{
     super(props);
     this.props.doAuthentication();
     this.props.fetchAllUsers('');
+
+    const profile = auth.getProfile();
+    if(profile.third_party_id){
+      this.props.fetchUserInfo(profile.third_party_id)
+    };
+    this.props.fetchPosts('');
+    //save user's third party info to store:
+    this.props.saveProfile(profile);
+
     this.state={
       profile:{},
       updated:false,
       affiliation:''
     }
   }
-
   componentWillUpdate(){
     this.props.doAuthentication();
   }
   componentWillReceiveProps(nextProps){
     let user = this.props.user;
-
     console.log('user in willreceive: ',user);
 
     //needs current profile to see if a corresponding user exists in database
@@ -196,17 +204,25 @@ class App extends React.Component{
    console.log('affiliation app.js render: ',affiliation);
    let username = (this.state.username) ? this.state.username : '';
    console.log('username app.js render: ',username);
-   let users = this.props.users;
    let notifications = this.state.notes;
    let globalNotifications = this.state.globalNotes;
    let update = this.update.bind(this);
+   const spinner = (this.props.isPosting) ? (
+     <div className='gray_bkgd'>
+       <div className='loading_spinner fa fa-spinner'>
+
+       </div>
+     </div>
+   ): '';
    return (
     <div>
+      { spinner }
+      <Header />
       {/* <Header uid={user.uid} logOut={this.logOut.bind(this)}/> */}
-      <Route exact path = "/*" component = {Header} />
+      {/* <Route exact path = "/*" component = {Header} /> */}
       {/* <Route exact path="/" render = {(props)=>(<LandingPage />)} /> */}
       {/* <Route exact path="/" render = {(props)=>{this.updateRouter(); return(<Newsfeed />)}} /> */}
-      <Route exact path="/" render = {(props)=>{this.updateRouter(); return(<Newsfeed />)}} />
+      <Route exact path="/" render = {(props)=>{this.updateRouter(); return(<Newsfeed {...props}/>)}} />
       {/* <Route path="/account" render = {(props)=>{this.updateRouter(); return(<Account />)}} /> */}
       <Route path="/account" render = {(props)=>{this.updateRouter(); return(<Account />)}} />
       {/* <Route path="/user" render = {(props)=>(<UserPage {...props} />)} /> */}
@@ -217,8 +233,8 @@ class App extends React.Component{
       {/* <Route path="/newsfeed" component = {Newsfeed} onEnter={()=>this.requireAuth()} /> */}
       <Route path="/login" component={Login} />
 
-      <Route exact path ="/*" component={UserPanel} />
-      {/* <UserPanel/> */}
+      {/* <Route exact path ="/*" component={UserPanel} /> */}
+      <UserPanel/>
 
     </div>
   )
@@ -233,6 +249,7 @@ function mapStateToProps(state){
   let authenticated = state.allReducers.mainApp.authenticated;
   let didFetchUsers = state.allReducers.mainApp.didFetchUsers;
   let userCreated = state.allReducers.mainApp.userCreated;
+  let isPosting = state.allReducers.mainApp.isPosting;
   return{
     user,
     users,
@@ -240,7 +257,8 @@ function mapStateToProps(state){
     token,
     authenticated,
     didFetchUsers,
-    userCreated
+    userCreated,
+    isPosting
   }
 }
 

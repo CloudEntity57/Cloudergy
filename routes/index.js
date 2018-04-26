@@ -26,7 +26,6 @@ router.get('/user/*', function(req, res, next) {
 router.get('/test', function(req, res, next) {
   Test.find({},'', function(err,testItem){
     if (testItem) {console.log('hey baby an error');}
-    console.log('NYAAAAAAHHHHHHH!!!!! ',testItem);
     res.json(testItem);
   });
 
@@ -240,7 +239,8 @@ const getPosts=(res)=>{
   Post.find({},'',(err,posts)=>{
     if(err){console.log('error! ', err);}
     // console.log('updated posts: ',posts);
-    posts = posts.reverse();
+
+    // posts = posts.reverse();
     res.json(posts);
   });
 }
@@ -294,7 +294,6 @@ router.post('/deletepost',function(req,res,next){
 
 router.post('/post',function(req,res,next){
   let post = req.body.payload;
-  console.log('the freaking post: ',post);
   let newPost = new Post(post);
   newPost.save(function(err,success){
     if(err) console.log('error: ',err);

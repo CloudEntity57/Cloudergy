@@ -21,7 +21,7 @@ class LandingPage extends Component{
     }
   }
   componentWillMount(){
-    this.props.socialApp();
+    // this.props.socialApp();
   }
   componentWillReceiveProps(){
     console.log('auth in landing page: ',this.props.auth);

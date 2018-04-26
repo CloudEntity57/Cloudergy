@@ -15,6 +15,11 @@ class UserPanel extends Component{
       expanded:false
     }
   }
+  componentWillReceiveProps(nextProps){
+    this.setState({
+      users:nextProps.users
+    });
+  }
   expandColumn(e){
     e.preventDefault();
     let boolean = this.state.expanded;
@@ -58,7 +63,7 @@ class UserPanel extends Component{
         {expandedColumn}
       </div>
     ) : '';
-    
+
     let users = (!this.props.users=='') ? this.props.users.map((user)=>{
       let color = user.affiliation + ' stripe user-panel-stripe';
       let userid = user.userid;
@@ -72,7 +77,7 @@ class UserPanel extends Component{
               {user.username}
               {/* <span className={color}></span> */}
               {/* <img id={user.id} className='user-pic' src={user.photo} alt='user image' /> */}
-              <div className="tab-userpic"><UserPic userid={userid} /></div>
+              <div className="tab-userpic"><UserPic userid={userid}/></div>
             </div>
           </a>
         // </NavLink>

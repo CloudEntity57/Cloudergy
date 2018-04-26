@@ -714,14 +714,14 @@ const submitPost = (state={posts:{}},action) => {
     case REQUEST_SUBMIT_POST:
       return {
         ...state,
-        isSubmitting:true
+        isPosting:true
       }
     case SUBMIT_POST_CONFIRMATION:
       console.log('reducks');
       let posts = action.results;
       return{
         ...state,
-        isSubmitting: false,
+        isPosting: false,
         posts
       }
       default:
@@ -844,7 +844,7 @@ const displayUserPreview = (state={
     case DISPLAY_USER_PREVIEW:
       return{
         ...state,
-        user_preview_showing:action.previewing
+        user_preview_showing:true
       }
     default:
       return state;
@@ -858,7 +858,7 @@ const hideUserPreview = (state={
     case HIDE_USER_PREVIEW:
       return{
         ...state,
-        user_preview_showing:action.previewing
+        user_preview_showing:false
       }
     default:
       return state;
